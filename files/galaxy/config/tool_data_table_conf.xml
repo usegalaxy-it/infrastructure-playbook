@@ -1,4 +1,5 @@
 <!-- Use the file tool_data_table_conf.xml.oldlocstyle if you don't want to update your loc files as changed in revision 4550:535d276c92bc-->
+<!-- Paths are relative to the value of `tool_data_path` in galaxy.ini -->
 <tables>
     <!-- TODO(hxr): test if we can remove path since specified in galaxy.yml -->
     <!-- Locations of all fasta files under genome directory -->
@@ -180,5 +181,10 @@
     <table name="intermine_simple_display" comment_char="#" allow_duplicate_entries="False">
         <columns>value, name, url</columns>
         <file path="/opt/galaxy/tool-data/intermine_simple_display.loc" />
+    </table>
+    <!-- ffindex databases -->    
+    <table name="ffindex_indices" comment_char="#" allow_duplicate_entries="False">
+        <columns>value, name, path, type</columns>
+        <file path="/opt/galaxy/tool-data/ffindex_indices.loc" />
     </table>
 </tables>

@@ -85,7 +85,7 @@ server {
 	}
 
 	location /_upload {
-		upload_store /data/dnb01/nginx-galaxy/uploads;
+		upload_store {{ galaxy_config['app:main']['nginx_upload_store'] }};
 		upload_limit_rate 32k;
 		upload_store_access user:rw group:rw all:rw;
 		upload_pass_form_field "";
@@ -109,7 +109,7 @@ server {
 		if ($request_method != POST) {
 				rewrite "" /api/jobs/$arg_job_id/files last;
 		}
-		upload_store /data/dnb01/nginx-galaxy/jobfiles;
+		upload_store {{ galaxy_config['app:main']['nginx_upload_job_files_store'] }};
 		upload_limit_rate 32k;
 		upload_store_access user:rw group:rw all:rw;
 		upload_pass_form_field "";
@@ -196,6 +196,14 @@ server {
 
 	location /apollo/ {
 		proxy_pass http://apollo.internal.galaxyproject.eu/apollo/;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
+		proxy_set_header Host $host;
+	}
+
+	location /apollo-permapol/ {
+		proxy_pass http://apollo.internal.galaxyproject.eu/apollo-permapol/;
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection $connection_upgrade;

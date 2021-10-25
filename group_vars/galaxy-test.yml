@@ -195,8 +195,8 @@ galaxy_systemd_handlers: 2
 galaxy_systemd_workflow_schedulers: 2
 galaxy_systemd_memory_limit: 16
 galaxy_systemd_memory_limit_zp: 8
-galaxy_systemd_zergling_env: "TMP=/data/dnb01/galaxy_db/tmp-uwsgi TEMP=/data/dnb01/galaxy_db/tmp-uwsgi TMPDIR=/data/dnb01/galaxy_db/tmp-uwsgi GALAXY_WEBAPOLLO_URL={{ GALAXY_WEBAPOLLO_URL }} GALAXY_WEBAPOLLO_USER={{ GALAXY_WEBAPOLLO_USER }} GALAXY_WEBAPOLLO_PASSWORD={{ GALAXY_WEBAPOLLO_PASSWORD }} GALAXY_WEBAPOLLO_EXT_URL={{ GALAXY_WEBAPOLLO_EXT_URL }} GALAXY_SHARED_DIR={{ GALAXY_SHARED_DIR }}"
-galaxy_systemd_handler_env: "GALAXY_WEBAPOLLO_URL={{ GALAXY_WEBAPOLLO_URL }} GALAXY_WEBAPOLLO_USER={{ GALAXY_WEBAPOLLO_USER }} GALAXY_WEBAPOLLO_PASSWORD={{ GALAXY_WEBAPOLLO_PASSWORD }} GALAXY_WEBAPOLLO_EXT_URL={{ GALAXY_WEBAPOLLO_EXT_URL }} GALAXY_SHARED_DIR={{ GALAXY_SHARED_DIR }}"
+galaxy_systemd_zergling_env: "TMP=/data/dnb01/galaxy_db/tmp-uwsgi TEMP=/data/dnb01/galaxy_db/tmp-uwsgi TMPDIR=/data/dnb01/galaxy_db/tmp-uwsgi {{ apollo_env }}"
+galaxy_systemd_handler_env: "{{ apollo_env }}"
 galaxy_systemd_workflow_scheduler_env: "{{ galaxy_systemd_handler_env }}"
 galaxy_zergpool_listen_addr: "127.0.0.1:4001"
 galaxy_zergpool_socket_name: zergpool.sock
@@ -218,6 +218,19 @@ condor_system_periodic_hold: "{{ 30 * 24 * 60 * 60}}"
 condor_network_interface: eth0
 condor_extra: |
     SSH_TO_JOB_SSH_CMD = "ssh -oUser=galaxy -oIdentityFile=%i -oStrictHostKeyChecking=yes -oUserKnownHostsFile=%k -oGlobalKnownHostsFile=%k -oProxyCommand=%x %h"
+
+# gie_proxy
+gie_proxy_dir: "{{ galaxy_root }}/gie-proxy/proxy"
+gie_proxy_git_version: master
+gie_proxy_setup_nodejs: nodeenv
+gie_proxy_virtualenv_command: /usr/bin/python3 -m virtualenv #"{{ pip_virtualenv_command }}"
+gie_proxy_nodejs_version: "10.13.0"
+gie_proxy_virtualenv: "{{ galaxy_root }}/gie-proxy/venv"
+gie_proxy_setup_service: systemd
+gie_proxy_sessions_path: "{{ galaxy_mutable_data_dir }}/interactivetools_map.sqlite"
+gie_proxy_port: 8800
+gie_proxy_verbose: true
+
 
 # gxadmin
 postgres_user: galaxy-test
@@ -245,7 +258,6 @@ gxadmin_bin_dir: /usr/bin
 gxadmin_force: true
 
 # GALAXY
-galaxy_group: galaxy
 galaxy_system_group: galaxy
 galaxy_instance_codename: "{{ codename }}"
 galaxy_log_dir: '/var/log/galaxy/'
@@ -261,6 +273,9 @@ galaxy_user:
     home: /opt/galaxy
     uid: 999
     shell: /bin/bash
+galaxy_group:
+  name: galaxy
+  gid: 999
 
 galaxy_root: /opt/galaxy
 galaxy_handler_count: "{{ galaxy_systemd_handlers }}"
@@ -313,7 +328,7 @@ galaxy_instance_hostname: usegalaxy.eu
 galaxy_config_style: yaml
 
 galaxy_repo: 'https://github.com/usegalaxy-eu/galaxy.git'
-galaxy_commit_id: 'release_21.01_europe-test'
+galaxy_commit_id: 'release_21.05_europe-test'
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
@@ -561,6 +576,9 @@ galaxy_jobconf:
           destination: gateway_1x
         - id: toolshed.g2.bx.psu.edu/repos/devteam/samtools_stats/samtools_stats/2.0.2+galaxy2
           destination: static_remote_cluster_mq_it01
+        - id: gmx_sim
+          destination: gateway_singlerun
+          resources: usegpu
         #- id: wig_to_bigWig
           #destination: wig_to_bigWig
         #- id: dexseq
@@ -577,6 +595,9 @@ galaxy_jobconf:
           #destination: 24cores_15G_BLAST
         #- id: ncbi_rpsblast_wrapper
           #destination: 24cores_15G_BLAST
+    resources:
+      - id: usegpu
+        names: gpu
     limits:
         - type: 'walltime'
           value: '148:00:00'
@@ -613,6 +634,8 @@ galaxy_config_files:
   - src: "{{ galaxy_config_file_src_dir }}/config/user_preferences_extra_conf.yml"
     dest: "{{ galaxy_config['galaxy']['user_preferences_extra_conf_path'] }}"
   # test? Unknown if this works.
+  - src: "{{ galaxy_config_file_src_dir }}/config/file_sources_conf.yml"
+    dest: "{{ galaxy_config['galaxy']['file_sources_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/error_report.yml"
     dest: "{{ galaxy_config_dir }}/error_report.yml"
   - src: "{{ galaxy_config_file_src_dir }}/config/job_metrics_conf.xml"

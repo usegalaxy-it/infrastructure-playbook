@@ -48,6 +48,7 @@
     - secret_group_vars/pulsar.yml     # Pulsar + MQ Connections
     - secret_group_vars/elixir_aai.yml # Elixir AAI private key
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
+    - secret_group_vars/file_sources.yml # file_sources_conf.yml creds
     - secret_group_vars/all.yml        # All of the other assorted secrets...
   handlers:
     - name: Restart Galaxy
@@ -108,7 +109,7 @@
     - hxr.monitor-email
     - hxr.monitor-uwsgi
     - hxr.monitor-galaxy-journalctl
-    - usegalaxy-eu.monitor-disk-access-time
+    #- usegalaxy-eu.monitor-disk-access-time
     - usegalaxy-eu.monitoring
 
     # Setup Galaxy user
@@ -135,7 +136,7 @@
     - role: hxr.galaxy-nonreproducible-tools
       become: yes
       become_user: galaxy
-    - hxr.galaxy-misc           # fix-ftp - make users FTP directories
+    #- hxr.galaxy-misc           # fix-ftp - make users FTP directories
     - usegalaxy-eu.dynmotd      # nicer MOTD/welcome message
     - usegalaxy-eu.rsync-to-nfs # sync codebase to NFS
     - role: usegalaxy-eu.webhooks     # Clone webhook repository
@@ -156,7 +157,7 @@
     - usegalaxy-eu.nginx
     # TODO move under monitoring + telegraf.
     - usegalaxy-eu.galaxy-slurp
-    - usegalaxy_eu.tiaas2
+    # - usegalaxy_eu.tiaas2
     - usegalaxy-eu.gapars-galaxy
     # The REAL galaxy role
     - role: galaxyproject.galaxy
@@ -180,13 +181,14 @@
     - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
     - usegalaxy-eu.logrotate             # Rotate logs
     - usegalaxy-eu.error-pages           # Copy the NGINX error pages
+    - usegalaxy-eu.htcondor_release      # Condor release held jobs increasing memory
     # Various ugly fixes
     - usegalaxy-eu.fix-oidc                  # Workaround for https://github.com/galaxyproject/galaxy/issues/8244
     - usegalaxy-eu.fix-unscheduled-jobs      # Workaround for ???
     - usegalaxy-eu.fix-unscheduled-workflows # Workaround for https://github.com/galaxyproject/galaxy/issues/8209
     - usegalaxy-eu.fix-stuck-handlers        # Restart handlers to prevent several classes of issues
     - usegalaxy-eu.log-cleaner               # do not retain journalctl logs, they are unnecessary/risky under GDPR
-    - usegalaxy-eu.fix-ancient-ftp-data      # Remove FTP data older than 3 months
+    - usegalaxy-eu.fix-ancient-ftp-data      # Remove FTP data older than 3 months, create FTP user directories
     - usegalaxy-eu.galaxy-procstat           # Some custom telegraf monitoring that's templated
     - usegalaxy-eu.fix-missing-api-keys      # Workaround for IE users not have a key set.
     - usegalaxy-eu.fix-user-quotas           # Automatically recalculate user quotas and attribute ELIXIR quota to ELIXIR AAI user on a regular basis

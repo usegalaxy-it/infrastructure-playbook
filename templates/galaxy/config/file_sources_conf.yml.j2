@@ -4,12 +4,34 @@
   doc: Your Dropbox files - configure an access token via the user preferences
   accessToken: ${user.preferences['dropbox|access_token']}
 
+#- type: webdav
+#  id: b2drop
+#  doc: B2Drop WebDAV server
+#  url: https://b2drop.eudat.eu
+#  root: /remote.php/dav/files/${user.preferences['b2drop|username']}/
+#  login: ${user.preferences['b2drop|username']} 
+#  password: ${user.preferences['b2drop|password']}
+
 - type: webdav
-  id: b2drop
-  doc: B2Drop WebDAV server
-  url: https://b2drop.eudat.eu/remote.php/dav
-  login: ${user.preferences['b2drop|username']} 
-  password: ${user.preferences['b2drop|password']}
+  id: generic_nextcloud
+  label: Nextcloud/ownCloud
+  doc: You personal Cloud files
+  writable: true
+  url: ${user.preferences['nextcloud|url']}
+  root: ${user.preferences['nextcloud|root']}
+  login: ${user.preferences['nextcloud|username']}
+  password: ${user.preferences['nextcloud|password']}
+
+- type: webdav
+  id: ergo_nextcloud
+  label: ERGA Nextcloud
+  doc: ERGA Pilot storage provided by BSC
+  writable: true
+  url: 'https://ergapilot.bsc.es'
+  root: '/remote.php/webdav'
+  login: "{{ erga_nextcloud_login }}"
+  password: "{{ erga_nextcloud_password }}"
+  requires_groups: erga
 
 - type: posix
   root: '/data/5/galaxy_import/galaxy_user_data/covid-19/data/sequences/'
@@ -26,8 +48,18 @@
 - type: ftp
   id: ebi-ftp
   label: "EBI FTP server"
-  doc: "EBI FTP server"
+  doc: "European Bioinformatic Institute FTP server"
   host: "ftp.ebi.ac.uk"
+  user: "anonymous"
+  passwd: ""
+  timeout: 10
+  port: 21
+
+- type: ftp
+  id: covid-monitoring
+  label: "SARS-CoV-2 result files"
+  doc: "SARS-CoV-2 variants and consensus sequences"
+  host: "xfer13.crg.eu"
   user: "anonymous"
   passwd: ""
   timeout: 10
@@ -42,13 +74,47 @@
   passwd: ""
   timeout: 10
   port: 21
-  
+
+- type: ftp
+  id: ensembl-ftp
+  label: "ENSEMBL FTP server"
+  doc: "ENSEMBL FTP server"
+  host: "ftp.ensemblgenomes.org/vol1/pub/"
+  user: "anonymous"
+  passwd: ""
+  timeout: 10
+  port: 21
+
+- type: ssh
+  id: covid-crg-ftp-staging
+  requires_roles: sars-cov2
+  writable: true
+  label: "CRG COVID data - staging"
+  doc: "Center for Genomic regulation COVID19 FTP server"
+  host: "xfer13.crg.eu"
+  user: "{{ covid_crg_ftp_staging_user }}"
+  passwd: "{{ covid_crg_ftp_staging_passwd }}"
+  timeout: 10
+  path: "/home/FTPvandenbeek/userspace/staging/"
+  config_path: ""
+  port: 2222
+
 - type: s3fs
   label: Genome Ark
   id: genomeark
   doc: Access to Genome Ark open data on AWS.
   bucket: genomeark
   anon: true
+
+- type: s3
+  label: Genome Ark Test Instance
+  id: genomeark_galaxy
+  doc: Access to Genome Ark open data on AWS.
+  bucket_name: genomeark
+  requires_groups: vgp
+  writable: true
+  aws_secret_access_key: "{{ genomeark_galaxy_aws_secret_access_key }}"
+  aws_access_key_id: "{{ genomeark_galaxy_aws_access_key_id }}"
 
 - type: s3fs
   label: 1000 Genomes
@@ -79,20 +145,6 @@
   anon: true
 
 - type: s3fs
-  label: Sentinel-3
-  id: meeo-s3-nrt
-  doc: European Commission’s Copernicus Earth Observation Programme. Sentinel-3 is a polar orbiting satellite that completes 14 orbits of the Earth a day.
-  bucket: meeo-s3/NRT/
-  anon: true
-
-- type: s3fs
-  label: Sentinel-5P Level 2
-  id: meeo-s5p-nrti
-  doc: Observations from the Sentinel-5 Precursor satellite of the Copernicus Earth Observation Programme. It contains a polar orbiting satellite that completes 14 orbits of the Earth a day.
-  bucket: meeo-s5p/RPRO/
-  anon: true
-
-- type: s3fs
   label: Coupled Model Intercomparison Project 6
   id: esgf-world
   doc: The sixth phase of global coupled ocean-atmosphere general circulation model ensemble
@@ -104,6 +156,13 @@
   id: wrf-cmip6-noversioning
   doc: High-resolution historical and future climate simulations from 1980-2100
   bucket: wrf-cmip6-noversioning
+  anon: true
+
+- type: s3fs
+  label: GBIF European region public datasets
+  id: gbif-open-data-eu-central-1
+  doc: The Global Biodiversity Information Facility is an international network and data infrastructure aimed at providing anyone, anywhere, open access to data about all types of life on Earth.
+  bucket: gbif-open-data-eu-central-1
   anon: true
 
 - type: s3fs
@@ -126,3 +185,18 @@
   doc: The Copernicus DEM is a Digital Surface Model (DSM) which represents the surface of the Earth including buildings, infrastructure and vegetation.
   bucket: copernicus-dem-30m
   anon: true
+
+- type: s3fs
+  label: ECMWF ERA5 Reanalysis
+  id: era5-pds
+  doc: ERA5 is the fifth generation of ECMWF atmospheric reanalyses of the global climate created with the best available observation data from satellites, in-situ stations and ECMWF's Integrated Forecast System. The dataset provides atmospheric meteorological parameters.
+  bucket: era5-pds
+  anon: true
+
+- type: s3fs
+  label: Atmospheric Models from Météo-France
+  id: mf-nwp-models
+  doc: Global and high-resolution regional atmospheric models from Météo-France.
+  bucket: mf-nwp-models
+  anon: true
+

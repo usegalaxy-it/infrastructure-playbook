@@ -342,7 +342,7 @@ def _finalize_tool_spec(tool_id, user_roles, tools_spec=TOOL_DESTINATIONS, memor
     if tool_id in ('upload1', '__DATA_FETCH__'):
         tool_spec = {
             'mem': 0.3,
-            'runner': 'condor',
+            'runner': 'condor_upload',
             'rank': 'GalaxyGroup == "upload"',
             'requirements': 'GalaxyTraining == false',
             'env': {
@@ -352,14 +352,20 @@ def _finalize_tool_spec(tool_id, user_roles, tools_spec=TOOL_DESTINATIONS, memor
     elif tool_id == '__SET_METADATA__':
         tool_spec = {
             'mem': 0.3,
-            'runner': 'condor',
+            'runner': 'condor_upload',
             'rank': 'GalaxyGroup == "metadata"',
             'requirements': 'GalaxyTraining == false',
         }
     # These we're running on a specific subset
+    elif tool in ('interactive_tool_ml_jupyter_notebook', 'gmx_sim', 'keras_train_and_eval'):
+        tool_spec['requirements'] = 'GalaxyGroup == "compute_gpu"'
     elif 'interactive_tool_' in tool_id:
+        tool_spec['requirements'] = 'GalaxyDockerHack == True && GalaxyGroup == "interactive"'
+    elif tool in ('deepvariant', 'msconvert', 'glassgo', 'bionano_scaffold', 'mitohifi'):
         tool_spec['requirements'] = 'GalaxyDockerHack == True && GalaxyGroup == "compute"'
-        
+    elif 'mothur' in tool:
+        tool_spec['requirements'] = 'GalaxyGroup == "compute_mothur"'
+
     return tool_spec
 
 
@@ -417,6 +423,10 @@ def gateway(tool_id, user, memory_scale=1.0, next_dest=None):
 
     if get_tool_id(tool_id).startswith('interactive_tool_') and user_id == -1:
         raise JobMappingException("This tool is restricted to registered users, "
+                                  "please contact a site administrator")
+        
+    if get_tool_id(tool_id).startswith('interactive_tool_ml') and 'interactive-tool-ml-jupyter-notebook' not in user_roles:
+        raise JobMappingException("This tool is restricted to authorized users, "
                                   "please contact a site administrator")
 
     try:

@@ -1,13 +1,13 @@
 preferences:
     use_cached_job:
-      description: Do you want to be able to re-use previously run jobs ?
-      inputs:
-        - name: use_cached_job_checkbox
-          label: Do you want to be able to re-use  equivalent jobs ?
-          type: boolean
-          checked: false
-          value: false
-          help: If you select yes, you will be able to select for each tool and workflow run if you would like to use this feature.
+        description: Do you want to be able to re-use previously run jobs ?
+        inputs:
+            - name: use_cached_job_checkbox
+              label: Do you want to be able to re-use  equivalent jobs ?
+              type: boolean
+              checked: false
+              value: false
+              help: If you select yes, you will be able to select for each tool and workflow run if you would like to use this feature.
 
     localization:
         description: Localization
@@ -18,10 +18,11 @@ preferences:
               required: False
               options:
                   - [Navigator default, auto]
-                  - [Chinese, zh]
+                  - [中文, zh]
                   - [English, en]
-                  - [French, fr]
-                  - [Japanese, ja]
+                  - [Español, es]
+                  - [Français, fr]
+                  - [日本語, ja]
 
     distributed_compute:
         description: Use distributed compute resources
@@ -54,6 +55,8 @@ preferences:
                   - ["Espoo (Finland) - CSC", remote_cluster_mq_fi01]
                   - ["Bergen (Norway) - UIB", remote_cluster_mq_no01]
                   - ["Barcelona (Spain) - BSC", remote_cluster_mq_es01]
+                  - ["Prague (Czech Republic) - MetaCentrum", remote_cluster_mq_cz01]
+                  - ["test extended metadata - DO NOT USE IT", condor_extended]
 
     ega_account:
         description: Your EGA (European Genome Archive) account
@@ -74,10 +77,19 @@ preferences:
               label: Dropbox access token
               type: password
               required: False
-              
-    b2drop:
-        description: Your B2DROP account (https://b2drop.eudat.eu/)
+
+    # Used in file_sources_conf.yml
+    nextcloud:
+        description: Your Personal Nextcloud / ownCloud account
         inputs:
+            - name: url
+              label: Server Domain (e.g. https://myowncloud.org)
+              type: text
+              required: False
+            - name: root
+              label: Server Path (should end with /remote.php/webdav, e.g. /a/sub/path/remote.php/webdav)
+              type: text
+              required: False
             - name: username
               label: Username
               type: text
@@ -109,4 +121,20 @@ preferences:
             - name: password
               label: Password
               type:  password
+              required: False
+
+    c3s_account:
+        description: Your CDS API Key (Copernicus Climate Change Service API Key)
+        inputs:
+            - name: c3s_cds_apikey
+              label: C3S CDS API Key
+              type: password
+              required: False
+
+    cads_account:
+        description: Your Copernicus ADS API Key (Copernicus Atmosphere Data Store API Key)
+        inputs:
+            - name: cads_apikey
+              label: Copernicus ADS API Key
+              type: password
               required: False

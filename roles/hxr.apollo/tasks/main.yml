@@ -8,6 +8,14 @@
     dest: "{{ apollo_tmp_file }}"
   register: download
 
+- name: Backup old apollo
+  copy:
+    src: "{{ tomcat_apollo_webapp_dir }}"
+    dest: "/tmp/apollo-backup-{{ ansible_date_time.epoch }}"
+    remote_src: true
+  when: download.changed
+  notify: 'restart tomcat'
+
 - name: Wipe out old apollo
   file:
     path: "{{ tomcat_apollo_webapp_dir }}"

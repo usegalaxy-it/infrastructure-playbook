@@ -42,7 +42,7 @@
 
     ## Dependencies
     - geerlingguy.repo-epel # Install EPEL
-    - usegalaxy-eu.powertools # geerlingguy.repo-epel role doesn't enable (yet) PowerTools repository
+    #- usegalaxy-eu.powertools # geerlingguy.repo-epel role doesn't enable (yet) PowerTools repository
     # We want to exclude a couple of packages as we will fetch those
     # dependencies from other repos: condor, node/npm
     - hxr.exclude-repo
@@ -73,7 +73,7 @@
         galaxy_fetch_dependencies: no
         galaxy_build_client: no
     # The bashrc needs to be created for several later features.
-    - usegalaxy-eu.bashrc
+    #- usegalaxy-eu.bashrc
 
     ## Setup docker
     - geerlingguy.docker
@@ -88,7 +88,7 @@
     - role: hxr.galaxy-nonreproducible-tools
       become: yes
       become_user: galaxy
-    - hxr.galaxy-misc
+    # - hxr.galaxy-misc
     - usegalaxy-eu.dynmotd      # nicer MOTD/welcome message
     - usegalaxy-eu.rsync-to-nfs # sync codebase to NFS
     - usegalaxy-eu.webhooks     # Clone webhook repository
@@ -120,8 +120,7 @@
     - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dir
     - hxr.install-to-venv            # Some extra packages our site needs.
     - usegalaxy-eu.galaxy-systemd    # Manage the Galaxy processes with SystemD
-    - usegalaxy-eu.gie-node-proxy    # Setup the NodeJS proxy (depends on NodeJS being already available)
-    - usegalaxy-eu.gie-deployer      # Deploy the GIE configuration
+    - usegalaxy-eu.gie_proxy             # Setup the NodeJS proxy for GxIT
     - usegalaxy-eu.subdomain-themes  # Custom subdomain themes
     - usegalaxy-eu.limits            # Prevent out of control processes
     - usegalaxy-eu.galaxy-cleanup    # Cleanup purged datasets/histories/etc >60 days old

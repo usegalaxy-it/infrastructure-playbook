@@ -13,20 +13,67 @@ condor:
     request_memory: '{MEMORY}'
     tmp_dir: 'True'
 
+condor_extended:
+  limits:
+    cores: 40
+    mem: 1000
+  env:
+    NUMBA_CACHE_DIR: /data/2/galaxy_db/tmp
+    GALAXY_MEMORY_MB: '{MEMORY_MB}'
+    GALAXY_SLOTS: '{PARALLELISATION}'
+  params:
+    priority: -{PRIORITY}
+    request_cpus: '{PARALLELISATION}'
+    request_memory: '{MEMORY}'
+    tmp_dir: 'True'
+    metadata_strategy: 'extended'
+
+condor_upload:
+  limits:
+    cores: 40
+    mem: 1000
+  env:
+    NUMBA_CACHE_DIR: /data/2/galaxy_db/tmp
+    GALAXY_MEMORY_MB: '{MEMORY_MB}'
+    GALAXY_SLOTS: '{PARALLELISATION}'
+  params:
+    priority: -{PRIORITY}
+    request_cpus: '{PARALLELISATION}'
+    request_memory: '{MEMORY}'
+    tmp_dir: 'True'
+
+condor_gpu:
+  limits:
+    cores: 8
+    mem: 16
+    gpus: 1
+  env:
+    NUMBA_CACHE_DIR: /data/2/galaxy_db/tmp
+    GALAXY_MEMORY_MB: '{MEMORY_MB}'
+    GALAXY_SLOTS: '{PARALLELISATION}'
+    GPU_AVAILABLE: 1
+  params:
+    priority: -{PRIORITY}
+    request_cpus: '{PARALLELISATION}'
+    request_memory: '{MEMORY}'
+    request_gpus: '{GPUS}'
+
 condor_singularity:
   limits:
     cores: 40
     mem: 1000
-  env: {}
+  env:
+    GALAXY_MEMORY_MB: '{MEMORY_MB}'
+    GALAXY_SLOTS: '{PARALLELISATION}'
+    LC_ALL: C
   params:
     priority: -{PRIORITY}
     request_cpus: '{PARALLELISATION}'
     request_memory: '{MEMORY}'
     singularity_enabled: true
     # can and should be made stricter at some point
-    singularity_volumes: '/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/0/galaxy_import/galaxy_user_data/:ro,/data/1/galaxy_import/galaxy_user_data/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro'
-    singularity_default_container_id: '/data/0/cvmfs/singularity/ubuntu:18.04'
-    singularity_run_extra_arguments: '-H /usr/local/galaxy/'
+    singularity_volumes: '$_CONDOR_SCRATCH_DIR:rw,$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:ro,/data/dnb05/galaxy_db/:rw,/data/0/galaxy_db/:ro,/data/1/galaxy_db/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,/usr/local/tools/:ro'
+    singularity_default_container_id: '/cvmfs/singularity.galaxyproject.org/all/centos:8.3.2011'
     tmp_dir: 'True'
 
 condor_singularity_with_conda:
@@ -44,10 +91,10 @@ condor_singularity_with_conda:
     require_container: true
     singularity_enabled: true
     # can and should be made stricter at some point
-    singularity_volumes: '$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:rw,/data/0/galaxy_db/:ro,/data/1/galaxy_db/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro'
-    container:
+    singularity_volumes: '$_CONDOR_SCRATCH_DIR:rw,$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:ro,/data/dnb05/galaxy_db/:rw,/data/0/galaxy_db/:ro,/data/1/galaxy_db/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,/usr/local/tools/:ro'
+    container_override:
       - type: singularity
-        shell: '/bin/sh'
+        shell: '/bin/bash'
         resolve_dependencies: true
         identifier: '/cvmfs/singularity.galaxyproject.org/all/centos:8.3.2011'
 
@@ -81,7 +128,7 @@ condor_docker_ie:
     request_memory: '{MEMORY}'
     docker_enabled: true
     # can and should be made stricter at some point
-    docker_volumes: '/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:ro,/data/0/galaxy_import/galaxy_user_data/:ro,/data/1/galaxy_import/galaxy_user_data/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro'
+    docker_volumes: '/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:ro,/data/dnb05/galaxy_db/:ro,/data/0/galaxy_import/galaxy_user_data/:ro,/data/1/galaxy_import/galaxy_user_data/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro'
     docker_memory: '{MEMORY}'
     docker_auto_rm: true
     docker_default_container_id: busybox:ubuntu-14.04
@@ -109,17 +156,42 @@ condor_docker_ie_interactive:
     docker_set_user: ''
     tmp_dir: 'True'
 
+condor_docker_ie_interactive_gpu:
+  limits:
+    cores: 8
+    mem: 18
+    gpus: 1
+  env: {}
+  params:
+    priority: -{PRIORITY}
+    request_cpus: '{PARALLELISATION}'
+    request_memory: '{MEMORY}'
+    request_gpus: '{GPUS}'
+    docker_enabled: true
+    # can and should be made stricter at some point
+    docker_volumes: '$working_directory:rw,$job_directory:rw,$tool_directory:ro'
+    docker_memory: '{MEMORY}'
+    docker_auto_rm: true
+    docker_default_container_id: busybox:ubuntu-14.04
+    docker_sudo: false
+    docker_set_user: ''
+    tmp_dir: 'True'
+
 condor_docker:
+  limits:
+    cores: 40
+    mem: 1000
   env:
-    # this can be removed, as soon as we don't expose this env on cn029 anymore
-    DOCKER_HOST: ''
+    GALAXY_MEMORY_MB: '{MEMORY_MB}'
+    GALAXY_SLOTS: '{PARALLELISATION}'
+    LC_ALL: C
   params:
     priority: -{PRIORITY}
     request_cpus: '{PARALLELISATION}'
     request_memory: '{MEMORY}'
     docker_enabled: true
     # can and should be made stricter at some point
-    docker_volumes: '/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:rw,/data/0/galaxy_import/galaxy_user_data/:ro,/data/1/galaxy_import/galaxy_user_data/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro'
+    docker_volumes: '/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro,/data/dnb03/galaxy_db/:ro,/data/dnb05/galaxy_db/:rw,/data/0/galaxy_import/galaxy_user_data/:ro,/data/1/galaxy_import/galaxy_user_data/:ro,/data/2/galaxy_db/:ro,/data/3/galaxy_db/:ro,/data/4/galaxy_db/:ro,/data/5/galaxy_import/galaxy_user_data/:ro,/data/6/galaxy_db/:ro,/data/7/galaxy_db/:ro,$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro'
     docker_memory: '{MEMORY}'
     docker_auto_rm: true
     docker_default_container_id: busybox:ubuntu-14.04
@@ -391,7 +463,7 @@ remote_cluster_mq_uk01:
     jobs_directory: '/data/share/staging'
     default_file_action: 'remote_transfer'
     dependency_resolution: 'remote'
-    outputs_to_working_directory: False
+    outputs_to_working_directory: True
     rewrite_parameters: True
     transport: 'curl'
 
@@ -608,4 +680,29 @@ remote_cluster_mq_es01:
     singularity_default_container_id: '/cvmfs/singularity.galaxyproject.org/u/b/ubuntu:18.04'
     singularity_volumes: '$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw'
 
-
+remote_cluster_mq_cz01:
+  limits:
+    cores: 4
+    mem: 16
+  env:
+    GALAXY_MEMORY_MB: '{MEMORY_MB}'
+    GALAXY_SLOTS: '{PARALLELISATION}'
+    LC_ALL: C
+    SINGULARITY_CACHEDIR: /storage/praha5-elixir/home/marten/pulsar/files/singularity_cache
+    SINGULARITY_TMPDIR: $SCRATCHDIR
+    TMPDIR: $SCRATCHDIR
+    TMP: $SCRATCHDIR
+    TEMP: $SCRATCHDIR
+  params:
+    priority: -{PRIORITY}
+    submit_request_cpus: '{PARALLELISATION}'
+    submit_request_memory: '{MEMORY}'
+    jobs_directory: '/storage/praha5-elixir/home/marten/pulsar/files/staging'
+    default_file_action: 'remote_transfer'
+    dependency_resolution: 'none'
+    outputs_to_working_directory: True
+    rewrite_parameters: True
+    transport: 'curl'
+    singularity_enabled: true
+    singularity_default_container_id: '/cvmfs/singularity.galaxyproject.org/u/b/ubuntu:18.04'
+    singularity_volumes: '$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw'

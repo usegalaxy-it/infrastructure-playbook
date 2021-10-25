@@ -17,7 +17,7 @@ def per_host_tool_labels( context, label ):
     valid_labels = [ "file_meta_label", "general_text_label"]
     general_ngs_labels = [ "genomics_label" ]
     # HiCtools mode: published in NAR 2018
-    if "humancellatlas.usegalaxy.eu" in host or "nanopore.usegalaxy.eu" in host or "hicexplorer.usegalaxy.eu" in host or "singlecell.usegalaxy.eu" in host or "metagenomics.usegalaxy.eu" in host or "rna.usegalaxy.eu" in host or "clipseq.usegalaxy.eu" in host or "graphclust.usegalaxy.eu" in host or "annotation.usegalaxy.eu" in host or "virology.usegalaxy.eu" in host:
+    if "assembly.usegalaxy.eu" in host or "humancellatlas.usegalaxy.eu" in host or "nanopore.usegalaxy.eu" in host or "plants.usegalaxy.eu" in host or "hicexplorer.usegalaxy.eu" in host or "singlecell.usegalaxy.eu" in host or "metagenomics.usegalaxy.eu" in host or "rna.usegalaxy.eu" in host or "clipseq.usegalaxy.eu" in host or "graphclust.usegalaxy.eu" in host or "annotation.usegalaxy.eu" in host or "virology.usegalaxy.eu" in host:
         valid_labels += general_ngs_labels
         return label.id in valid_labels
     if "cheminformatics.usegalaxy.eu" in host:
@@ -25,6 +25,7 @@ def per_host_tool_labels( context, label ):
     if "ml.usegalaxy.eu" in host:
         return label.id in valid_labels
     if "imaging.usegalaxy.eu" in host:
+        valid_labels += ['stats_viz']
         return label.id in valid_labels
     if "climate.usegalaxy.eu" in host:
         return label.id in valid_labels
@@ -36,42 +37,51 @@ def per_host_tool_labels( context, label ):
 
 
 BASE_SECTIONS = ["text_manipulation", "get_data", "collection_operations",
-        "convert_formats", "filter_and_sort", "join__subtract_and_group"]
+        "convert_formats", "filter_and_sort", "join__subtract_and_group", "expression_tools"]
 
-GENERAL_NGS_SECTIONS = ["deeptools", "bed",
+GENERAL_NGS_SECTIONS = ["deeptools", "bed", "sam_bam",
         "operate_on_genomic_intervals", "fasta_fastq_manipulation",
         "fasta_fastq", "fastq_quality_control",
         "picard", "mapping", "sam_bam_manipulation"]
-        
-human_cell_atlas_sections = ['hca_sc_get-scrna', 'hca_sc_seurat_tools', 'hca_sc_sc3_tools', 
+
+human_cell_atlas_sections = ['hca_sc_get-scrna', 'hca_sc_seurat_tools', 'hca_sc_sc3_tools',
                       'hca_sc_scanpy_tools', 'hca_sc_monocle3_tools', 'hca_sc_scater_tools',
                       'hca_sc_scpred_tools', 'hca_sc_garnett_tools', 'hca_sc_label_analysis_tools',
                       'hca_sc_scmap_tools', 'hca_sc_sccaf_tools', 'hca_sc_utils_viz']
 
 DOMAIN_SECTIONS = {
+    'assembly': GENERAL_NGS_SECTIONS + ["hicexplorer", "graph_display_data", "peak_calling", "assembly", "annotation",
+        'genome_diversity', 'multiple_alignments'],
     'hicexplorer': GENERAL_NGS_SECTIONS + ["hicexplorer", "graph_display_data", "peak_calling"],
     'virology': GENERAL_NGS_SECTIONS + ["assembly", "annotation", "phylogenetics"],
     'nanopore': GENERAL_NGS_SECTIONS + ["nanopore", "ncbi_blast", "fasta_fastq", "assembly", "graph_display_data", "metagenomic_analysis"],
-    'ecology': ["join__subtract_and_group", "statistics", "graph_display_data", "machine_learning",
+    'ecology': ["join__subtract_and_group", "operate_on_genomic_intervals", "statistics", "graph_display_data", "machine_learning",
         "ncbi_blast", "fasta_fastq", "fastq_quality_control", "assembly", "dna_metabarcoding", "metagenomic_analysis",
-        "mothur", "qiime", "rad_seq", "animal_detection_on_acoustic_recordings","species_abundance",
+        "mothur", "qiime", "rad_seq", "animal_detection_on_acoustic_recordings","species_abundance","biodiversity_data_exploration",
         "gis_data_handling", "climate_analysis", "interactivetools"],
     'climate': ["climate_analysis", "gis_data_handling", "graph_display_data", "interactivetools"],
     'metagenomics': GENERAL_NGS_SECTIONS + ["fasta_fastq_manipulation",
         "multiple_alignments", "assembly", "annotation",
         "graph_display_data", "metagenomic_analysis", "mothur", "qiime",
         "biom_manipulation"],
+    'microgalaxy': GENERAL_NGS_SECTIONS + ["fasta_fastq_manipulation",
+        "multiple_alignments", "assembly", "annotation",
+        "graph_display_data", "metagenomic_analysis", "mothur", "qiime",
+        "biom_manipulation"],
     'rna': GENERAL_NGS_SECTIONS + ["rna_seq", "annotation", "rna_analysis",
         "graph_display_data"],
     'singlecell': GENERAL_NGS_SECTIONS + ["rna_seq", "annotation", "rna_analysis",
-        "graph_display_data", "single-cell"],
+        "graph_display_data", "single-cell", "interactivetools"],
     'humancellatlas': GENERAL_NGS_SECTIONS + ["rna_seq", "annotation", "rna_analysis",
         "graph_display_data", "single-cell", "interactivetools"] + human_cell_atlas_sections,
     'clipseq': GENERAL_NGS_SECTIONS + ["rna_seq", "peak_calling", "rna_analysis",
         "motif_tools"],
+    'plants': GENERAL_NGS_SECTIONS + ["rna_seq", "annotation", "rna_analysis",
+        "graph_display_data", "hicexplorer", "peak_calling", "nanopore", "ncbi_blast", "fasta_fastq", "assembly",
+        "metagenomic_analysis", "single-cell", "interactivetools"],
     'graphclust': GENERAL_NGS_SECTIONS + ["rna_seq", "graphclust", "rna_analysis"],
     'cheminformatics': ['chemicaltoolbox'],
-    'imaging': ['imaging', 'proteomics'],
+    'imaging': ['imaging', 'proteomics', 'machine_learning', 'statistics'],
     'metabolomics': ['metabolomics'],
     'ml': ['machine_learning'],
     'annotation': GENERAL_NGS_SECTIONS + ['annotation', 'apollo', 'ncbi_blast', 'assembly', 'variant_calling', 'fetch_sequences___alignments', 'ontology', 'emboss', 'evolution', 'genome_diversity', 'multiple_alignments', 'graph_display_data'],

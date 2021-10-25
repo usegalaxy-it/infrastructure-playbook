@@ -2,6 +2,7 @@
 .venv
 .vault_password
 # These are from requirements.yml and upstream
+collections/
 roles/cloudalchemy.grafana/
 roles/dev-sec.os-hardening/
 roles/dev-sec.ssh-hardening/
@@ -29,4 +30,5 @@ roles/usegalaxy-eu.htcondor/
 roles/usegalaxy_eu.influxdb/
 roles/usegalaxy_eu.tiaas2/
 roles/usegalaxy-eu.update-hosts/
+dx_applets/.DS_Store
 

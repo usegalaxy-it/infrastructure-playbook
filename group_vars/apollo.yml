@@ -27,10 +27,11 @@ tomcat7_catalina_port: 8080
 tomcat7_ajp_port: 8009
 tomcat7_uriencoding: ""
 
-apollo_version: eu-2.5.0
+apollo_version: eu-2.6.4
 
 apollo_config_apollo: |
     extraTabs = [
+        ['title': 'Sharing', 'url': 'https://usegalaxy.eu/apollo-permapol/'],
         ['title': 'GGA', 'url': 'https://gitter.im/galaxy-genome-annotation/Lobby/~embed']
     ]
 
@@ -38,7 +39,7 @@ apollo_config_jbrowse: |
     jbrowse {
         git {
             url= "https://github.com/GMOD/jbrowse"
-            tag = "1.16.6-release"
+            tag = "1.16.10-release"
             alwaysPull = true
             alwaysRecheck = true
         }
