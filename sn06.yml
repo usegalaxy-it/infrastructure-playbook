@@ -5,7 +5,7 @@
   become_user: root
   vars:
     # The full internal name.
-    hostname: cloud-212-189-205-29.cloud.ba.infn.it
+    hostname: cloud-90-147-102-12.cloud.ba.infn.it
     # The nginx user needed into the galaxyproject.nginx role
     nginx_conf_user: galaxy
     # This server has multiple CNAMEs that are important. Additionally it
@@ -32,7 +32,7 @@
     #
     # The nginx user needed into the galaxyproject.nginx role
     server_names:
-      - 'cloud-212-189-205-29.cloud.ba.infn.it'
+      - '{{ hostname }}'
   vars_files:
     - group_vars/tiaas.yml             # All of the training infrastructure
     - group_vars/custom-sites.yml      # Subdomains are listed here
@@ -57,6 +57,18 @@
       selinux:
         policy: targeted
         state: permissive
+    - name: Install epel-release and dnf-plugins-core on centos8 
+      package:
+        name: [ 'epel-release', 'dnf-plugins-core',  ]
+      become: yes
+    - name: enable powertools
+      shell:
+        cmd: yum config-manager --set-enabled powertools 
+      become: yes
+    - name: Install make on centos8 
+      package:
+        name: ['make', 'epel-release', 'dnf-plugins-core',  ]
+      become: yes
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:
@@ -73,14 +85,6 @@
     - name: Install pdf export dependencies
       package:
         name: [ 'cairo', 'cairo-devel', 'pango-devel' ]
-      become: yes
-    - name: Install epel-release and dnf-plugins-core on centos8 
-      package:
-        name: [ 'epel-release', 'dnf-plugins-core',  ]
-      become: yes
-    - name: enable powertools
-      shell:
-        cmd: yum config-manager --set-enabled powertools 
       become: yes
   roles:
     - hostname
@@ -138,7 +142,7 @@
     - role: hxr.galaxy-nonreproducible-tools
       become: yes
       become_user: galaxy
-    - hxr.galaxy-misc           # fix-ftp - make users FTP directories
+   #T - hxr.galaxy-misc           # fix-ftp - make users FTP directories
     - usegalaxy-eu.dynmotd      # nicer MOTD/welcome message
       #T- usegalaxy-eu.rsync-to-nfs # sync codebase to NFS
     - role: usegalaxy-eu.webhooks     # Clone webhook repository
@@ -155,7 +159,7 @@
 
     ## GALAXY
     - hxr.postgres-connection
-    - galaxyproject.gxadmin
+   #T - galaxyproject.gxadmin
     - usegalaxy-eu.nginx
       ## TODO move under monitoring + telegraf.
       #- usegalaxy-eu.galaxy-slurp
@@ -173,26 +177,26 @@
         galaxy_build_client: yes
 
     ## Extras!
-    - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
+   #T - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
       #T- hxr.install-to-venv                # Some extra packages our site needs.
     - usegalaxy-eu.galaxy-systemd        # Manage the Galaxy processes with SystemD
       #T- usegalaxy-eu.update-hosts          # Update hosts list
-    - usegalaxy-eu.gie_proxy             # Setup the NodeJS proxy for GxIT
+   #T - usegalaxy-eu.gie_proxy             # Setup the NodeJS proxy for GxIT
       #- usegalaxy-eu.subdomain-themes      # Custom subdomain themes
     - usegalaxy-eu.limits                # Prevent out of control processes
-    - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
+  #T  - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
     - usegalaxy-eu.logrotate             # Rotate logs
     - usegalaxy-eu.error-pages           # Copy the NGINX error pages
     # Various ugly fixes
-    - usegalaxy-eu.fix-oidc                  # Workaround for https://github.com/galaxyproject/galaxy/issues/8244
-    - usegalaxy-eu.fix-unscheduled-jobs      # Workaround for ???
-    - usegalaxy-eu.fix-unscheduled-workflows # Workaround for https://github.com/galaxyproject/galaxy/issues/8209
-    - usegalaxy-eu.fix-stuck-handlers        # Restart handlers to prevent several classes of issues
-    - usegalaxy-eu.log-cleaner               # do not retain journalctl logs, they are unnecessary/risky under GDPR
-      #T- usegalaxy-eu.fix-ancient-ftp-data      # Remove FTP data older than 3 months
-    - usegalaxy-eu.galaxy-procstat           # Some custom telegraf monitoring that's templated
-    - usegalaxy-eu.fix-missing-api-keys      # Workaround for IE users not have a key set.
-    - usegalaxy-eu.fix-user-quotas           # Automatically recalculate user quotas and attribute ELIXIR quota to ELIXIR AAI user on a regular basis
+#T    - usegalaxy-eu.fix-oidc                  # Workaround for https://github.com/galaxyproject/galaxy/issues/8244
+#T    - usegalaxy-eu.fix-unscheduled-jobs      # Workaround for ???
+#T    - usegalaxy-eu.fix-unscheduled-workflows # Workaround for https://github.com/galaxyproject/galaxy/issues/8209
+#T    - usegalaxy-eu.fix-stuck-handlers        # Restart handlers to prevent several classes of issues
+#T    - usegalaxy-eu.log-cleaner               # do not retain journalctl logs, they are unnecessary/risky under GDPR
+#T      #T- usegalaxy-eu.fix-ancient-ftp-data      # Remove FTP data older than 3 months
+#T    - usegalaxy-eu.galaxy-procstat           # Some custom telegraf monitoring that's templated
+#T    - usegalaxy-eu.fix-missing-api-keys      # Workaround for IE users not have a key set.
+#T    - usegalaxy-eu.fix-user-quotas           # Automatically recalculate user quotas and attribute ELIXIR quota to ELIXIR AAI user on a regular basis
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
     #- dj-wasabi.telegraf

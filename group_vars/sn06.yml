@@ -221,7 +221,7 @@ monitor_condor_split_util: true
 
 # Certbot
 certbot_virtualenv_package_name: python3-virtualenv
-certbot_dns_provider: route53
+#certbot_dns_provider: 
 certbot_auth_method: --standalone
 certbot_domains: "{{ server_names }}"
 certbot_post_renewal: |
@@ -310,8 +310,8 @@ galaxy_systemd_memory_limit: 20
 galaxy_systemd_memory_limit_zp: 8
 galaxy_systemd_memory_limit_handler: 12
 galaxy_systemd_memory_limit_workflow: 15
-galaxy_systemd_zergling_env: "TMP=/data/dnb01/galaxy_db/tmp-uwsgi TEMP=/data/dnb01/galaxy_db/tmp-uwsgi TMPDIR=/data/dnb01/galaxy_db/tmp-uwsgi {{ apollo_env }}"
-galaxy_systemd_handler_env: "{{ apollo_env }}"
+galaxy_systemd_zergling_env: "TMP=/data/dnb01/galaxy_db/tmp-uwsgi TEMP=/data/dnb01/galaxy_db/tmp-uwsgi TMPDIR=/data/dnb01/galaxy_db/tmp-uwsgi " #P {{ apollo_env }}"
+#P galaxy_systemd_handler_env: "{{ apollo_env }}"
 galaxy_systemd_workflow_scheduler_env: "{{ galaxy_systemd_handler_env }}"
 galaxy_zergpool_listen_addr: "127.0.0.1:4001"
 galaxy_zergpool_socket_name: zergpool.sock
@@ -412,7 +412,7 @@ galaxy_backup_configfiles: false
 galaxy_server_dir: "{{ galaxy_root }}/server"
 galaxy_config_dir: "{{ galaxy_root }}/config"
 galaxy_venv_dir: "{{ galaxy_root }}/venv"
-galaxy_virtualenv_command: "pyvenv"
+galaxy_virtualenv_command: "python3 -m venv"
 #galaxy_virtualenv_python: "python3.6"
 galaxy_nonrepro_tools: "{{ galaxy_root }}/custom-tools"
 galaxy_nonrepro_commit: master
@@ -979,27 +979,27 @@ galaxy_config_templates:
     dest: "{{ galaxy_config['app:main']['build_sites_config_file'] }}"
   - src: "{{ galaxy_config_template_src_dir }}/config/global_host_filters.py.j2"
     dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py"
-  - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.xml.j2"
-    dest: "{{ galaxy_config_dir }}/job_conf.xml"
+#  - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.xml.j2"
+#    dest: "{{ galaxy_config_dir }}/job_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.xml.j2"
     dest: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2"
     dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
   - src: "{{ galaxy_config_template_src_dir }}/config/uwsgi.ini.j2"
     dest: "{{ galaxy_config_dir }}/uwsgi.ini"
-  - src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml"
-    dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
-    dest: "{{ galaxy_config['app:main']['oidc_backends_config_file'] }}"
+#  - src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml"
+#    dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
+#  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
+#    dest: "{{ galaxy_config['app:main']['oidc_backends_config_file'] }}"
   - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
     dest: "{{ galaxy_config['app:main']['oidc_config_file'] }}"
-  - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
-    dest: "{{ galaxy_config_dir }}/grt.yml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
-    dest: "{{ galaxy_config_dir }}/pulsar_app.yml"
+#  - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
+#    dest: "{{ galaxy_config_dir }}/grt.yml"
+#  - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
+#    dest: "{{ galaxy_config_dir }}/pulsar_app.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/tool_conf.xml.j2"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/galaxy_workflow_scheduler.j2"
     dest: "{{ galaxy_config_dir }}/workflow_schedulers_conf.xml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2"
-    dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
+#  - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2"
+#    dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"

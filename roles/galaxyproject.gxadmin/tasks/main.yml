@@ -1,0 +1,69 @@
+---
+
+- name: Clone gxadmin repository
+  git:
+    repo: "{{ gxadmin_repo }}"
+    dest: "{{ gxadmin_dir }}"
+    version: "{{ gxadmin_commit | default(omit) }}"
+    force: "{{ gxadmin_force | default(false) }}"
+  register: __gxadmin_git_update_result
+  
+- name: Check if executable exists
+  stat:
+    path: "{{ gxadmin_dir }}/gxadmin"
+  register: __gxadmin_check
+
+- name: Compile gxadmin when there are updates
+  make:
+    chdir: "{{ gxadmin_dir }}"
+    target: gxadmin
+  when: __gxadmin_git_update_result is changed or not __gxadmin_check.stat.exists
+
+- name: Create bin directory
+  file:
+    path: "{{ gxadmin_bin_dir }}"
+    state: directory
+
+- name: Add gxadmin to bin dir
+  file:
+    src: "{{ gxadmin_dir }}/gxadmin"
+    dest: "{{ gxadmin_bin_dir }}/gxadmin"
+    state: link
+  # will fail due to missing git, potentially.
+  when: not ansible_check_mode
+
+- name: Create config directory
+  file:
+    path: "{{ gxadmin_config_dir }}"
+    state: directory
+    
+- name: Copy local file if the destination does not exist.
+  copy:
+    content: '# Gxadmin local function'
+    dest: "{{ gxadmin_config_dir }}/gxadmin-local.sh"
+    force: no
+
+- name: Insert configuration using a local file
+  blockinfile:
+    block: "{{ lookup('file', 'gxadmin_local') }}"
+    path: "{{ gxadmin_config_dir }}/gxadmin-local.sh"
+
+#- name: Add env vars
+  ##become: true
+  ##become_user: "{{ galaxy_user }}"
+  #when: gxadmin_galaxy_variables is defined
+  #lineinfile:
+    #path: "~/.bashrc"
+    #regexp: "^export {{ item.var }}"
+    #line: "export {{ item.var }}='{{ item.val }}'"
+  #with_items:
+    #- var: GALAXY_CONFIG_DIR
+      #val: "{{ galaxy_config_dir }}"
+    #- var: GALAXY_MUTABLE_CONFIG_DIR
+      #val: "{{ galaxy_mutable_config_dir }}"
+    #- var: GALAXY_LOG_DIR
+      #val: "{{ galaxy_log_dir }}"
+    #- var: GALAXY_ROOT
+      #val: "{{ galaxy_server_dir }}"
+    #- var: GALAXY_CONFIG_FILE
+      #val: "{{ galaxy_config_dir }}/galaxy.ini"
