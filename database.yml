@@ -1,0 +1,27 @@
+
+---
+- name: UseGalaxy.eu
+  hosts: database
+  become: true
+  become_user: root
+  vars:
+    postgresql_objects_users: 
+      - name: galaxy
+        password: "{{ _galaxy_db_pass }}"
+    postgresql_objects_databases:
+      - name: galaxy
+      - name: galaxy_tools
+  vars_files:
+    - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
+  pre_tasks:
+    - name: instal acl and psycopg2 packages
+      package:
+        name: [ 'acl', 'python3-psycopg2' ]
+      become: yes
+  roles:
+
+    - galaxyproject.postgresql
+
+    - role: natefoo.postgresql_objects
+      become: true
+      become_user: postgres

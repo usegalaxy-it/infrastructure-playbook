@@ -25,6 +25,11 @@ collections:
     version: 7.10.0
     source: https://galaxy.ansible.com
     type: galaxy
+    ##add for database
+  - name: community.postgresql
+    version: 1.4.0 
+    source: https://galaxy.ansible.com
+    type: galaxy
 
 roles:
   - name: dev-sec.os-hardening
@@ -103,3 +108,6 @@ roles:
     version: 0.0.1
   - name: usegalaxy_eu.gie_proxy
     version: 0.0.2
+    ##add for db
+  - name: natefoo.postgresql_objects
+ 

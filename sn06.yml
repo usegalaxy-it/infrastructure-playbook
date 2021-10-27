@@ -41,9 +41,12 @@
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
   handlers:
+          #- name: Restart Galaxy
+          #  shell: |
+          #    echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
     - name: Restart Galaxy
       shell: |
-        echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+        echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
   pre_tasks:
     - name: Install Dependencies
       package:

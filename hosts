@@ -74,3 +74,6 @@ ansible_ssh_user=centos
 
 [central-manager]
 manager.vgcn.galaxyproject.eu ansible_ssh_user=root
+
+[database]
+172.30.16.74 ansible_ssh_user=ubuntu
