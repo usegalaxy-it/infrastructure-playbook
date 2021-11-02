@@ -1,0 +1,20 @@
+---
+- name: UseGalaxy.eu
+  hosts: sn06
+  become: true
+  become_user: root
+  tasks:
+    - name: Create Galaxy DB
+      command: "{{ galaxy_venv_path }}/bin/python {{ galaxy_install_path }}/scripts/create_db.py -c {{ galaxy_config_file }}"
+      args:
+        chdir: "{{ galaxy_install_path }}/"
+    
+    - name: Create Galaxy install DB
+      command: "{{ galaxy_venv_path }}/bin/python {{ galaxy_install_path }}/scripts/create_db.py -c {{ galaxy_config_file }} install"
+      args:
+        chdir: '{{ galaxy_install_path }}/'
+    
+    - name: Update Galaxy DB
+      command: "{{ galaxy_venv_path }}/bin/python {{ galaxy_install_path }}/scripts/manage_db.py -c {{ galaxy_config_file }} upgrade install"
+      args:
+        chdir: '{{ galaxy_install_path}}/'

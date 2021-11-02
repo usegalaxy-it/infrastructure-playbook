@@ -108,6 +108,9 @@ roles:
     version: 0.0.1
   - name: usegalaxy_eu.gie_proxy
     version: 0.0.2
+  - name: usegalaxy_eu.fs_maintenance
+    version: 0.0.2
     ##add for db
   - name: natefoo.postgresql_objects
+
  

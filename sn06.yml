@@ -1,5 +1,5 @@
 ---
-- name: UseGalaxy.eu
+- name: Galaxy
   hosts: sn06
   become: true
   become_user: root
@@ -44,13 +44,13 @@
           #- name: Restart Galaxy
           #  shell: |
           #    echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
-    - name: Restart Galaxy
+    - name: Restart Galaxy #it temporally removed " sudo -u galaxy /usr/bin/galaxy-sync-to-nfs "
       shell: |
         echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
   pre_tasks:
     - name: Install Dependencies
       package:
-        name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python36' ]
+        name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python36','make' ] #itaddmake
       become: yes
     - name: Set default version of Python
       alternatives:
@@ -60,18 +60,19 @@
       selinux:
         policy: targeted
         state: permissive
-    - name: Install epel-release and dnf-plugins-core on centos8 
+    - name: Install epel-release and dnf-plugins-core for installing powertools on centos8 #it add
       package:
-        name: [ 'epel-release', 'dnf-plugins-core',  ]
+        name: [ 'epel-release', 'dnf-plugins-core' ]
       become: yes
-    - name: enable powertools
+    - name: enable powertools #itadd
       shell:
         cmd: yum config-manager --set-enabled powertools 
       become: yes
-    - name: Install make on centos8 
-      package:
-        name: ['make', 'epel-release', 'dnf-plugins-core',  ]
-      become: yes
+    - name: change 
+      ansible.posix.sysctl:
+        name: net.core.somaxconn
+        value: '1024'
+        state: present
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:

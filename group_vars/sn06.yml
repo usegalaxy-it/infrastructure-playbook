@@ -7,181 +7,181 @@ docker_users:
 
 # Autofs
 usegalaxy_eu_autofs_mounts:
- - data
- - discontinued
- - usrlocal
+        # - data
+        # - discontinued
+        # - usrlocal
 
 data_conf:
-  - 0       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data3/galaxy/net/data/&
-  - 1       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-  - 2       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-  - 3       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-  - 4       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-  - 5       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
-  - 6       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-  - 7       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
-  - dnb01   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-  - dnb02   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-  - dnb03   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-  - dnb04   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-  - dnb05   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&
-  - dnb06   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&
-  - db      -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
-  - gxtst   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy-i2
-  - gxkey   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/main
-  - jwd     -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/&
+        #  - 0       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data3/galaxy/net/data/&
+        #  - 1       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+        #  - 2       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+        #  - 3       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+        #  - 4       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+        #  - 5       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
+        #  - 6       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+        #  - 7       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
+        #  - dnb01   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+        #  - dnb02   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+        #  - dnb03   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+        #  - dnb04   -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+        #  - dnb05   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&
+        #  - dnb06   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/&
+        #  - db      -rw,hard,nosuid      ufr-dyn.isi1.public.ads.uni-freiburg.de:/ifs/isi1/ufr/bronze/nfs/denbi/&
+        #  - gxtst   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy-i2
+        #  - gxkey   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/galaxy-sync/main
+        #  - jwd     -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/ws01/&
 
 discontinued_conf:
-  - 1       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
-  - 2       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data4/galaxy/net/data/&
-  - 3       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data5/galaxy/net/data/&
-  - 4       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
-  - 6       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
-  - 7       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
-  - db      -rw,hard,nosuid      sn02.bi.uni-freiburg.de:/export/fdata1/galaxy/net/data/db
-  - gxmnt   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy
-  - gxnew   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy-i1
-  - gxkey   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy-i3
-  - tools   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/tools
+        #  - 1       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
+        #  - 2       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data4/galaxy/net/data/&
+        #  - 3       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data5/galaxy/net/data/&
+        #  - 4       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
+        #  - 6       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
+        #  - 7       -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/data/&
+        #  - db      -rw,hard,nosuid      sn02.bi.uni-freiburg.de:/export/fdata1/galaxy/net/data/db
+        #  - gxmnt   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy
+        #  - gxnew   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy-i1
+        #  - gxkey   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/galaxy-i3
+        #  - tools   -rw,hard,nosuid      sn03.bi.uni-freiburg.de:/export/galaxy1/system/tools
 
 usrlocal_conf:
-  - /usr/local/tools   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/tools
+        #  - /usr/local/tools   -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/tools
 
 # Telegraf
-telegraf_agent_hostname: "{{ hostname }}"
-telegraf_agent_version: 1.17.2
-custom_telegraf_env: "/usr/bin/env GDPR_MODE=1 PGUSER={{ galaxy_user.name }} PGHOST={{ postgres_host }} GALAXY_ROOT={{ galaxy_server_dir }} GALAXY_CONFIG_FILE={{ galaxy_config_dir }}/galaxy.ini GALAXY_LOG_DIR={{ galaxy_log_dir }} GXADMIN_PYTHON={{ galaxy_venv_dir }}/bin/python"
-telegraf_plugins_extra:
-  postgres:
-    plugin: "postgresql"
-    config:
-      - address = "{{ galaxy_db_connection }}"
-      - databases = ["galaxy", "galaxy-test", "apollo", "chado"]
-
-  listen_galaxy_routes:
-    plugin: "statsd"
-    config:
-      - service_address = ":8125"
-      - percentiles = [90]
-      - metric_separator = "."
-      - allowed_pending_messages = 10000
-      - percentile_limit = 100
-
-  #monitor_condor_queue_split:
-    #plugin: "exec"
-    #config:
-       ## TODO: sudoers rule?
-      #- commands = ["sudo /usr/bin/monitor-condor-queue-split"]
-      #- timeout = "10s"
-      #- data_format = "influx"
-      #- interval = "15s"
-
-  monitor_condor_queue:
-    plugin: "exec"
-    config:
-      - commands = ["sudo /usr/bin/monitor-condor-queue"]
-      - timeout = "10s"
-      - data_format = "influx"
-      - interval = "1m"
-
-  monitor_condor_util:
-    plugin: "exec"
-    config:
-      - commands = ["sudo /usr/bin/monitor-condor-utilisation"]
-      - timeout = "10s"
-      - data_format = "influx"
-      - interval = "1m"
-
-  monitor_nfsstat:
-    plugin: "exec"
-    config:
-      - commands = ["/usr/bin/nfsstat-influx"]
-      - timeout = "10s"
-      - data_format = "influx"
-      - interval = "15s"
-
-  # Some custom galaxy monitoring stuff
-  galaxy_uploaded:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery upload-gb-in-past-hour"]
-      - timeout = "120s"
-      - data_format = "influx"
-      - interval = "1h"
-  galaxy_lastlog:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin uwsgi lastlog"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "15s"
-  galaxy_jobs_queued:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery jobs-queued"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-  galaxy_jobs_queued_internal:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery jobs-queued-internal-by-handler"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-  galaxy_jobs_queue_overview:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery queue-overview --short-tool-id"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-  galaxy_oidc:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery users-with-oidc"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-  galaxy_workflow:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery workflow-invocation-status"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-  galaxy_workflow_totals:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery workflow-invocation-totals"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-  galaxy_active_users:
-    plugin: "exec"
-    config:
-      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin uwsgi active-users"]
-      - timeout = "15s"
-      - data_format = "influx"
-      - interval = "1m"
-
-  postgres_extra:
-    plugin: "exec"
-    config:
-      - commands = [
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-cache-hit",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-index-size",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-index-usage",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-table-bloat",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-table-size",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-unused-indexes",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-vacuum-stats",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-stat-bgwriter",
-          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-stat-user-tables",
-        ]
-      - timeout = "30s"
-      - data_format = "influx"
-      - interval = "1m"
+#telegraf_agent_hostname: "{{ hostname }}"
+#telegraf_agent_version: 1.17.2
+#custom_telegraf_env: "/usr/bin/env GDPR_MODE=1 PGUSER={{ galaxy_user.name }} PGHOST={{ postgres_host }} GALAXY_ROOT={{ galaxy_server_dir }} GALAXY_CONFIG_FILE={{ galaxy_config_dir }}/galaxy.ini GALAXY_LOG_DIR={{ galaxy_log_dir }} GXADMIN_PYTHON={{ galaxy_venv_dir }}/bin/python"
+#telegraf_plugins_extra:
+#  postgres:
+#    plugin: "postgresql"
+#    config:
+#      - address = "{{ galaxy_db_connection }}"
+#      - databases = ["galaxy", "galaxy-test", "apollo", "chado"]
+#
+#  listen_galaxy_routes:
+#    plugin: "statsd"
+#    config:
+#      - service_address = ":8125"
+#      - percentiles = [90]
+#      - metric_separator = "."
+#      - allowed_pending_messages = 10000
+#      - percentile_limit = 100
+#
+#  #monitor_condor_queue_split:
+#    #plugin: "exec"
+#    #config:
+#       ## TODO: sudoers rule?
+#      #- commands = ["sudo /usr/bin/monitor-condor-queue-split"]
+#      #- timeout = "10s"
+#      #- data_format = "influx"
+#      #- interval = "15s"
+#
+#  monitor_condor_queue:
+#    plugin: "exec"
+#    config:
+#      - commands = ["sudo /usr/bin/monitor-condor-queue"]
+#      - timeout = "10s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#
+#  monitor_condor_util:
+#    plugin: "exec"
+#    config:
+#      - commands = ["sudo /usr/bin/monitor-condor-utilisation"]
+#      - timeout = "10s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#
+#  monitor_nfsstat:
+#    plugin: "exec"
+#    config:
+#      - commands = ["/usr/bin/nfsstat-influx"]
+#      - timeout = "10s"
+#      - data_format = "influx"
+#      - interval = "15s"
+#
+#  # Some custom galaxy monitoring stuff
+#  galaxy_uploaded:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery upload-gb-in-past-hour"]
+#      - timeout = "120s"
+#      - data_format = "influx"
+#      - interval = "1h"
+#  galaxy_lastlog:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin uwsgi lastlog"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "15s"
+#  galaxy_jobs_queued:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery jobs-queued"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#  galaxy_jobs_queued_internal:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery jobs-queued-internal-by-handler"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#  galaxy_jobs_queue_overview:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery queue-overview --short-tool-id"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#  galaxy_oidc:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery users-with-oidc"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#  galaxy_workflow:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery workflow-invocation-status"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#  galaxy_workflow_totals:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin iquery workflow-invocation-totals"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#  galaxy_active_users:
+#    plugin: "exec"
+#    config:
+#      - commands = ["{{ custom_telegraf_env }} /usr/bin/gxadmin uwsgi active-users"]
+#      - timeout = "15s"
+#      - data_format = "influx"
+#      - interval = "1m"
+#
+#  postgres_extra:
+#    plugin: "exec"
+#    config:
+#      - commands = [
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-cache-hit",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-index-size",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-index-usage",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-table-bloat",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-table-size",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-unused-indexes",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-vacuum-stats",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-stat-bgwriter",
+#          "{{ custom_telegraf_env }} /usr/bin/gxadmin iquery pg-stat-user-tables",
+#        ]
+#      - timeout = "30s"
+#      - data_format = "influx"
+#      - interval = "1m"
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -230,12 +230,12 @@ certbot_share_key_users:
     - nginx
 
 # AWS Credentials for certbot-route53
-aws_cli_credentials:
-  - access_key: "{{ aws_credentials.certbot.AWS_ACCESS_KEY }}"
-    secret_key: "{{ aws_credentials.certbot.AWS_SECRET_KEY }}"
-    homedir: /root
-    owner: root
-    group: root
+#aws_cli_credentials:
+#  - access_key: "{{ aws_credentials.certbot.AWS_ACCESS_KEY }}"
+#    secret_key: "{{ aws_credentials.certbot.AWS_SECRET_KEY }}"
+#    homedir: /root
+#    owner: root
+#    group: root
 
 # rsync to nfs
 galaxy_nfs_location: /data/gxkey
@@ -322,17 +322,17 @@ galaxy_uwsgi_config_file_basename: uwsgi.ini
 galaxy_systemd_zergling_uwsgi_config_file: "{{ galaxy_config_dir }}/uwsgi.ini"
 
 # HTCondor
-condor_host: "condor-cm.galaxyproject.eu"
-condor_allow_write: "10.5.68.0/24, 132.230.68.0/24, 132.230.223.0/24, *.bi.uni-freiburg.de"
+condor_host: "172.30.16.75"
+condor_allow_write: "*"
 condor_daemons:
     - MASTER
     - SCHEDD
-condor_allow_negotiator: "132.230.223.239,$(CONDOR_HOST)"
+condor_allow_negotiator: "$(ALLOW_WRITE)"
 condor_allow_administrator: "$(ALLOW_NEGOTIATOR)"
 
 condor_system_periodic_hold: "{{ 30 * 24 * 60 * 60}}"
 condor_system_periodic_remove:  "{{ 2 * 24 * 60 * 60}}"
-condor_network_interface: ens802f0.223
+condor_network_interface: eth1 
 condor_extra: |
   MASTER_UPDATE_INTERVAL = 150
   SCHEDD_INTERVAL = 60
@@ -354,7 +354,7 @@ gie_proxy_verbose: true
 
 # gxadmin
 postgres_user: galaxy
-postgres_host: sn03.bi.uni-freiburg.de
+postgres_host: 172.30.16.74
 postgres_port: 5432
 
 # Slurp script
@@ -446,7 +446,7 @@ galaxy_dirs:
   - "{{ galaxy_tour_dir }}"
   - "{{ galaxy_log_dir }}"
 
-galaxy_instance_hostname: usegalaxy.eu
+galaxy_instance_hostname: cloud-90-147-102-12.cloud.ba.infn.it
 galaxy_config_style: ini
 
 galaxy_repo: 'https://github.com/usegalaxy-eu/galaxy.git'
@@ -476,184 +476,184 @@ galaxy_jobconf:
           load: galaxy.jobs.runners.condor:CondorJobRunner
         - id: local
           load: galaxy.jobs.runners.local:LocalJobRunner
-        - id: pulsar_embedded
-          load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
-        - id: pulsar_eu_cz
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_cz:{{ rabbitmq_password_galaxy_cz }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: _default_
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_it01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_it01:{{ rabbitmq_password_galaxy_it01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_it02
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_it02:{{ rabbitmq_password_galaxy_it02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it02?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_it03
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_it03:{{ rabbitmq_password_galaxy_it03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it03?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_de01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_de01:{{ rabbitmq_password_galaxy_de01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_de02
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_de02:{{ rabbitmq_password_galaxy_de02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de02?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_de03
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_de03:{{ rabbitmq_password_galaxy_de03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de03?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_pt01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_pt01:{{ rabbitmq_password_galaxy_pt01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_pt01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_be01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_be01:{{ rabbitmq_password_galaxy_be01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_be01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_uk01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_uk01:{{ rabbitmq_password_galaxy_uk01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_uk01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_test
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_test:{{ rabbitmq_password_galaxy_test }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_test?ssl=1"
-            galaxy_url: https://usegalaxy.eu
-            manager: _default_
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_fr01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_fr01:{{ rabbitmq_password_galaxy_fr01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fr01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_fi01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_fi01:{{ rabbitmq_password_galaxy_fi01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fi01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_no01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_no01:{{ rabbitmq_password_galaxy_no01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_no01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_es01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_es01:{{ rabbitmq_password_galaxy_es01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_es01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_cz01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_cz01:{{ rabbitmq_password_galaxy_cz01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_embedded
+          #          load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
+          #        - id: pulsar_eu_cz
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_cz:{{ rabbitmq_password_galaxy_cz }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: _default_
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_it01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_it01:{{ rabbitmq_password_galaxy_it01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_it02
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_it02:{{ rabbitmq_password_galaxy_it02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it02?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_it03
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_it03:{{ rabbitmq_password_galaxy_it03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it03?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_de01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_de01:{{ rabbitmq_password_galaxy_de01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_de02
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_de02:{{ rabbitmq_password_galaxy_de02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de02?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_de03
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_de03:{{ rabbitmq_password_galaxy_de03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de03?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_pt01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_pt01:{{ rabbitmq_password_galaxy_pt01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_pt01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_be01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_be01:{{ rabbitmq_password_galaxy_be01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_be01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_uk01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_uk01:{{ rabbitmq_password_galaxy_uk01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_uk01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_test
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_test:{{ rabbitmq_password_galaxy_test }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_test?ssl=1"
+          #            galaxy_url: https://usegalaxy.eu
+          #            manager: _default_
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_fr01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_fr01:{{ rabbitmq_password_galaxy_fr01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fr01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_fi01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_fi01:{{ rabbitmq_password_galaxy_fi01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fi01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_no01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_no01:{{ rabbitmq_password_galaxy_no01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_no01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_es01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_es01:{{ rabbitmq_password_galaxy_es01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_es01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_cz01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_cz01:{{ rabbitmq_password_galaxy_cz01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
     default_destination: gateway_1x
     destinations:
         - id: local
@@ -900,28 +900,28 @@ galaxy_jobconf:
           #destination: 24cores_15G_BLAST
         #- id: ncbi_rpsblast_wrapper
           #destination: 24cores_15G_BLAST
-    resources:
-      - id: usegpu
-        names: gpu
-    limits:
-      - type: 'walltime'
-        value: '148:00:00'
-      - type: 'output_size'
-        value: '300GB'
-      - type: 'registered_user_concurrent_jobs'
-        value: '500'
-      - type: 'anonymous_user_concurrent_jobs'
-        value: '5'
-      - type: 'destination_user_concurrent_jobs'
-        id: 'sh_fdid_condor_docker_ie_interactive'
-        value: '10'
-      - type: 'destination_user_concurrent_jobs'
-        id: 'sh_fdid_condor_intensive_jobs'
-        value: '10'
-      # We do not have a fixed name for a puslar endpoint, would that make sense?
-      #- type: 'destination_user_concurrent_jobs'
-      #  id: 'destination_name_of_pulsar_endpoint'
-      #  value: '1000'
+          #    resources:
+          #      - id: usegpu
+          #        names: gpu
+          #    limits:
+          #      - type: 'walltime'
+          #        value: '148:00:00'
+          #      - type: 'output_size'
+          #        value: '300GB'
+          #      - type: 'registered_user_concurrent_jobs'
+          #        value: '500'
+          #      - type: 'anonymous_user_concurrent_jobs'
+          #        value: '5'
+          #      - type: 'destination_user_concurrent_jobs'
+          #        id: 'sh_fdid_condor_docker_ie_interactive'
+          #        value: '10'
+          #      - type: 'destination_user_concurrent_jobs'
+          #        id: 'sh_fdid_condor_intensive_jobs'
+          #        value: '10'
+          #      # We do not have a fixed name for a puslar endpoint, would that make sense?
+          #      #- type: 'destination_user_concurrent_jobs'
+          #      #  id: 'destination_name_of_pulsar_endpoint'
+          #      #  value: '1000'
 
 galaxy_config: "{{ galaxy_config_hash }}"
 
