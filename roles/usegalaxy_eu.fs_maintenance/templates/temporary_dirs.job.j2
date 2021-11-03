@@ -1,0 +1,8 @@
+Universe = vanilla
+Executable = {{ fsm_maintenance_dir }}/temporary_dirs.sh
+Log = {{ fsm_maintenance_dir }}/maintenance_temporary_dirs.$(process).log
+Output = {{ fsm_maintenance_dir }}/maintenance_temporary_dirs.$(process).out
+Error = {{ fsm_maintenance_dir }}/maintenance_temporary_dirs.$(process).err
+request_cpus = 1
+Requirements = GalaxyGroup == "maintenance"
+Queue

@@ -90,6 +90,12 @@
       package:
         name: [ 'cairo', 'cairo-devel', 'pango-devel' ]
       become: yes
+    - name: Install compiling nginx dependencies
+      package:
+        name: [ 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed' ]
+      become: yes
+    - name: Run a script with arguments
+      script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
   roles:
     - hostname
 

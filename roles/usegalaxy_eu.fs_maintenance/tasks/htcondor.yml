@@ -1,0 +1,39 @@
+---
+
+- name: Deploy HTCondor job files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.group }}"
+    mode: 0655
+  loop:
+    - "{{ fsm_htcondor_job_files.temporary_dirs }}"
+    - "{{ fsm_htcondor_job_files.upload_dirs }}"
+    - "{{ fsm_htcondor_job_files.job_working_dirs }}"
+  when: "fsm_htcondor_enable | bool"
+
+- name: Deploy HTCondor submitter
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.group }}"
+    mode: 0755
+  loop:
+    - "{{ fsm_htcondor_submitter }}"
+  when: "fsm_htcondor_enable | bool"
+
+- name: Add htcondor tasks to cron
+  ansible.builtin.cron:
+    name: "{{ item.name }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    dom: "{{ item.dom }}"
+    month: "{{ item.month }}"
+    dow: "{{ item.dow }}"
+    job: "{{ item.job }}"
+    user: "{{ item.user }}"
+  loop:
+    - "{{ fsm_htcondor_cron_tasks.submitter }}"
+  when: "item.enable | bool"

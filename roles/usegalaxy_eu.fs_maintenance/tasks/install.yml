@@ -1,0 +1,12 @@
+---
+- name: Install tmpwatch (Debian).
+  ansible.builtin.package:
+    name: "{{ tmpwatch_package.debian }}"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install tmpwatch (RedHat).
+  ansible.builtin.package:
+    name: "{{ tmpwatch_package.redhat }}"
+    state: present
+  when: ansible_os_family == 'RedHat'

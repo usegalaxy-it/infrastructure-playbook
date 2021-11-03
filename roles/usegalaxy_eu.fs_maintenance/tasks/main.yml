@@ -1,0 +1,21 @@
+
+# check if fsm_maintenance_dir exists
+- name: check if fsm_maintenance_dir exists
+  ansible.builtin.file:
+    path: "{{ fsm_maintenance_dir }}"
+    state: directory
+    mode: '0755'
+
+
+- name: Import install tasks
+  import_tasks: install.yml
+
+- name: Import deploy tasks
+  import_tasks: deploy.yml
+
+- name: Import cron tasks
+  import_tasks: cron.yml
+
+- name: Include htcondor tasks
+  include_tasks: htcondor.yml
+  when: fsm_htcondor_enable | bool

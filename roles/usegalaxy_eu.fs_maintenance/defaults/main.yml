@@ -1,0 +1,100 @@
+---
+tmpwatch_package:
+  debian: tmpreaper
+  redhat: tmpwatch
+
+fsm_maintenance_dir: "/opt/fsm"
+
+fsm_galaxy_user:
+  username: galaxy
+  groupname: galaxy
+
+fsm_intervals:
+  short: "3d"
+  medium: "7d"
+  long: "31d"
+
+fsm_scripts:
+  temporary_dirs:
+    enable: True
+    src: 'temporary_dirs.sh.j2'
+    dst: "{{ fsm_maintenance_dir }}/temporary_dirs.sh"
+    user: "{{ fsm_galaxy_user.username }}"
+    group: "{{ fsm_galaxy_user.groupname }}"
+    paths: []
+    time: "{{ fsm_intervals.long }}"
+  upload_dirs:
+    enable: True
+    src: 'uploads.sh.j2'
+    dst: "{{ fsm_maintenance_dir }}/uploads.sh"
+    user: "{{ fsm_galaxy_user.username }}"
+    group: "{{ fsm_galaxy_user.groupname }}"
+    paths: []
+    time: "{{ fsm_intervals.medium }}"
+  job_working_dirs:
+    enable: True
+    src: 'job_working_dir.sh.j2'
+    dst: "{{ fsm_maintenance_dir }}/job_working_dir.sh"
+    user: "{{ fsm_galaxy_user.username }}"
+    group: "{{ fsm_galaxy_user.groupname }}"
+    paths: []
+    time: "{{ fsm_intervals.long }}"
+
+fsm_cron_tasks:
+  docker:
+    enable: True
+    name: "Docker clean up"
+    minute: 30
+    hour: 2
+    dom: "*"
+    month: "*"
+    dow: "*"
+    job: "docker system prune -f > /dev/null"
+    user: "{{ fsm_galaxy_user.username }}"
+  gxadmin:
+    enable: True
+    name: "Gxadmin Galaxy clean up"
+    minute: 0
+    hour: "*/6"
+    dom: "*"
+    month: "*"
+    dow: "*"
+    job: "/usr/bin/gxadmin galaxy cleanup 60"
+    user: "{{ fsm_galaxy_user.username }}"
+
+fsm_htcondor_enable: False
+
+fsm_htcondor_submitter:
+  src: 'htcondor_crontab_scheduling.sh.j2'
+  dst: "{{ fsm_maintenance_dir }}/htcondor_crontab_scheduling_submitter.sh"
+  user: "{{ fsm_galaxy_user.username }}"
+  group: "{{ fsm_galaxy_user.groupname }}"
+
+fsm_htcondor_job_files:
+  temporary_dirs:
+    src: "temporary_dirs.job.j2"
+    dst: "{{ fsm_maintenance_dir }}/temporary_dirs.job"
+    user: "{{ fsm_galaxy_user.username }}"
+    group: "{{ fsm_galaxy_user.groupname }}"
+  upload_dirs:
+    src: "uploads.job.j2"
+    dst: "{{ fsm_maintenance_dir }}/uploads.job"
+    user: "{{ fsm_galaxy_user.username }}"
+    group: "{{ fsm_galaxy_user.groupname }}"
+  job_working_dirs:
+    src: "job_working_dir.job.j2"
+    dst: "{{ fsm_maintenance_dir }}/job_working_dir.job"
+    user: "{{ fsm_galaxy_user.username }}"
+    group: "{{ fsm_galaxy_user.groupname }}"
+
+fsm_htcondor_cron_tasks:
+  submitter:
+    enable: True
+    name: "Condor maintenance tasks submitter"
+    minute: 0
+    hour: 23
+    dom: "*"
+    month: "*"
+    dow: "*"
+    job: "{{ fsm_maintenance_dir }}/htcondor_crontab_scheduling_submitter.sh"
+    user: "{{ fsm_galaxy_user.username }}"

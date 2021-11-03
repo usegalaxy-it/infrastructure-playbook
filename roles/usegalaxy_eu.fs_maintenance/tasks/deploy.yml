@@ -1,0 +1,13 @@
+---
+- name: Deploy maintenance scripts
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.group }}"
+    mode: 0755
+  loop:
+    - "{{ fsm_scripts.temporary_dirs }}"
+    - "{{ fsm_scripts.upload_dirs }}"
+    - "{{ fsm_scripts.job_working_dirs }}"
+  when: "item.enable | bool and item.paths"

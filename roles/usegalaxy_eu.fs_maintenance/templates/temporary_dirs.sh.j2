@@ -1,0 +1,2 @@
+#!/bin/bash
+tmpwatch -v -a --mtime --dirmtime {{ fsm_scripts.temporary_dirs.time }} {{ fsm_scripts.temporary_dirs.paths | join(' ') }}

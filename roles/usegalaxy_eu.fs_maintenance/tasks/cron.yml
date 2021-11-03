@@ -1,0 +1,15 @@
+---
+- name: Add maintenance tasks to cron
+  ansible.builtin.cron:
+    name: "{{ item.name }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    dom: "{{ item.dom }}"
+    month: "{{ item.month }}"
+    dow: "{{ item.dow }}"
+    job: "{{ item.job }}"
+    user: "{{ item.user }}"
+  loop:
+    - "{{ fsm_cron_tasks.docker }}"
+    - "{{ fsm_cron_tasks.gxadmin }}"
+  when: "item.enable | bool"
