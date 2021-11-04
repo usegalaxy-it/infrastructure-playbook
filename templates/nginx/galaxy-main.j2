@@ -75,13 +75,13 @@ server {
 		add_header X-Frame-Options SAMEORIGIN;
 		add_header X-Content-Type-Options nosniff;
 
-		# CORS
-		if ($http_origin ~ "^https?://(covid19map\.elixir-luxembourg\.org|www\.bx\.psu\.edu)$") {
-			add_header Access-Control-Allow-Origin $http_origin;
-			add_header Access-Control-Allow-Methods 'GET';
-			add_header Access-Control-Expose-Headers 'Content-Length,Content-Range';
-			add_header Access-Control-Allow-Headers 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-		}
+#		# CORS
+#		if ($http_origin ~ "^https?://(covid19map\.elixir-luxembourg\.org|www\.bx\.psu\.edu)$") {
+#			add_header Access-Control-Allow-Origin $http_origin;
+#			add_header Access-Control-Allow-Methods 'GET';
+#			add_header Access-Control-Expose-Headers 'Content-Length,Content-Range';
+#			add_header Access-Control-Allow-Headers 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+#		}
 	}
 
 	location /_upload {
@@ -134,24 +134,28 @@ server {
 	location /static {
 		alias {{ galaxy_server_dir }}/static;
 		expires 24h;
-		location /static/vgcn {
-				autoindex on;
-				alias /data/dnb01/vgcn/;
-		}
+#		location /static/vgcn {
+#				autoindex on;
+#				alias /data/dnb01/vgcn/;
+#		}
 	}
+        location /static/style {
+               alias /home/galaxy/galaxy/server/static/style;
+               expires 24h;
+	       }
 
-	location ~ /static/dist/base.css {
-		root /opt/multisite-css/;
-		try_files /$host.css /usegalaxy.eu.css =404;
-	}
-
-	location ~ /static/dist/hicexplorer.png {
-		alias /opt/multisite-css/hicexplorer.png;
-	}
-
-	location ~ /static/dist/annotation.png {
-		alias /opt/multisite-css/annotation.png;
-	}
+#	location ~ /static/dist/base.css {
+#		root /opt/multisite-css/;
+#		try_files /$host.css /usegalaxy.eu.css =404;
+#	}
+#
+#	location ~ /static/dist/hicexplorer.png {
+#		alias /opt/multisite-css/hicexplorer.png;
+#	}
+#
+#	location ~ /static/dist/annotation.png {
+#		alias /opt/multisite-css/annotation.png;
+#	}
 
 	location /robots.txt {
 		alias {{ galaxy_server_dir }}/static/robots.txt;
@@ -194,25 +198,25 @@ server {
 
 	{{ gapars_nginx_config }}
 
-	location /apollo/ {
-		proxy_pass http://apollo.internal.galaxyproject.eu/apollo/;
-		proxy_http_version 1.1;
-		proxy_set_header Upgrade $http_upgrade;
-		proxy_set_header Connection $connection_upgrade;
-		proxy_set_header Host $host;
-	}
-
-	location /apollo-permapol/ {
-		proxy_pass http://apollo.internal.galaxyproject.eu/apollo-permapol/;
-		proxy_http_version 1.1;
-		proxy_set_header Upgrade $http_upgrade;
-		proxy_set_header Connection $connection_upgrade;
-		proxy_set_header Host $host;
-	}
-
-	location /apollo_api/ {
-		proxy_pass http://apollo.internal.galaxyproject.eu/apollo_api/;
-	}
+#	location /apollo/ {
+#		proxy_pass http://apollo.internal.galaxyproject.eu/apollo/;
+#		proxy_http_version 1.1;
+#		proxy_set_header Upgrade $http_upgrade;
+#		proxy_set_header Connection $connection_upgrade;
+#		proxy_set_header Host $host;
+#	}
+#
+#	location /apollo-permapol/ {
+#		proxy_pass http://apollo.internal.galaxyproject.eu/apollo-permapol/;
+#		proxy_http_version 1.1;
+#		proxy_set_header Upgrade $http_upgrade;
+#		proxy_set_header Connection $connection_upgrade;
+#		proxy_set_header Host $host;
+#	}
+#
+#	location /apollo_api/ {
+#		proxy_pass http://apollo.internal.galaxyproject.eu/apollo_api/;
+#	}
 
 	location /external/phdcomics/ {
 		proxy_pass http://phdcomics.com/;
@@ -222,57 +226,57 @@ server {
 		proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
 	}
 
-	location /quota-increase {
-		return 301 https://docs.google.com/forms/d/e/1FAIpQLSf9w2MOS6KOlu9XdhRSDqWnCDkzoVBqHJ3zH_My4p8D8ZgkIQ/viewform;
-	}
-
-	# TIaaS 2
-	location /tiaas {
-		uwsgi_pass 127.0.0.1:5002;
-		uwsgi_param UWSGI_SCHEME $scheme;
-		include uwsgi_params;
-	}
-
-	location /tiaas/static {
-		alias /opt/tiaas2/static;
-	}
-
-	location /join-training {
-		uwsgi_pass 127.0.0.1:5002;
-		uwsgi_param UWSGI_SCHEME $scheme;
-		include uwsgi_params;
-	}
-
-	# For GTN in Galaxy Webhook
-	location /training-material/ {
-		proxy_pass https://training.galaxyproject.org/training-material/;
-	}
-
-	location /request-tiaas {
-		return 301 https://usegalaxy.eu/tiaas/new/;
-	}
-
-	location /freiburg {
-		return 301 https://galaxyproject.eu/freiburg/;
-	}
-	location /erasmusmc {
-		return 301 https://galaxyproject.eu/erasmusmc/;
-	}
-	location /pasteur {
-		return 301 https://galaxyproject.eu/pasteur/;
-	}
-	location /belgium {
-		return 301 https://galaxyproject.eu/belgium/;
-	}
-	location /about {
-		return 301 https://galaxyproject.eu/about;
-	}
-	location /people {
-		return 301 https://galaxyproject.eu/people;
-	}
-	location /terms {
-		return 301 https://galaxyproject.eu/gdpr;
-	}
+#	location /quota-increase {
+#		return 301 https://docs.google.com/forms/d/e/1FAIpQLSf9w2MOS6KOlu9XdhRSDqWnCDkzoVBqHJ3zH_My4p8D8ZgkIQ/viewform;
+#	}
+#
+#	# TIaaS 2
+#	location /tiaas {
+#		uwsgi_pass 127.0.0.1:5002;
+#		uwsgi_param UWSGI_SCHEME $scheme;
+#		include uwsgi_params;
+#	}
+#
+#	location /tiaas/static {
+#		alias /opt/tiaas2/static;
+#	}
+#
+#	location /join-training {
+#		uwsgi_pass 127.0.0.1:5002;
+#		uwsgi_param UWSGI_SCHEME $scheme;
+#		include uwsgi_params;
+#	}
+#
+#	# For GTN in Galaxy Webhook
+#	location /training-material/ {
+#		proxy_pass https://training.galaxyproject.org/training-material/;
+#	}
+#
+#	location /request-tiaas {
+#		return 301 https://usegalaxy.eu/tiaas/new/;
+#	}
+#
+#	location /freiburg {
+#		return 301 https://galaxyproject.eu/freiburg/;
+#	}
+#	location /erasmusmc {
+#		return 301 https://galaxyproject.eu/erasmusmc/;
+#	}
+#	location /pasteur {
+#		return 301 https://galaxyproject.eu/pasteur/;
+#	}
+#	location /belgium {
+#		return 301 https://galaxyproject.eu/belgium/;
+#	}
+#	location /about {
+#		return 301 https://galaxyproject.eu/about;
+#	}
+#	location /people {
+#		return 301 https://galaxyproject.eu/people;
+#	}
+#	location /terms {
+#		return 301 https://galaxyproject.eu/gdpr;
+#	}
 
 	resolver 8.8.8.8 8.8.4.4 valid=300s;
 	resolver_timeout 5s;

@@ -5,7 +5,7 @@
   become_user: root
   vars:
     # The full internal name.
-    hostname: cloud-90-147-102-12.cloud.ba.infn.it
+    hostname: cloud-212-189-205-88.cloud.ba.infn.it
     # The nginx user needed into the galaxyproject.nginx role
     nginx_conf_user: galaxy
     # This server has multiple CNAMEs that are important. Additionally it
@@ -73,6 +73,16 @@
         name: net.core.somaxconn
         value: '1024'
         state: present
+    - name: Install compiling nginx dependencies
+      package:
+        name: ['openssl-devel', 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed', 'pcre-devel' ]
+      become: yes
+    - name: Run a script with arguments
+      script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
+      args:
+        executable: /usr/bin/bash
+        chdir: /home/centos
+
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:
@@ -90,12 +100,21 @@
       package:
         name: [ 'cairo', 'cairo-devel', 'pango-devel' ]
       become: yes
-    - name: Install compiling nginx dependencies
-      package:
-        name: [ 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed' ]
-      become: yes
-    - name: Run a script with arguments
-      script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
+    #it
+    - name: create local tool directory and give right permissions
+      file:
+        path: /usr/local/tools
+        owner: galaxy
+        group: galaxy
+        state: directory
+        mode: '0755'
+    - name: create local tool directory and give right permissions
+      file:
+        path: /opt/galaxy/server/compliance.log
+        owner: galaxy
+        group: galaxy
+        state: touch
+        mode: '0755'
   roles:
     - hostname
 
@@ -187,7 +206,7 @@
         galaxy_build_client: yes
 
     ## Extras!
-   #T - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
+    #T - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
       #T- hxr.install-to-venv                # Some extra packages our site needs.
     - usegalaxy-eu.galaxy-systemd        # Manage the Galaxy processes with SystemD
       #T- usegalaxy-eu.update-hosts          # Update hosts list

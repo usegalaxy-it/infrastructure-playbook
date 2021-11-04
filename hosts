@@ -58,7 +58,7 @@ sn06.galaxyproject.eu ansible_ssh_user=centos
 sn04.bi.uni-freiburg.de ansible_ssh_user=root
 
 [sn06]
-90.147.102.12 ansible_ssh_user=centos
+212.189.205.88 ansible_ssh_user=centos
 
 [sn05]
 sn05.galaxyproject.eu ansible_ssh_user=root
