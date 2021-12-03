@@ -5,7 +5,7 @@
   become_user: root
   vars:
     # The full internal name.
-    hostname: cloud-212-189-205-88.cloud.ba.infn.it
+    hostname: cloud-90-147-102-105.cloud.ba.infn.it
     # The nginx user needed into the galaxyproject.nginx role
     nginx_conf_user: galaxy
     # This server has multiple CNAMEs that are important. Additionally it
@@ -77,7 +77,7 @@
       package:
         name: ['openssl-devel', 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed', 'pcre-devel' ]
       become: yes
-    - name: Run a script with arguments
+    - name: nginx upload module addition
       script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
       args:
         executable: /usr/bin/bash

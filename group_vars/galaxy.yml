@@ -402,184 +402,184 @@ galaxy_jobconf:
           load: galaxy.jobs.runners.condor:CondorJobRunner
         - id: local
           load: galaxy.jobs.runners.local:LocalJobRunner
-        - id: pulsar_embedded
-          load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
-        - id: pulsar_eu_cz
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_cz:{{ rabbitmq_password_galaxy_cz }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: _default_
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_it01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_it01:{{ rabbitmq_password_galaxy_it01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_it02
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_it02:{{ rabbitmq_password_galaxy_it02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it02?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_it03
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_it03:{{ rabbitmq_password_galaxy_it03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it03?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_de01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_de01:{{ rabbitmq_password_galaxy_de01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_de02
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_de02:{{ rabbitmq_password_galaxy_de02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de02?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_de03
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_de03:{{ rabbitmq_password_galaxy_de03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de03?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_pt01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_pt01:{{ rabbitmq_password_galaxy_pt01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_pt01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_be01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_be01:{{ rabbitmq_password_galaxy_be01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_be01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_uk01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_uk01:{{ rabbitmq_password_galaxy_uk01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_uk01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_test
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_test:{{ rabbitmq_password_galaxy_test }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_test?ssl=1"
-            galaxy_url: https://usegalaxy.eu
-            manager: _default_
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_fr01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_fr01:{{ rabbitmq_password_galaxy_fr01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fr01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_fi01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_fi01:{{ rabbitmq_password_galaxy_fi01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fi01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_no01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_no01:{{ rabbitmq_password_galaxy_no01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_no01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_es01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_es01:{{ rabbitmq_password_galaxy_es01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_es01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
-        - id: pulsar_eu_cz01
-          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-          params:
-            amqp_url: "pyamqp://galaxy_cz01:{{ rabbitmq_password_galaxy_cz01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz01?ssl=1"
-            galaxy_url: "https://usegalaxy.eu"
-            manager: production
-            amqp_acknowledge: True
-            amqp_ack_republish_time: 300
-            amqp_consumer_timeout: 2.0
-            amqp_publish_retry: True
-            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_embedded
+          #          load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
+          #        - id: pulsar_eu_cz
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_cz:{{ rabbitmq_password_galaxy_cz }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: _default_
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_it01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_it01:{{ rabbitmq_password_galaxy_it01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_it02
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_it02:{{ rabbitmq_password_galaxy_it02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it02?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_it03
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_it03:{{ rabbitmq_password_galaxy_it03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_it03?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_de01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_de01:{{ rabbitmq_password_galaxy_de01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_de02
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_de02:{{ rabbitmq_password_galaxy_de02 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de02?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_de03
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_de03:{{ rabbitmq_password_galaxy_de03 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_de03?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_pt01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_pt01:{{ rabbitmq_password_galaxy_pt01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_pt01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_be01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_be01:{{ rabbitmq_password_galaxy_be01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_be01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_uk01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_uk01:{{ rabbitmq_password_galaxy_uk01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_uk01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_test
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_test:{{ rabbitmq_password_galaxy_test }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_test?ssl=1"
+          #            galaxy_url: https://usegalaxy.eu
+          #            manager: _default_
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_fr01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_fr01:{{ rabbitmq_password_galaxy_fr01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fr01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_fi01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_fi01:{{ rabbitmq_password_galaxy_fi01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_fi01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_no01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_no01:{{ rabbitmq_password_galaxy_no01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_no01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_es01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_es01:{{ rabbitmq_password_galaxy_es01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_es01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
+          #        - id: pulsar_eu_cz01
+          #          load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
+          #          params:
+          #            amqp_url: "pyamqp://galaxy_cz01:{{ rabbitmq_password_galaxy_cz01 }}@proxy.internal.galaxyproject.eu:5671//pulsar/galaxy_cz01?ssl=1"
+          #            galaxy_url: "https://usegalaxy.eu"
+          #            manager: production
+          #            amqp_acknowledge: True
+          #            amqp_ack_republish_time: 300
+          #            amqp_consumer_timeout: 2.0
+          #            amqp_publish_retry: True
+          #            amqp_publish_retry_max_retries: 60
     default_destination: gateway_1x
     destinations:
         - id: local
@@ -609,117 +609,117 @@ galaxy_jobconf:
           params:
               type: python
               function: gateway_2x
-        # Pulsar MQs
-        - id: remote_cluster_mq_cz
-          runner: pulsar_eu_cz
-          params:
-              jobs_directory: /storage/brno11-elixir/home/galaxyeu/galaxy-staging/
-        - id: remote_cluster_mq_test
-          runner: pulsar_eu_test
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_it01
-          runner: pulsar_eu_it01
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_de01
-          runner: pulsar_eu_de01
-          env:
-              LC_ALL: C
-              SINGULARITY_CACHEDIR: /data/share/var/database/container_cache
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-              singularity_enabled: "true"
-              singularity_volumes: $defaults
-        - id: remote_cluster_mq_de02
-          runner: pulsar_eu_de02
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_de03
-          runner: pulsar_eu_de03
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_docker_de03
-          runner: pulsar_eu_de03
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-              docker_enabled: 'true'
-              docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/share/staging/:ro'
-              docker_default_container_id: 'ubuntu:18.04'
-              docker_auto_rm: 'true'
-              docker_sudo: 'false'
-              docker_run_extra_arguments: '--gpus all'
-              docker_set_user: ''
-        - id: remote_cluster_mq_be01
-          runner: pulsar_eu_be01
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_uk01
-          runner: pulsar_eu_uk01
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
+              #        # Pulsar MQs
+              #        - id: remote_cluster_mq_cz
+              #          runner: pulsar_eu_cz
+              #          params:
+              #              jobs_directory: /storage/brno11-elixir/home/galaxyeu/galaxy-staging/
+              #        - id: remote_cluster_mq_test
+              #          runner: pulsar_eu_test
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #        - id: remote_cluster_mq_it01
+              #          runner: pulsar_eu_it01
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #        - id: remote_cluster_mq_de01
+              #          runner: pulsar_eu_de01
+              #          env:
+              #              LC_ALL: C
+              #              SINGULARITY_CACHEDIR: /data/share/var/database/container_cache
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #              singularity_enabled: "true"
+              #              singularity_volumes: $defaults
+              #        - id: remote_cluster_mq_de02
+              #          runner: pulsar_eu_de02
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #        - id: remote_cluster_mq_de03
+              #          runner: pulsar_eu_de03
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #        - id: remote_cluster_mq_docker_de03
+              #          runner: pulsar_eu_de03
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #              docker_enabled: 'true'
+              #              docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/share/staging/:ro'
+              #              docker_default_container_id: 'ubuntu:18.04'
+              #              docker_auto_rm: 'true'
+              #              docker_sudo: 'false'
+              #              docker_run_extra_arguments: '--gpus all'
+              #              docker_set_user: ''
+              #        - id: remote_cluster_mq_be01
+              #          runner: pulsar_eu_be01
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
+              #        - id: remote_cluster_mq_uk01
+              #          runner: pulsar_eu_uk01
+              #          env:
+              #              LC_ALL: C
+              #          params:
+              #              jobs_directory: /data/share/staging
+              #              transport: curl
+              #              remote_metadata: "false"
+              #              default_file_action: remote_transfer
+              #              dependency_resolution: remote
+              #              rewrite_parameters: "true"
+              #              persistence_directory: /data/share/persisted_data
         - id: condor_singularity
           runner: condor
           params:
