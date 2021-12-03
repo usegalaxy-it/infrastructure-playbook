@@ -491,7 +491,7 @@ base_app_main: &BASE_APP_MAIN
   # to this directory.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  cluster_files_directory: /data/dnb01/galaxy_db/pbs
+  cluster_files_directory: /data/cluster_files
 
   # Mako templates are compiled as needed and cached for reuse, this
   # directory is used for the cache
@@ -607,21 +607,21 @@ base_app_main: &BASE_APP_MAIN
   # mail through an SMTP server, which you may define here (host:port).
   # Galaxy will automatically try STARTTLS but will continue upon
   # failure.
-  smtp_server: smtp.informatik.uni-freiburg.de
+  #ITsmtp_server: 
 
   # If your SMTP server requires a username and password, you can
   # provide them here (password in cleartext here, but if your server
   # supports STARTTLS it will be sent over the network encrypted).
-  smtp_username: "{{ smtp_username }}"
+  #ITsmtp_username: "{{ smtp_username }}"
 
   # If your SMTP server requires a username and password, you can
   # provide them here (password in cleartext here, but if your server
   # supports STARTTLS it will be sent over the network encrypted).
-  smtp_password: "{{ smtp_password }}"
+  #ITsmtp_password: "{{ smtp_password }}"
 
   # If your SMTP server requires SSL from the beginning of the
   # connection
-  smtp_ssl: true
+  #ITsmtp_ssl: true
 
   # On the user registration form, users may choose to join a mailing
   # list. This is the address used to subscribe to the list. Uncomment
@@ -635,14 +635,14 @@ base_app_main: &BASE_APP_MAIN
   # disabled if no address is set.  Also this email is shown as a
   # contact to user in case of Galaxy misconfiguration and other events
   # user may encounter.
-  error_email_to: galaxy@informatik.uni-freiburg.de
+  #IT error_email_to: galaxy@informatik.uni-freiburg.de
 
   # Email address to use in the 'From' field when sending emails for
   # account activations, workflow step notifications, password resets,
   # and tool error reports.  We recommend using a string in the
   # following format: Galaxy Project <galaxy-no-reply@example.com>. If
   # not configured, '<galaxy-no-reply@HOSTNAME>' will be used.
-  email_from: 'European Galaxy Team <galaxy@informatik.uni-freiburg.de>'
+  #ITemail_from: 'European Galaxy Team <galaxy@informatik.uni-freiburg.de>'
 
   # This text will be inserted at the end of the activation email's
   # message, before the 'Your Galaxy Team' signature.
@@ -651,7 +651,7 @@ base_app_main: &BASE_APP_MAIN
   # URL of the support resource for the galaxy instance.  Used in
   # activation emails.
   # Example value 'https://galaxyproject.org/'
-  instance_resource_url:  "https://galaxyproject.org/support"
+  #Tinstance_resource_url:  "https://galaxyproject.org/support"
 
   # E-mail domains blocklist is used for filtering out users that are
   # using disposable email addresses at registration.  If their
@@ -805,7 +805,7 @@ base_app_main: &BASE_APP_MAIN
   message_box_class: warning
 
   # Append "{brand}" text to the masthead.
-  brand: Europe
+  brand: IT-test
 
   # Display the "Galaxy" text in the masthead.
   #display_galaxy_brand: true
@@ -850,7 +850,7 @@ base_app_main: &BASE_APP_MAIN
   # for Mac and your Galaxy instance runs on port 8080 this should be
   # 'http://host.docker.internal:8080'.  For more details see
   # https://docs.docker.com/docker-for-mac/networking/
-  galaxy_infrastructure_url: 'https://usegalaxy.eu'
+  #ITgalaxy_infrastructure_url: 'https://usegalaxy.eu'
 
   # If the above URL cannot be determined ahead of time in dynamic
   # environments but the port which should be used to access Galaxy can
@@ -875,16 +875,16 @@ base_app_main: &BASE_APP_MAIN
   #logo_src_secondary: null
 
   # The URL linked by the "Galaxy Help" link in the "Help" menu.
-  helpsite_url: 'https://help.galaxyproject.org/c/usegalaxy-eu-support'
+  #IThelpsite_url: 'https://help.galaxyproject.org/c/usegalaxy-eu-support'
 
   # The URL linked by the "Wiki" link in the "Help" menu.
-  wiki_url: https://galaxyproject.org/
+  #ITwiki_url: https://galaxyproject.org/
 
   # The URL linked for quota information in the UI.
   #quota_url: https://galaxyproject.org/support/account-quotas/
 
   # The URL linked by the "Support" link in the "Help" menu.
-  support_url: 'https://galaxyproject.org/support/'
+  #ITsupport_url: 'https://galaxyproject.org/support/'
 
   # The URL linked by the "How to Cite Galaxy" link in the "Help" menu.
   #citation_url: https://galaxyproject.org/citing-galaxy
@@ -893,7 +893,7 @@ base_app_main: &BASE_APP_MAIN
   #release_doc_base_url: https://docs.galaxyproject.org/en/release_
 
   # The URL linked by the "Search" link in the "Help" menu.
-  search_url: 'https://galaxyproject.org/search/'
+  #ITsearch_url: 'https://galaxyproject.org/search/'
 
   # The URL linked by the "Mailing Lists" link in the "Help" menu.
   #mailing_lists_url: 'https://galaxyproject.org/mailing-lists'
@@ -904,7 +904,7 @@ base_app_main: &BASE_APP_MAIN
   # The URL linked by the "Terms and Conditions" link in the "Help"
   # menu, as well as on the user registration and login forms and in the
   # activation emails.
-  terms_url: "https://usegalaxy.eu/terms"
+  #ITterms_url: "https://usegalaxy.eu/terms"
 
   # The URL linked by the "Galaxy Q&A" link in the "Help" menu The
   # Galaxy Q&A site is under development; when the site is done, this
@@ -1709,7 +1709,7 @@ base_app_main: &BASE_APP_MAIN
 
   # This should be the hostname of your FTP server, which will be
   # provided to users in the help text.
-  ftp_upload_site: 'ftp://ftp.usegalaxy.eu'
+  #ITftp_upload_site: 'ftp://ftp.usegalaxy.eu'
 
   # User attribute to use as subdirectory in calculating default
   # ftp_upload_dir pattern. By default this will be email so a user's

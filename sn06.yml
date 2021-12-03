@@ -5,7 +5,7 @@
   become_user: root
   vars:
     # The full internal name.
-    hostname: cloud-90-147-102-105.cloud.ba.infn.it
+    hostname: "{{ inventory_hostname }}"
     # The nginx user needed into the galaxyproject.nginx role
     nginx_conf_user: galaxy
     # This server has multiple CNAMEs that are important. Additionally it
@@ -34,8 +34,8 @@
     server_names:
       - '{{ hostname }}'
   vars_files:
-    - group_vars/tiaas.yml             # All of the training infrastructure
-    - group_vars/custom-sites.yml      # Subdomains are listed here
+          #IT- group_vars/tiaas.yml             # All of the training infrastructure
+      #IT- group_vars/custom-sites.yml      # Subdomains are listed here
     - group_vars/gxconfig.yml          # The base galaxy configuration
     - group_vars/toolbox.yml           # User controlled toolbox
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
@@ -75,7 +75,7 @@
         state: present
     - name: Install compiling nginx dependencies
       package:
-        name: ['openssl-devel', 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed', 'pcre-devel' ]
+        name: ['openssl-devel', 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed', 'pcre-devel','gcc' ]
       become: yes
     - name: nginx upload module addition
       script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0

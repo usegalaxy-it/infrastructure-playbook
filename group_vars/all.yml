@@ -9,7 +9,7 @@ certbot_environment: production
 certbot_domains:
  - "{{ hostname }}"
 certbot_agree_tos: --agree-tos
-certbot_admin_email: security@usegalaxy.eu
+certbot_admin_email: cordigliere@anche.no
 certbot_auth_method: --standalone
 
 usegalaxy_eu_autofs_mounts:
@@ -24,42 +24,43 @@ nginx_selinux_allow_local_connections: true
 ssh_allow_root_with_key: true
 
 # Chrony
-chrony_server: 'time.ruf.uni-freiburg.de iburst'
-chrony_acquisitionport: 0
-chrony_conf_file: '/etc/chrony.conf'
-chrony_keyfile: '/etc/chrony.keys'
+#ITchrony_server: 'time.ruf.uni-freiburg.de iburst'
+#ITchrony_acquisitionport: 0
+#ITchrony_conf_file: '/etc/chrony.conf'
+#ITchrony_keyfile: '/etc/chrony.keys'
 
-# Telegraf var
-dc: ufr-rz
-
-# Telegraf
-telegraf_agent_package_state: latest
-telegraf_agent_output:
-  - type: influxdb
-    config:
-    - urls = ["{{ influxdb.url }}"]
-    - database = "{{ influxdb.node.database }}"
-    - username = "{{ influxdb.node.username }}"
-    - password = "{{ influxdb.node.password }}"
-
-telegraf_plugins_default:
-  - plugin: cpu
-    config:
-      - percpu = true
-  - plugin: disk
-  - plugin: kernel
-  - plugin: processes
-  - plugin: io
-  - plugin: mem
-  - plugin: system
-  - plugin: swap
-  - plugin: net
-  - plugin: netstat
-  - plugin: chrony
-
-telegraf_plugins_extra: {}
-
+#IT# Telegraf var
+#ITdc: ufr-rz
+#IT
+#IT# Telegraf
+#ITtelegraf_agent_package_state: latest
+#ITtelegraf_agent_output:
+#IT  - type: influxdb
+#IT    config:
+#IT    - urls = ["{{ influxdb.url }}"]
+#IT    - database = "{{ influxdb.node.database }}"
+#IT    - username = "{{ influxdb.node.username }}"
+#IT    - password = "{{ influxdb.node.password }}"
+#IT
+#ITtelegraf_plugins_default:
+#IT  - plugin: cpu
+#IT    config:
+#IT      - percpu = true
+#IT  - plugin: disk
+#IT  - plugin: kernel
+#IT  - plugin: processes
+#IT  - plugin: io
+#IT  - plugin: mem
+#IT  - plugin: system
+#IT  - plugin: swap
+#IT  - plugin: net
+#IT  - plugin: netstat
+#IT  - plugin: chrony
+#IT
+#ITtelegraf_plugins_extra: {}
+#IT
 # ???
+
 galaxy_uid: 999
 galaxy_gid: 999
 

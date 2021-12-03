@@ -683,117 +683,117 @@ galaxy_jobconf:
           params:
               type: python
               function: gateway_2x
-        # Pulsar MQs
-        - id: remote_cluster_mq_cz
-          runner: pulsar_eu_cz
-          params:
-              jobs_directory: /storage/brno11-elixir/home/galaxyeu/galaxy-staging/
-        - id: remote_cluster_mq_test
-          runner: pulsar_eu_test
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_it01
-          runner: pulsar_eu_it01
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_de01
-          runner: pulsar_eu_de01
-          env:
-              LC_ALL: C
-              SINGULARITY_CACHEDIR: /data/share/var/database/container_cache
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-              singularity_enabled: "true"
-              singularity_volumes: $defaults
-        - id: remote_cluster_mq_de02
-          runner: pulsar_eu_de02
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_de03
-          runner: pulsar_eu_de03
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_docker_de03
-          runner: pulsar_eu_de03
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-              docker_enabled: 'true'
-              docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/share/staging/:ro'
-              docker_default_container_id: 'ubuntu:18.04'
-              docker_auto_rm: 'true'
-              docker_sudo: 'false'
-              docker_run_extra_arguments: '--gpus all'
-              docker_set_user: ''
-        - id: remote_cluster_mq_be01
-          runner: pulsar_eu_be01
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
-        - id: remote_cluster_mq_uk01
-          runner: pulsar_eu_uk01
-          env:
-              LC_ALL: C
-          params:
-              jobs_directory: /data/share/staging
-              transport: curl
-              remote_metadata: "false"
-              default_file_action: remote_transfer
-              dependency_resolution: remote
-              rewrite_parameters: "true"
-              persistence_directory: /data/share/persisted_data
+              #IT        # Pulsar MQs
+              #IT        - id: remote_cluster_mq_cz
+              #IT          runner: pulsar_eu_cz
+              #IT          params:
+              #IT              jobs_directory: /storage/brno11-elixir/home/galaxyeu/galaxy-staging/
+              #IT        - id: remote_cluster_mq_test
+              #IT          runner: pulsar_eu_test
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT        - id: remote_cluster_mq_it01
+              #IT          runner: pulsar_eu_it01
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT        - id: remote_cluster_mq_de01
+              #IT          runner: pulsar_eu_de01
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT              SINGULARITY_CACHEDIR: /data/share/var/database/container_cache
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT              singularity_enabled: "true"
+              #IT              singularity_volumes: $defaults
+              #IT        - id: remote_cluster_mq_de02
+              #IT          runner: pulsar_eu_de02
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT        - id: remote_cluster_mq_de03
+              #IT          runner: pulsar_eu_de03
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT        - id: remote_cluster_mq_docker_de03
+              #IT          runner: pulsar_eu_de03
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT              docker_enabled: 'true'
+              #IT              docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/share/staging/:ro'
+              #IT              docker_default_container_id: 'ubuntu:18.04'
+              #IT              docker_auto_rm: 'true'
+              #IT              docker_sudo: 'false'
+              #IT              docker_run_extra_arguments: '--gpus all'
+              #IT              docker_set_user: ''
+              #IT        - id: remote_cluster_mq_be01
+              #IT          runner: pulsar_eu_be01
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
+              #IT        - id: remote_cluster_mq_uk01
+              #IT          runner: pulsar_eu_uk01
+              #IT          env:
+              #IT              LC_ALL: C
+              #IT          params:
+              #IT              jobs_directory: /data/share/staging
+              #IT              transport: curl
+              #IT              remote_metadata: "false"
+              #IT              default_file_action: remote_transfer
+              #IT              dependency_resolution: remote
+              #IT              rewrite_parameters: "true"
+              #IT              persistence_directory: /data/share/persisted_data
         - id: condor_singularity
           runner: condor
           params:
@@ -875,15 +875,15 @@ galaxy_jobconf:
         # used here is defined above.
         - id: upload1
           destination: gateway_singlerun
-        - id: "toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/2020.4+galaxy0"
-          destination: gateway_singlerun
-          resources: usegpu
-        - id: "toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/2019.1.5.1"
-          destination: gateway_singlerun
-          resources: usegpu
-        - id: gmx_sim
-          destination: gateway_singlerun
-          resources: usegpu
+          #IT      - id: "toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/2020.4+galaxy0"
+          #IT        destination: gateway_singlerun
+          #IT        resources: usegpu
+          #IT      - id: "toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/2019.1.5.1"
+          #IT        destination: gateway_singlerun
+          #IT        resources: usegpu
+          #IT      - id: gmx_sim
+          #IT        destination: gateway_singlerun
+          #IT        resources: usegpu
         #- id: wig_to_bigWig
           #destination: wig_to_bigWig
         #- id: dexseq
@@ -900,14 +900,14 @@ galaxy_jobconf:
           #destination: 24cores_15G_BLAST
         #- id: ncbi_rpsblast_wrapper
           #destination: 24cores_15G_BLAST
-          #    resources:
-          #      - id: usegpu
-          #        names: gpu
-          #    limits:
-          #      - type: 'walltime'
-          #        value: '148:00:00'
-          #      - type: 'output_size'
-          #        value: '300GB'
+    resources:
+      - id: usegpu
+        names: gpu
+    limits:
+      - type: 'walltime'
+        value: '148:00:00'
+      - type: 'output_size'
+        value: '300GB'
           #      - type: 'registered_user_concurrent_jobs'
           #        value: '500'
           #      - type: 'anonymous_user_concurrent_jobs'
@@ -979,8 +979,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config['app:main']['build_sites_config_file'] }}"
   - src: "{{ galaxy_config_template_src_dir }}/config/global_host_filters.py.j2"
     dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py"
-#  - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.xml.j2"
-#    dest: "{{ galaxy_config_dir }}/job_conf.xml"
+  - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.xml.j2"
+    dest: "{{ galaxy_config_dir }}/job_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.xml.j2"
     dest: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2"
