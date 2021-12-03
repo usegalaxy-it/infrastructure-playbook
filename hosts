@@ -7,10 +7,17 @@ build.galaxyproject.eu ansible_ssh_user=root
 
 [influxdb]
 influxdb.galaxyproject.eu
-
+##########################IT###########################
 [proxy-internal]
-##proxy.internal.galaxyproject.eu
 cloud-90-147-170-8.cloud.ba.infn.it ansible_ssh_user=centos
+
+[sn06]
+90.147.102.105 ansible_ssh_user=centos
+
+[database]
+172.30.16.74 ansible_ssh_user=ubuntu
+
+##########################################################
 
 [incoming]
 incoming.galaxyproject.eu
@@ -58,8 +65,6 @@ sn06.galaxyproject.eu ansible_ssh_user=centos
 [galaxy]
 90.147.102.105 ansible_ssh_user=centos
 
-[sn06]
-90.147.102.105 ansible_ssh_user=centos
 
 [sn05]
 sn05.galaxyproject.eu ansible_ssh_user=root
@@ -76,5 +81,3 @@ ansible_ssh_user=centos
 [central-manager]
 manager.vgcn.galaxyproject.eu ansible_ssh_user=root
 
-[database]
-172.30.16.74 ansible_ssh_user=ubuntu
