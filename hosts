@@ -12,10 +12,10 @@ influxdb.galaxyproject.eu
 cloud-90-147-170-8.cloud.ba.infn.it ansible_ssh_user=centos
 
 [sn06]
-90.147.102.105 ansible_ssh_user=centos
+cloud-212-189-205-170.cloud.ba.infn.it ansible_ssh_user=centos
 
 [database]
-172.30.16.74 ansible_ssh_user=ubuntu
+172.30.16.93 ansible_ssh_user=ubuntu
 
 ##########################################################
 

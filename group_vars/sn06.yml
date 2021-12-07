@@ -354,7 +354,7 @@ gie_proxy_verbose: true
 
 # gxadmin
 postgres_user: galaxy
-postgres_host: 172.30.16.74
+postgres_host: 172.30.16.93
 postgres_port: 5432
 
 # Slurp script
