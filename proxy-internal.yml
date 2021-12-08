@@ -3,11 +3,19 @@
   hosts: proxy-internal
   become: true
   vars:
-    hostname: rabbit.internal.galaxyproject.it.cloud.ba.infn.it
+    hostname: cloud-90-147-102-77.cloud.ba.infn.it
     rabbitmq_version: "3.8.26"
   pre_tasks:
-          #    - name: update ca-certificates
-          #      command: yum install -y ca-certificates
+    - name: install epel
+      yum:
+        name: epel-release
+    - name: install erlang repository
+      shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash
+    - name: install erlang 
+      yum:
+        name: erlang-23.3.4
+        state: present
+
   vars_files:
     - group_vars/all.yml
       #    - secret_group_vars/pulsar.yml     # Pulsar + MQ Connections

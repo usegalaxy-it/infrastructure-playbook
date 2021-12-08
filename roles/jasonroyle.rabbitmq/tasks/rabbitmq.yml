@@ -1,6 +1,6 @@
 ---
-- name: include rabbitmq installation tasks
-  include: "{{ ansible_os_family }}/install.yml"
+#- name: include rabbitmq installation tasks
+#  include: "{{ ansible_os_family }}/install.yml"
 
 - include: configure.yml
 

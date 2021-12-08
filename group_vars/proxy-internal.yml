@@ -10,6 +10,9 @@ certbot_post_renewal: |
     systemctl restart nginx || true
     systemctl restart rabbitmq-server || true
 
+certbot_virtualenv_package_name: python3-virtualenv
+certbot_virtualenv_command: virtualenv-3
+
 # NGINX
 nginx_enable_default_server: false
 nginx_servers:
@@ -43,9 +46,9 @@ rabbitmq_users:
     #    password: "{{ rabbitmq_password_telegraf }}"
     #    tags: administrator
     #    vhost: /
-  - user: galaxy
-    password: "{{ rabbitmq_password_galaxy }}"
-    vhost: galaxy
+    #- user: galaxy
+    #password: "{{ rabbitmq_password_galaxy }}"
+    #vhost: galaxy
     #  - user: galaxy_cz
     #    password: "{{ rabbitmq_password_galaxy_cz }}"
     #    vhost: /pulsar/galaxy_cz
@@ -103,24 +106,6 @@ rabbitmq_users:
 
 rabbitmq_vhosts:
   - galaxy
-    #  - /pulsar/galaxy_it01
-    #  - /pulsar/galaxy_be01
-    #  - /pulsar/galaxy_cz
-    #  - /pulsar/galaxy_de01
-    #  - /pulsar/galaxy_de02
-    #  - /pulsar/galaxy_de03
-    #  - /pulsar/galaxy_test
-    #  - /pulsar/galaxy_vgcn
-    #  - /pulsar/galaxy_pt01
-    #  - /pulsar/galaxy_uk01
-    #  - /pulsar/galaxy_au01
-    #  - /pulsar/galaxy_no01
-    #  - /pulsar/galaxy_it02
-    #  - /pulsar/galaxy_it03
-    #  - /pulsar/galaxy_fr01
-    #  - /pulsar/galaxy_es01
-    #  - /pulsar/galaxy_fi01
-    #  - /pulsar/galaxy_cz01
 
 
 rabbitmq_plugins:
@@ -133,7 +118,9 @@ rabbitmq_config:
   - ssl_listeners:
     - "'0.0.0.0'": 5671
   - ssl_options:
-    - cacertfile: /etc/letsencrypt/live/cloud-90-147-170-8.cloud.ba.infn.it/fullchain.pem
-    - certfile: /etc/letsencrypt/live/cloud-90-147-170-8.cloud.ba.infn.it/cert.pem
-    - keyfile: /etc/letsencrypt/live/cloud-90-147-170-8.cloud.ba.infn.it/privkey.pem
+    - cacertfile: /etc/ssl/certs/fullchain.pem
+    - certfile: /etc/ssl/certs/cert.pem
+    - keyfile: /etc/ssl/user/privkey-rabbitmq.pem
     - fail_if_no_peer_cert: 'false'
+
+rabbitmq_version: 3.8.26
