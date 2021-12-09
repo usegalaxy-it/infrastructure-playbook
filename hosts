@@ -17,6 +17,8 @@ cloud-212-189-205-170.cloud.ba.infn.it ansible_ssh_user=centos
 [database]
 172.30.16.93 ansible_ssh_user=ubuntu
 
+[central-manager]
+cloud-90-147-75-69.cloud.ba.infn.it ansible_ssh_user=root
 ##########################################################
 
 [incoming]
@@ -78,6 +80,4 @@ sn05.galaxyproject.eu ansible_ssh_user=root
 [all:vars]
 ansible_ssh_user=centos
 
-[central-manager]
-manager.vgcn.galaxyproject.eu ansible_ssh_user=root
 

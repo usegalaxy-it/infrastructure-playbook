@@ -30,6 +30,11 @@ collections:
     version: 1.4.0 
     source: https://galaxy.ansible.com
     type: galaxy
+  - name: usegalaxy_eu.handy
+    version: 2.0.4
+    source: https://galaxy.ansible.com
+    type: galaxy
+
 
 roles:
   - name: dev-sec.os-hardening

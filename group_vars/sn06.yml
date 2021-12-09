@@ -7,12 +7,10 @@ docker_users:
 
 # Autofs
 usegalaxy_eu_autofs_mounts:
-        # - data
-        # - discontinued
-        # - usrlocal
+  - data
 
 data_conf:
-        #  - 0       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/export/data3/galaxy/net/data/&
+  - /data/share       -rw,hard,nosuid      sn01.bi.uni-freiburg.de:/data/share&
         #  - 1       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
         #  - 2       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
         #  - 3       -rw,hard,nosuid      denbi.svm.bwsfs.uni-freiburg.de:/dnb01/depot/&
@@ -423,10 +421,8 @@ galaxy_dynamic_job_rules:
   - usegalaxy/joint_destinations.yaml
   - usegalaxy/sorting_hat.py
   - usegalaxy/destination_specifications.yaml
-  - usegalaxy/blast_destinations.py
   - usegalaxy/tool_destinations.yaml
-  - usegalaxy/dexseq.py
-  - usegalaxy/wig2bigwig.py
+  - usegalaxy/sorting_hat.yaml
   - readme.txt
 
 # Custom override
@@ -795,66 +791,66 @@ galaxy_jobconf:
               #IT              dependency_resolution: remote
               #IT              rewrite_parameters: "true"
               #IT              persistence_directory: /data/share/persisted_data
-        - id: condor_singularity
-          runner: condor
-          params:
-              singularity_enabled: 'true'
-              singularity_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
-              singularity_default_container_id: '/data/0/cvmfs/singularity/ubuntu:18.04'
-        - id: condor_singularity2
-          runner: condor
-          params:
-              singularity_enabled: 'true'
-              singularity_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
-              singularity_default_container_id: '/data/0/cvmfs/singularity/ubuntu:18.04'
-          raw: |
-            <param id="container">
-                <container type="singularity" shell="/bin/sh" resolve_dependencies="true">/data/0/cvmfs/singularity/ubuntu:18.04</container>
-            </param>
-        - id: condor_singularity_with_conda
-          runner: condor
-          params:
-              singularity_enabled: 'true'
-          raw: |
-            <param id="container">
-                <container type="singularity" shell="/bin/bash" resolve_dependencies="true">/data/0/cvmfs/singularity/python:2.7.12--1</container>
-            </param>
-        - id: condor_docker
-          runner: condor
-          params:
-            docker_enabled: 'true'
-            docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
-            docker_default_container_id: 'ubuntu:18.04'
-            docker_auto_rm: 'true'
-            docker_sudo: 'false'
-            docker_set_user: ''
-        - id: condor_docker_interactive
-          runner: condor
-          params:
-            docker_enabled: 'true'
-            docker_volumes: '$working_directory:rw,$job_directory:rw'
-            docker_default_container_id: 'ubuntu:18.04'
-            docker_auto_rm: 'true'
-            docker_sudo: 'false'
-            docker_set_user: ''
-        - id: condor_docker_ie
-          runner: condor
-          params:
-            docker_enabled: 'true'
-            docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
-            docker_default_container_id: 'ubuntu:18.04'
-            docker_auto_rm: 'true'
-            docker_sudo: 'false'
-            docker_set_user: ''
-        - id: condor_docker_ie_interactive
-          runner: condor
-          params:
-            docker_enabled: 'true'
-            docker_volumes: '$working_directory:rw,$job_directory:rw'
-            docker_default_container_id: 'ubuntu:18.04'
-            docker_auto_rm: 'true'
-            docker_sudo: 'false'
-            docker_set_user: ''
+              #T        - id: condor_singularity
+              #T          runner: condor
+              #T          params:
+              #T              singularity_enabled: 'true'
+              #T              singularity_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
+              #T              singularity_default_container_id: '/data/0/cvmfs/singularity/ubuntu:18.04'
+              #T        - id: condor_singularity2
+              #T          runner: condor
+              #T          params:
+              #T              singularity_enabled: 'true'
+              #T              singularity_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
+              #T              singularity_default_container_id: '/data/0/cvmfs/singularity/ubuntu:18.04'
+              #T          raw: |
+              #T            <param id="container">
+              #T                <container type="singularity" shell="/bin/sh" resolve_dependencies="true">/data/0/cvmfs/singularity/ubuntu:18.04</container>
+              #T            </param>
+              #T        - id: condor_singularity_with_conda
+              #T          runner: condor
+              #T          params:
+              #T              singularity_enabled: 'true'
+              #T          raw: |
+              #T            <param id="container">
+              #T                <container type="singularity" shell="/bin/bash" resolve_dependencies="true">/data/0/cvmfs/singularity/python:2.7.12--1</container>
+              #T            </param>
+              #IT        - id: condor_docker
+              #IT          runner: condor
+              #IT          params:
+              #IT            docker_enabled: 'true'
+              #IT            docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw'
+              #IT            docker_default_container_id: 'ubuntu:18.04'
+              #IT            docker_auto_rm: 'true'
+              #IT            docker_sudo: 'false'
+              #IT            docker_set_user: ''
+              #IT            #        - id: condor_docker_interactive
+              #IT            #          runner: condor
+              #IT            #          params:
+              #IT            #            docker_enabled: 'true'
+              #IT            #            docker_volumes: '$working_directory:rw,$job_directory:rw'
+              #IT            #            docker_default_container_id: 'ubuntu:18.04'
+              #IT            #            docker_auto_rm: 'true'
+              #IT            #            docker_sudo: 'false'
+              #IT            #            docker_set_user: ''
+              #IT        - id: condor_docker_ie
+              #IT          runner: condor
+              #IT          params:
+              #IT            docker_enabled: 'true'
+              #IT            docker_volumes: '$galaxy_root:ro,$tool_directory:ro,$working_directory:rw,$job_directory:rw,/data/db/:ro,/data/dnb01/galaxy_db/:ro,/data/dnb02/galaxy_db/:ro'
+              #IT            docker_default_container_id: 'ubuntu:18.04'
+              #IT            docker_auto_rm: 'true'
+              #IT            docker_sudo: 'false'
+              #IT            docker_set_user: ''
+              #IT        - id: condor_docker_ie_interactive
+              #IT          runner: condor
+              #IT          params:
+              #IT            docker_enabled: 'true'
+              #IT            docker_volumes: '$working_directory:rw,$job_directory:rw'
+              #IT            docker_default_container_id: 'ubuntu:18.04'
+              #IT            docker_auto_rm: 'true'
+              #IT            docker_sudo: 'false'
+              #IT            docker_set_user: ''
         # TODO(hxr): check functionality
         #- id: 24cores_15G_BLAST
         #  runner: dynamic
