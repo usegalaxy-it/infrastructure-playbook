@@ -1,7 +1,19 @@
 ---
 # Autofs
-usegalaxy_eu_autofs_mounts:
- - data
+autofs_service.install: True
+autofs_service.enable: True
+nfs_kernel_tuning: True
+
+autofs_mount_points:
+  - data
+
+
+autofs_conf_files:
+  data:
+    - share       -rw,hard,nosuid      172.30.16.98:/data/share
+  discontinued:
+  
+  userlocal:
 
 # HTCondor
 condor_host: "localhost"
@@ -13,4 +25,3 @@ condor_daemons:
     - SCHEDD
 condor_allow_negotiator: $(ALLOW_WRITE)
 condor_allow_administrator: "$(ALLOW_NEGOTIATOR)"
-condor_network_interface: eth1 

@@ -77,11 +77,11 @@
       package:
         name: ['openssl-devel', 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed', 'pcre-devel','gcc' ]
       become: yes
-    - name: nginx upload module addition
-      script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
-      args:
-        executable: /usr/bin/bash
-        chdir: /home/centos
+      #    - name: nginx upload module addition
+      #      script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
+      #      args:
+      #        executable: /usr/bin/bash
+      #        chdir: /home/centos
 
   post_tasks:
     - name: Append some users to the systemd-journal group
@@ -137,6 +137,7 @@
 
     ## Filesystems
     #T- hxr.autofs # Setup the mount points which will be needed later
+    - usegalaxy-eu.autofs
     - galaxyproject.cvmfs # Galaxy datasets
 
     ## Monitoring
