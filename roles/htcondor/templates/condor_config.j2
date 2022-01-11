@@ -13,8 +13,8 @@ ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
 ALLOW_CLIENT = *
 DAEMON_LIST = {{ ", ".join(condor_daemons) }}
 # Define FS and UID domain
-FILESYSTEM_DOMAIN = bi.uni-freiburg.de
-UID_DOMAIN = bi.uni-freiburg.de
+FILESYSTEM_DOMAIN = {{ condor_filesystem_domain }}
+UID_DOMAIN = {{ condor_uid_domain }}
 TRUST_UID_DOMAIN = True
 SOFT_UID_DOMAIN = True
 
@@ -30,7 +30,11 @@ SYSTEM_PERIODIC_HOLD_REASON = \
 		 "Unspecified reason")
 {% endif %}
 
+{% if condor_network_interface is defined %}
+
 NETWORK_INTERFACE = {{ condor_network_interface }}
+
+{% endif %}
 # http://research.cs.wisc.edu/htcondor/manual/v8.6/3_5Configuration_Macros.html#sec:Collector-Config-File-Entries
 # Keep classads for only 5 minutes which should mean dead cloud nodes are expired much faster.
 CLASSAD_LIFETIME = 300

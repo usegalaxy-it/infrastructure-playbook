@@ -12,8 +12,6 @@ nfs_kernel_tuning: True
 
 autofs_mount_points:
  - data
-   # - discontinued
-   # - usrlocal
 
 autofs_conf_files:
   data:
@@ -303,12 +301,15 @@ condor_allow_write: "*"
 condor_daemons:
     - MASTER
     - SCHEDD
+    - NEGOTIATOR
 condor_allow_negotiator: "$(ALLOW_WRITE)"
 condor_allow_administrator: "$(ALLOW_NEGOTIATOR)"
 
-condor_system_periodic_hold: "{{ 30 * 24 * 60 * 60}}"
-condor_system_periodic_remove:  "{{ 2 * 24 * 60 * 60}}"
-condor_network_interface: eth1 
+#condor_system_periodic_hold: "{{ 30 * 24 * 60 * 60}}"
+#condor_system_periodic_remove:  "{{ 2 * 24 * 60 * 60}}"
+#condor_network_interface: eth1 
+condor_filesystem_domain: galaxy-it
+condor_uid_domain: galaxy-it
 condor_extra: |
   MASTER_UPDATE_INTERVAL = 150
   SCHEDD_INTERVAL = 60

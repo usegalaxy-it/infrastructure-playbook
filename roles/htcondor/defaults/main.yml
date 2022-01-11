@@ -3,5 +3,7 @@ condor_daemons:
     - MASTER
     - NEGOTIATOR
     - SCHEDD
+condor_filesystem_domain: galaxy-it
+condor_uid_domain: galaxy-it
 
 condor_extra:
