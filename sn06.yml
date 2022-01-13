@@ -167,8 +167,8 @@
 
     # HTCondor Cluster setup
     #IT change
-    #- usegalaxy-eu.htcondor
-    - htcondor
+    - usegalaxy-eu.htcondor
+      #- htcondor
 
     # Misc.
     - role: hxr.galaxy-nonreproducible-tools
