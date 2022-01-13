@@ -421,7 +421,7 @@ galaxy_dirs:
   - "{{ galaxy_tour_dir }}"
   - "{{ galaxy_log_dir }}"
 
-galaxy_instance_hostname: cloud-90-147-102-12.cloud.ba.infn.it
+galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: ini
 
 galaxy_repo: 'https://github.com/usegalaxy-eu/galaxy.git'
