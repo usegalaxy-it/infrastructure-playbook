@@ -1,0 +1,36 @@
+---
+- name: Proxy internal
+  hosts: rabbit-in-docker-test
+  become: true
+  vars:
+    hostname: "{{ inventory_hostname }}"
+  vars_files:
+    - secret_group_vars/rabbitmq.yml
+    - group_vars/rabbitmq.yml
+  pre_tasks:
+    - name: Install dependencies
+      ansible.builtin.dnf:
+        state: latest
+        name:
+          - python3-pip
+          - python3-virtualenv
+    - name: Configure SELinux
+      ansible.posix.seboolean:
+        name: "{{ item }}"
+        state: true
+        persistent: true
+      loop:
+        - httpd_can_network_connect
+    - name: Install docker pip package
+      ansible.builtin.pip:
+        name: docker
+
+  roles:
+    - role: usegalaxy_eu.handy.os_setup
+      vars:
+        enable_remap_user: true
+    - create_rabbitmq_user
+    - geerlingguy.docker
+    - galaxyproject.nginx
+    - usegalaxy_eu.certbot
+    - usegalaxy_eu.rabbitmqserver
