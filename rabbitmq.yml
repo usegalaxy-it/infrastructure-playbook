@@ -1,6 +1,6 @@
 ---
 - name: Proxy internal
-  hosts: rabbit-in-docker-test
+  hosts: rabbitmq
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"
