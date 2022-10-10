@@ -10,8 +10,9 @@ autofs_mount_points:
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid      172.30.16.98:/data/share
+    - share       -rw,hard,nosuid      172.30.16.115:/data/share
   discontinued:
+              
   
   userlocal:
 

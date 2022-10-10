@@ -137,7 +137,7 @@
 
     ## Filesystems
     #T- hxr.autofs # Setup the mount points which will be needed later
-    - usegalaxy-eu.autofs
+    #BUG- usegalaxy-eu.autofs
     - galaxyproject.cvmfs # Galaxy datasets
 
     ## Monitoring

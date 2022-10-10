@@ -3,7 +3,7 @@
   hosts: central-manager
   become: true
   vars:
-    hostname: cloud-90-147-75-69.cloud.ba.infn.it 
+    hostname: "{{ inventory_hostname }}"
   vars_files:
     - secret_group_vars/all.yml
   roles:
