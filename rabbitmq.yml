@@ -3,7 +3,7 @@
   hosts: rabbitmq
   become: true
   vars:
-    hostname: "{{ inventory_hostname }}"
+    hostname: 90.147.170.56
   vars_files:
     - secret_group_vars/rabbitmq.yml
     - group_vars/rabbitmq.yml

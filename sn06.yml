@@ -50,12 +50,13 @@
   pre_tasks:
     - name: Install Dependencies
       package:
-        name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python36','make' ] #itaddmake
+        name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python3','make' ] #itaddmake
       become: yes
-    - name: Set default version of Python
-      alternatives:
-        name: python
-        path: /usr/bin/python3
+      #    - name: Set default version of Python
+      #      alternatives:
+      #        name: python
+      #        path: /usr/bin/python3
+      #        link: /usr/bin/python
     - name: Put SELinux in permissive mode, logging actions that would be blocked.
       selinux:
         policy: targeted
@@ -64,10 +65,10 @@
       package:
         name: [ 'epel-release', 'dnf-plugins-core' ]
       become: yes
-    - name: enable powertools #itadd
-      shell:
-        cmd: yum config-manager --set-enabled powertools 
-      become: yes
+      #  - name: enable powertools #itadd
+      #    shell:
+      #      cmd: yum config-manager --set-enabled powertools 
+      #    become: yes
     - name: change 
       ansible.posix.sysctl:
         name: net.core.somaxconn
@@ -167,8 +168,10 @@
 
     # HTCondor Cluster setup
     #IT change
-    - usegalaxy-eu.htcondor
-      #- htcondor
+    # - role: usegalaxy-eu.htcondor
+    #  condor_package_label: condor-all
+
+    - htcondor
 
     # Misc.
     - role: hxr.galaxy-nonreproducible-tools

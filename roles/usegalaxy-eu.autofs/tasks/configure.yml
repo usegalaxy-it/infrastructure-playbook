@@ -1,0 +1,31 @@
+---
+- name: Copy main autofs file
+  ansible.builtin.template:
+    src: data.autofs.j2
+    dest: "/etc/auto.master.d/data.autofs"
+    owner: root
+    group: root
+    mode: 0644
+  notify: autofs restart
+  when: (autofs_mount_points is defined) and (autofs_mount_points|length > 0)
+
+- name: Copy mount point configuration file
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - { label: 'data', src: 'data.conf.j2', dest: '/etc/auto.data'}
+    - { label: 'usrlocal', src: 'usrlocal.conf.j2', dest: '/etc/auto.usrlocal'}    
+    - { label: 'discontinued', src: 'discontinued.conf.j2', dest: '/etc/auto.discontinued'}
+  when: "item.label in autofs_mount_points"
+  notify: autofs restart
+
+- name: autofs service enable
+  ansible.builtin.service:
+    name: autofs
+    enabled: yes
+    state: started
+  when: (autofs_service.install | bool) and (autofs_service.enable | bool)

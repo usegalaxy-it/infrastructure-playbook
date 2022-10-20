@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Galaxy Europe
+  description: Installation and configuration of Autofs
+  company: Galaxy Europe
+  license: GPL-3.0
+  min_ansible_version: 2.9
+  role_name: autofs
+  platforms:
+  - name: EL
+    versions:
+    - all
+  - name: Fedora
+    versions:
+    - all
+  galaxy_tags:
+  - system
+dependencies: []
+allow_duplicates: yes

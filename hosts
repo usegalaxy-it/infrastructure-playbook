@@ -10,18 +10,26 @@ influxdb.galaxyproject.eu
 ##########################IT###########################
 #[proxy-internal]
 #cloud-90-147-102-77.cloud.ba.infn.it ansible_ssh_user=centos
+#actual 
+#ftp = "212.189.205.150"
+#galaxy = "212.189.205.140"
+#mastervm = "90.147.170.100"
+#nfs-server = "172.30.16.129"
+#postgres = "172.30.16.125"
+#rabbitmq = "212.189.205.149"
+#vgcnc-cm = "212.189.205.14"
 
 [sn06]
-cloud-212-189-205-28.cloud.ba.infn.it  ansible_ssh_user=centos
+cloud-90-147-75-49.cloud.ba.infn.it ansible_ssh_user=centos
 
 [database]
-172.30.16.112 ansible_ssh_user=ubuntu
+172.30.16.134 ansible_ssh_user=ubuntu
 
 [central-manager]
-cloud-212-189-205-34.cloud.ba.infn.it  ansible_ssh_user=root
+90.147.75.66 ansible_ssh_user=root
 
 [rabbitmq] 
-cloud-212-189-205-35.cloud.ba.infn.it  ansible_ssh_user=centos
+cloud-90-147-170-56.cloud.ba.infn.it ansible_ssh_user=ubuntu
 ##########################################################
 
 [incoming]

@@ -1,0 +1,5 @@
+{% if "data" in autofs_mount_points %}
+{% for row in autofs_conf_files.data %}
+{{ row }}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,4 @@
+---
+- include: "kernel_tuning.yml"
+- include: "install.yml"
+- include: "configure.yml"

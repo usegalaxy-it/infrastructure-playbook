@@ -1,0 +1,2 @@
+[rabbitmq]
+192.52.40.222 ansible_ssh_user=centos

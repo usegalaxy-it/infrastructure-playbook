@@ -1,0 +1,10 @@
+---
+# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
+- ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  loop: "{{ nfs_kernel_tuning_parameters | dict2items }}"
+  when: (nfs_kernel_tuning | bool) and (nfs_kernel_tuning_parameters is defined)
