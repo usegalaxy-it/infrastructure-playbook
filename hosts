@@ -20,7 +20,7 @@ influxdb.galaxyproject.eu
 #vgcnc-cm = "212.189.205.14"
 
 [sn06]
-cloud-90-147-75-49.cloud.ba.infn.it ansible_ssh_user=centos
+cloud-90-147-170-76.cloud.ba.infn.it ansible_ssh_user=centos
 
 [database]
 172.30.16.134 ansible_ssh_user=ubuntu

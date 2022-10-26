@@ -123,14 +123,14 @@ base_app_main: &BASE_APP_MAIN
   # directory exists before using 'objects' as the default.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  file_path: /opt/galaxy/datasets
+  file_path: /data/share/datasets
 
   # Where temporary files are stored. It must be accessible at the same
   # path on any cluster nodes that will run Galaxy jobs, unless using
   # Pulsar.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  new_file_path: /opt/galaxy/jwd/tmp
+  new_file_path: /data/share/jwd/tmp
 
   # Tool config files, defines what tools are available in Galaxy. Tools
   # can be locally developed or installed from Galaxy tool sheds.
@@ -485,7 +485,7 @@ base_app_main: &BASE_APP_MAIN
   # directories will be created.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  job_working_directory: /opt/galaxy/jwd
+  job_working_directory: /data/share/jwd
 
   # If using a cluster, Galaxy will write job scripts and stdout/stderr
   # to this directory.
@@ -1705,7 +1705,7 @@ base_app_main: &BASE_APP_MAIN
   # options. This should point to a directory containing subdirectories
   # matching users' identifier (defaults to e-mail), where Galaxy will
   # look for files.
-  ftp_upload_dir: /data/jwd/incoming
+  ftp_upload_dir: /data/share/jwd/incoming
 
   # This should be the hostname of your FTP server, which will be
   # provided to users in the help text.
@@ -2183,6 +2183,8 @@ base_app_main: &BASE_APP_MAIN
   #containers_config_file: "{{ galaxy_config_dir }}/containers.yml"
   #enable_beta_containers_interface: "True"
   # For handler heartbeats
+  #tus test
+  tus_upload_store: /data/tus
 
 # galaxy.ini contents
 galaxy_config_hash:

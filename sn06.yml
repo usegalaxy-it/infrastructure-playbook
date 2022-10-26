@@ -48,19 +48,29 @@
       shell: |
         echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
   pre_tasks:
+
+    - name: Set default version to Python2 for yum module
+      alternatives:
+        name: python
+        path: /usr/bin/python2
+        link: /usr/bin/python
+
+    - name: solve python macros and devel conflict
+      yum:
+        enablerepo: cr
+        update_cache: True
+
     - name: Install Dependencies
       package:
         name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python3','make' ] #itaddmake
       become: yes
-      #    - name: Set default version of Python
-      #      alternatives:
-      #        name: python
-      #        path: /usr/bin/python3
-      #        link: /usr/bin/python
+
+
     - name: Put SELinux in permissive mode, logging actions that would be blocked.
       selinux:
         policy: targeted
         state: permissive
+
     - name: Install epel-release and dnf-plugins-core for installing powertools on centos8 #it add
       package:
         name: [ 'epel-release', 'dnf-plugins-core' ]
@@ -83,6 +93,12 @@
       #      args:
       #        executable: /usr/bin/bash
       #        chdir: /home/centos
+
+      #- name: Set default version of Python to python3
+      #  alternatives:
+      #    name: python
+      #    path: /usr/bin/python3
+      #    link: /usr/bin/python
 
   post_tasks:
     - name: Append some users to the systemd-journal group
@@ -133,7 +149,7 @@
     # dependencies from other repos: condor, node/npm
     #T- hxr.exclude-repo
     - usegalaxy-eu.autoupdates # keep all of our packages up to date
-    - hxr.admin-tools # Some extra admin tools (*top, vim, etc)
+      #    - hxr.admin-tools # Some extra admin tools (*top, vim, etc)
       #    - influxdata.chrony # Keep our time in sync.
 
     ## Filesystems
@@ -195,7 +211,12 @@
     ## GALAXY
     - hxr.postgres-connection
    #T - galaxyproject.gxadmin
-    - usegalaxy-eu.nginx
+    - role: usegalaxy-eu.certbot
+      vars: 
+        certbot_install_method: virtualenv
+        certbot_virtualenv_command: virtualenv-3
+
+    - role: usegalaxy-eu.nginx
       ## TODO move under monitoring + telegraf.
       #- usegalaxy-eu.galaxy-slurp
       #- usegalaxy_eu.tiaas2
@@ -237,3 +258,4 @@
     #- dj-wasabi.telegraf
     #- dev-sec.os-hardening
     - dev-sec.ssh-hardening
+    - galaxyproject.tusd
