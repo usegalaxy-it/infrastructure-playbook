@@ -21,7 +21,7 @@ influxdb.galaxyproject.eu
 131.175.207.122 ansible_ssh_user=centos #host-192-168-0-14.openstacklocal usegalaxy-galaxy.novalocal
 
 [database]
-192.168.0.54 ansible_ssh_user=ubuntu
+192.168.0.90 ansible_ssh_user=ubuntu
 
 [central-manager]
 131.175.207.129 ansible_ssh_user=root #host-192-168-0-233.openstacklocal usegalaxy-condor-central-manager.novalocal
