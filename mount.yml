@@ -4,13 +4,6 @@
   become: True
   become_user: root
   tasks:
-    - name: create galaxy root dir
-      file:
-        path: "{{ galaxy_root }}"
-        owner: galaxy
-        group: galaxy
-        state: directory
-        mode: "0755"
     - name: mount network share
       ansible.posix.mount:
         src: "{{ item.src }}"
