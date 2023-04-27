@@ -8,9 +8,9 @@ autofs_mount_points:
   - data
 
 
-autofs_conf_files:
+autofs_conf_files: # nfs-server IP
   data:
-    - share       -rw,hard,nosuid       172.30.16.133:/data/share
+    - share       -rw,hard,nosuid       192.168.0.54:/data/share
   discontinued:
               
   
