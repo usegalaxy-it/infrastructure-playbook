@@ -1,34 +1,31 @@
-
 ---
 - name: UseGalaxy.eu
   hosts: database
   become: true
   become_user: root
   vars:
-    postgresql_objects_users: 
+    postgresql_objects_users:
       - name: galaxy
         password: "{{ _galaxy_db_pass }}"
     postgresql_objects_databases:
       - name: galaxy
       - name: galaxy_tools
     postgresql_conf:
-      - listen_addresses: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}" 
+      - listen_addresses: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
     postgresql_pg_hba_conf:
       - host    all             all        {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24              md5
   vars_files:
-    - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
+    - secret_group_vars/db-main.yml # DB URL + some postgres stuff
   pre_tasks:
     - name: apt Update
       apt:
         update_cache: yes
     - name: instal acl and psycopg2 packages
       package:
-        name: [ 'acl', 'python3-psycopg2' ]
+        name: ["acl", "python3-psycopg2"]
       become: yes
   roles:
-
     - galaxyproject.postgresql
-
-    - role: natefoo.postgresql_objects
+    - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
