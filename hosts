@@ -13,7 +13,7 @@ influxdb.galaxyproject.eu
 #actual 
 #centralmanager_fl_ip = "131.175.207.129"
 #galaxy_fl_ip = "131.175.207.122"
-#nfs-server = "192.168.0.54"
+#nfs-server = "192.168.0.249"
 #postgres = "192.168.0.90"
 #rabbitmq_fl_ip = "131.175.207.49"
 

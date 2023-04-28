@@ -11,5 +11,5 @@
         fstype: nfs
         state: mounted
       with_items:
-        - { src: 192.168.0.54:/data/share, mountpoint: /data/share }
-        - { src: 192.168.0.54:/opt/galaxy, mountpoint: /opt/galaxy }
+        - { src: 192.168.0.249:/data/share, mountpoint: /data/share } # nfs-server IP
+        - { src: 192.168.0.249:/opt/galaxy, mountpoint: /opt/galaxy }
