@@ -54,23 +54,19 @@
         name: python
         path: /usr/bin/python2
         link: /usr/bin/python
-
     - name: solve python macros and devel conflict
       yum:
         enablerepo: cr
-        update_cache: True
-
+        update_cache: true
+        disable_gpg_check: true
     - name: Install Dependencies
       package:
         name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python3','make' ] #itaddmake
       become: yes
 
-
-    - name: Put SELinux in permissive mode, logging actions that would be blocked.
+    - name: Disable SELinux
       selinux:
-        policy: targeted
-        state: permissive
-
+        state: disabled
     - name: Install epel-release and dnf-plugins-core for installing powertools on centos8 #it add
       package:
         name: [ 'epel-release', 'dnf-plugins-core' ]
