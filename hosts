@@ -26,10 +26,10 @@ nfs_server_ip=192.168.0.249
 usegalaxy-it.ext.cineca.it ansible_ssh_user=centos 
 
 [database]
-192.168.0.90 ansible_ssh_user=ubuntu
+192.168.0.90 ansible_ssh_user=ubuntu postgres_ip=192.168.0.90
 
 [central-manager]
-131.175.207.129 ansible_ssh_user=root 
+131.175.207.129 ansible_ssh_user=root central-manager_ip=131.175.207.129
 
 [rabbitmq] 
 rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=ubuntu 
