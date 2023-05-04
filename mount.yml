@@ -1,15 +1,15 @@
 ---
-- name: mount NFS
+- name: Mount NFS
   hosts: sn06
-  become: True
+  become: true
   become_user: root
   tasks:
-    - name: mount network share
+    - name: Mount network share
       ansible.posix.mount:
         src: "{{ item.src }}"
         path: "{{ item.mountpoint }}"
         fstype: nfs
         state: mounted
       with_items:
-        - { src: 192.168.0.249:/data/share, mountpoint: /data/share } # nfs-server IP
-        - { src: 192.168.0.249:/opt/galaxy, mountpoint: /opt/galaxy }
+        - { src: "{{ nfs_server_ip }}:/data/share", mountpoint: /data/share } # nfs-server IP
+        - { src: "{{ nfs_server_ip }}:/opt/galaxy", mountpoint: /opt/galaxy }
