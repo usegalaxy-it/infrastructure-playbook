@@ -16,18 +16,27 @@ influxdb.galaxyproject.eu
 #nfs-server = "192.168.0.249"
 #postgres = "192.168.0.90"
 #rabbitmq_fl_ip = "131.175.207.49"
+# usegalaxy-it.ext.cineca.it ->  131.175.207.122
+# rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
+
+[nfs]
+nfs_server_ip=192.168.0.249
 
 [sn06]
-131.175.207.122 ansible_ssh_user=centos #host-192-168-0-14.openstacklocal usegalaxy-galaxy.novalocal
+usegalaxy-it.ext.cineca.it ansible_ssh_user=centos 
 
 [database]
 192.168.0.90 ansible_ssh_user=ubuntu
 
 [central-manager]
-131.175.207.129 ansible_ssh_user=root #host-192-168-0-233.openstacklocal usegalaxy-condor-central-manager.novalocal
+131.175.207.129 ansible_ssh_user=root 
 
 [rabbitmq] 
-131.175.207.49 ansible_ssh_user=ubuntu #host-192-168-0-22.openstacklocal usegalaxy-rabbitmq.novalocal
+rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=ubuntu 
+
+[all:vars]
+ansible_ssh_user=centos
+nfs_server_ip="{{ hostvars['nfs_server']['nfs_server_ip'] }}"
 ##########################################################
 
 [incoming]
@@ -85,8 +94,3 @@ sn05.galaxyproject.eu ansible_ssh_user=root
 
 #[cvmfspreload]
 #10.19.1.201 ansible_ssh_user=root #ssds1.rz.privat
-
-[all:vars]
-ansible_ssh_user=centos
-
-
