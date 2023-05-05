@@ -9,7 +9,7 @@ autofs_mount_points:
 
 autofs_conf_files: # nfs-server IP
   data:
-    - share       -rw,hard,nosuid       "{{ nfs_server_ip }}":/data/share
+    - /data/share       -rw,hard,nosuid       "{{ nfs_server_ip }}":/data/share
   discontinued:
 
   userlocal:
