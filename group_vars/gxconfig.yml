@@ -1449,7 +1449,7 @@ base_app_main: &BASE_APP_MAIN
   # Admin section of the server, and will have access to create users,
   # groups, roles, libraries, and more.  For more information, see:
   # https://galaxyproject.org/admin/
-  admin_users: "pietro.mandreoli@gmail.com"
+  admin_users: "khmelevskayapv@gmail.com"
 
   # Force everyone to log in (disable anonymous access).
   #require_login: false
@@ -2084,7 +2084,7 @@ base_app_main: &BASE_APP_MAIN
   # either, Galaxy will automatically create and use a separate sqlite
   # database located in your <galaxy>/database folder (indicated in the
   # commented out line below).
-  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_password_galaxy }}@cloud-90-147-170-56.cloud.ba.infn.it:5671/galaxy?ssl=1"
+  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_password_galaxy }}@{{ rabbitmq_dns }}:5671/galaxy?ssl=1"
 
   # Offload long-running tasks to a Celery task queue. Activate this
   # only if you have setup a Celery worker for Galaxy. For details, see
