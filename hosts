@@ -19,24 +19,24 @@ influxdb.galaxyproject.eu
 # usegalaxy-it.ext.cineca.it ->  131.175.207.122
 # rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
 
-[nfs]
-nfs_server_ip=192.168.0.249
-
 [sn06]
 usegalaxy-it.ext.cineca.it ansible_ssh_user=centos 
 
 [database]
-192.168.0.90 ansible_ssh_user=ubuntu postgres_ip=192.168.0.90
+192.168.0.90 ansible_ssh_user=ubuntu 
 
 [central-manager]
-131.175.207.129 ansible_ssh_user=root central-manager_ip=131.175.207.129
+131.175.207.129 ansible_ssh_user=centos 
 
 [rabbitmq] 
 rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=ubuntu 
 
 [all:vars]
 ansible_ssh_user=centos
-nfs_server_ip="{{ hostvars['nfs_server']['nfs_server_ip'] }}"
+nfs_server_ip=192.168.0.249
+central_manager_ip=131.175.207.129
+postgres_ip=192.168.0.90
+rabbitmq_dns="rabbitmq-usegalaxy-it.ext.cineca.it"
 ##########################################################
 
 [incoming]
