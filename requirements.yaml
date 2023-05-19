@@ -1,14 +1,9 @@
 ---
 collections:
-  # With just the collection name
-  - name: community.general
-    version: 3.7.0
-    source: https://galaxy.ansible.com
-    type: galaxy
-  - name: amazon.aws
-    version: 1.5.0
-    source: https://galaxy.ansible.com
-    type: galaxy
+  # - name: amazon.aws
+  #   version: 1.5.0
+  #   source: https://galaxy.ansible.com
+  #   type: galaxy
   - name: community.docker
     version: 2.0.1
     source: https://galaxy.ansible.com
@@ -22,16 +17,15 @@ collections:
     source: https://galaxy.ansible.com
     type: galaxy
   - name: devsec.hardening
-    version: 7.10.0
+    version: 8.7.0
     source: https://galaxy.ansible.com
     type: galaxy
-    ##add for database
   - name: community.postgresql
     version: 1.4.0 
     source: https://galaxy.ansible.com
     type: galaxy
   - name: usegalaxy_eu.handy
-    version: 2.0.3
+    version: 2.11.1
     source: https://galaxy.ansible.com
     type: galaxy
   - name: ansible.posix
@@ -46,54 +40,50 @@ roles:
   - name: devops.tomcat7
     version: 1.0.0
     #- name: dj-wasabi.telegraf
-    #  version: 0.10.0
+    #  version: 0.14.0
   - name: galaxyproject.galaxy
     src: https://github.com/galaxyproject/ansible-galaxy
-    version: 0.9.6
+    version: 0.9.18
   - name: galaxyproject.cvmfs
-    version: 0.2.14
-  - name: galaxyproject.proftpd
-    version: 0.3.2
+    src: https://github.com/usegalaxy-eu/ansible-cvmfs
+    version: master
+  # - name: galaxyproject.proftpd
+  #   version: 0.3.2
+  # - name: usegalaxy_eu.ansible_nginx_upload_module
+  #   version: 1.0.0
   - name: usegalaxy-eu.nginx
     src: https://github.com/usegalaxy-eu/ansible-nginx
     version: master
   - name: galaxyproject.nginx
-    version: 0.7.0
+    version: 0.7.1
   - name: galaxyproject.postgresql
-    version: 1.0.1
+    version: 1.1.2
+  - name: galaxyproject.postgresql_objects
+    version: 1.2.0
+  - name: usegalaxy-eu.ansible-postgresql
+    src: https://github.com/usegalaxy-eu/ansible-postgresql
+    version: main
   - name: geerlingguy.docker
     version: 4.1.1
-  # - name: geerlingguy.gitlab
-  # version: 2.5.1
   - name: geerlingguy.java
     version: 1.9.5
   - name: geerlingguy.jenkins
     version: 4.3.0
-  # - name: geerlingguy.nfs
-  # version: 1.5.0
-  # - name: geerlingguy.nodejs
-  #   version: 4.2.2
-  # - name: geerlingguy.pip
-  #   version: 1.0.0
   - name: geerlingguy.repo-epel
-    version: 1.3.0
+    version: 3.1.0
   - name: influxdata.chrony
     src: https://github.com/usegalaxy-eu/ansible-chrony
     version: 0.1.0
   - name: linuxhq.yum_cron
     version: master
-  # - name: natefoo.postgresql_objects
-  #   version: 1.1
-  - name: usegalaxy_eu.influxdb
-    version: v6.0.8
   - name: galaxyproject.gxadmin
     version: 0.0.8
   - name: usegalaxy-eu.certbot
     src: https://github.com/usegalaxy-eu/ansible-certbot
-    version: 0.1.5
+    version: 0.1.11
   - name: usegalaxy-eu.galaxy-systemd
     src: https://github.com/usegalaxy-eu/ansible-galaxy-systemd
-    version: 0.1.4
+    version: 2.1.0
   - name: usegalaxy-eu.dynmotd
     src: https://github.com/usegalaxy-eu/ansible-dynmotd
     version: 0.0.1
@@ -101,29 +91,41 @@ roles:
     version: 0.16.2
   - name: usegalaxy_eu.tiaas2
     src: https://github.com/usegalaxy-eu/ansible-tiaas2
-    version: 0.0.9
+    version: 2.1.3
   - name: usegalaxy-eu.autoupdates
     src: https://github.com/usegalaxy-eu/ansible-autoupdates
     version: 0.0.1
-  - name: usegalaxy-eu.htcondor
+  - name: usegalaxy_eu.htcondor
     src: https://github.com/usegalaxy-eu/ansible-htcondor
-    version: 0.0.5
   - name: usegalaxy-eu.update-hosts
     src: https://github.com/usegalaxy-eu/ansible-update-hosts
-    version: 0.0.1
+    version: 0.2.0
   - name: usegalaxy_eu.gie_proxy
     version: 0.0.2
-  - name: usegalaxy_eu.fs_maintenance
-    version: 0.0.2
-  - name: usegalaxy_eu.rabbitmqserver
-    version: 1.0.2
-    ##add for db
-  - name: galaxyproject.postgresql_objects
-    version: 1.1.0
-
   - name: usegalaxy-eu.autofs
     src: https://github.com/usegalaxy-eu/ansible-autofs
-    version: 0.0.9
-  - name: usegalaxy_eu.certbot
+    version: 1.0.0
+  - name: usegalaxy_eu.fs_maintenance
+    version: 0.0.5
+  - name: galaxyproject.tusd
+    version: 0.0.1
+  - name: usegalaxy_eu.rabbitmqserver
+    version: 1.4.4
+  - name: usegalaxy_eu.influxdbserver
+    version: 1.1.1
+  - name: usegalaxy_eu.flower
+    version: 0.3.1-alpha
+  - name: paprikant.beacon
+    src: https://github.com/Paprikant/ansible-role-beacon
+  - name: paprikant.beacon-importer
+    src: https://github.com/Paprikant/ansible-role-beacon_importer
+  - name: galaxyproject.miniconda
+    version: 0.3.1
+  - name: usegalaxy_eu.tpv_auto_lint
+    version: 0.4.3
+  - name: usegalaxy_eu.grafana_matrix_forwarder
+    version: 1.0.0
+  - name: geerlingguy.redis
+    version: 1.8.0
 
  
