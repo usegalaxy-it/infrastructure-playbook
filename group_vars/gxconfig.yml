@@ -2184,7 +2184,7 @@ base_app_main: &BASE_APP_MAIN
   #enable_beta_containers_interface: "True"
   # For handler heartbeats
   #tus test
-  tus_upload_store: /data/tus
+  tus_upload_store: /data/share/tus
 
 # galaxy.ini contents
 galaxy_config_hash:
