@@ -1,25 +1,52 @@
 ---
 - name: Central Manager
-  hosts: central-manager
+  hosts: central_manager
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"
   vars_files:
     - secret_group_vars/all.yml
+    - secret_group_vars/htcondor.yml
+  collections:
+    - devsec.hardening
+  pre_tasks:
+    - name: Install Dependencies
+      package:
+        name: rsync
+      become: true
+    - name: Set default version of Python
+      alternatives:
+        name: python
+        path: /usr/bin/python3
+        link: /usr/bin/python
+    - name: Disable firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        enabled: false
+        state: stopped
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+  post_tasks:
+    - name: Condor auto approve
+      ansible.builtin.cron:
+        name: condor_auto_approve
+        minute: 0
+        job: "/usr/bin/condor_token_request_auto_approve -netblock 192.168.0.0/24 -lifetime 3600" # change for your range
   roles:
-    - hostname
-    - usegalaxy-eu.dynmotd
+    - role: usegalaxy_eu.handy.os_setup 
+      vars:
+        enable_hostname: true
+        enable_powertools: true        # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_install_software: true  # Some extra admin tools (*top, vim, etc)
+        enable_remap_user: true        # remap 999:999 user
+    - usegalaxy-eu.dynmotd      # dynamic message-of-the-day login prompt indicating hostname
     - geerlingguy.repo-epel
-    - hxr.admin-tools
-      #    - influxdata.chrony
-      #    - hxr.monitor-email
-      #    - linuxhq.yum_cron
+    - influxdata.chrony         # sync time
+    # - hxr.monitor-email
+    - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - usegalaxy-eu.autofs
-      #- hxr.autofs
-      #    - ssh-host-sign
-    # Custom
-    - htcondor
-    # End Custom
-    #    - dj-wasabi.telegraf
-    - dev-sec.os-hardening
-    - dev-sec.ssh-hardening
+    # - ssh-host-sign
+    - usegalaxy_eu.htcondor
+    # - dj-wasabi.telegraf
+    - ssh_hardening
