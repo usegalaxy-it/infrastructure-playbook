@@ -20,19 +20,30 @@ autofs_conf_files:
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
 pip_install_dependencies:
-  # phdcomics
+  # # phdcomics
   - beautifulsoup4
-  # Used by code_files for apollo
-  - biopython
-  - bcbio-gff
-  # Needed for tool watching
+  # # Used by code_files for apollo
+  # - biopython
+  # - bcbio-gff
+  # # Needed for tool watching
   - watchdog
-  # Needed gxadmin graphs
-  - data_hacks
-  # for convenience
-  - uwsgitop
-  # used by reports
-  - WeasyPrint
+  # # Needed gxadmin graphs
+  # - data_hacks
+  # # used by reports
+  # - WeasyPrint
+  # - nbconvert
+  # - gitlab-arc-fs
+  # # Needed for usegalaxy-eu.vgcn-monitoring Telegraf role
+  # - pyyaml
+  # - GitPython
+  # - python-openstackclient
+  # # Needed by Gunicorn
+  - sentry-sdk
+  # # Install TPV
+  # - total-perspective-vortex # !!! CHECK not working if installed to galaxy env --> installed to VM by pip install ....
+  # - sqlalchemy
+  # - boltons
+  # - social-auth-core 
 
 yum_exclude_repos:
   - condor*
