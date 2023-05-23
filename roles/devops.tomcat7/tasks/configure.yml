@@ -4,17 +4,7 @@
 - name: Copy tomcat server.xml.
   template:
     src: server.xml.j2
-    dest: "{{ tomcat7_conf_dir }}/server.xml"
-    owner: root
-    group: root
-    mode: 0664
-    backup: yes
-  notify: restart tomcat
-
-- name: Copy tomcat tomcat-users.xml.
-  template:
-    src: tomcat-users.xml.j2
-    dest: "{{ tomcat7_conf_dir }}/tomcat-users.xml"
+    dest: /etc/tomcat/server.xml
     owner: root
     group: root
     mode: 0664
@@ -23,6 +13,6 @@
 
 - name: Ensure tomcat services is started and enabled at boot.
   service:
-    name: "{{ tomcat7_service }}"
+    name: tomcat
     state: started
     enabled: yes

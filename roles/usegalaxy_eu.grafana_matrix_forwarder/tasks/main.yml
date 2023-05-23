@@ -1,0 +1,49 @@
+---
+# tasks file for grafana-matrix-forwarder
+- name: Install GO
+  ansible.builtin.package:
+    name:
+      - go
+      - zip
+    state: present
+  become: yes
+
+- name: Create folder
+  ansible.builtin.file:
+    path: "{{ matrix_forwarder_dir }}"
+    state: directory
+    owner: "{{ matrix_forwarder_user }}"
+    group: "{{ matrix_forwarder_group }}"
+    mode: 0775
+  become: yes
+
+- name: Get files
+  ansible.builtin.unarchive:
+    src: https://gitlab.com/hectorjsmith/grafana-matrix-forwarder/-/archive/main/grafana-matrix-forwarder-main.zip
+    dest: "{{ matrix_forwarder_dir }}"
+    remote_src: yes
+
+- name: Compile the app from src
+  ansible.builtin.command:
+    chdir: "{{ matrix_forwarder_dir }}/grafana-matrix-forwarder-main/src"
+    cmd: go build app.go
+
+- name: C""
+  ansible.builtin.template:
+    src: matrix-forwarder.service.j2
+    dest: /etc/systemd/system/matrix-forwarder.service
+    mode: 0600
+    owner: root
+    group: root
+  become: yes
+  notify: daemon reload
+
+- name: Daemon reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable service
+  ansible.builtin.systemd:
+    name: matrix-forwarder
+    enabled: true
+    state: started

@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: "Include ansible-matrix-forwarder"
+      ansible.builtin.include_role:
+        name: "ansible-matrix-forwarder"
+      vars:
+        matrix_forwarder_user: root
+        matrix_forwarder_group: root

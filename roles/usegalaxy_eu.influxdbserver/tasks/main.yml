@@ -1,0 +1,11 @@
+---
+- name: Start the container
+  include_tasks: start.yml
+
+- name: Configure the container without SSL
+  include_tasks: configure.yml
+  when: influxdb_https_enabled == "false"
+
+- name: Configure the container with SSL
+  include_tasks: configure_ssl.yml
+  when: influxdb_https_enabled == "true"

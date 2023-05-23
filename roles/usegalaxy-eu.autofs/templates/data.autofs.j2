@@ -4,6 +4,6 @@
 {% if "discontinued" in autofs_mount_points %}
 /discontinued   /etc/auto.discontinued  nfsvers=3
 {% endif %}
-{% if "usrlocal" in autofs_mount_points %}
+{% if "usrlocal" in autofs_mount_points or "usrlocal_celerycluster" in autofs_mount_points %}
 /-              /etc/auto.usrlocal      nfsvers=3
 {% endif %}

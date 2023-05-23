@@ -1,0 +1,16 @@
+[Unit]
+Description=Grafana Matrix Forwarder
+After=network.target
+
+[Service]
+User={{ matrix_forwarder_user }}
+Group={{ matrix_forwarder_group }}
+ExecStart=/{{ matrix_forwarder_dir }}grafana-matrix-forwarder-main/src/app --user {{ matrix_forwarder_username }} \
+  --password {{ matrix_forwarder_password }} --homeserver {{ matrix_forwarder_homeserver }} \
+  -metricRounding {{ matrix_forwarder_metric_rounding }} -port {{ matrix_forwarder_port }} \
+  -host {{ matrix_forwarder_host }} -resolveMode {{ matrix_forwarder_resolve_mode }}
+Restart=on-failure
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target

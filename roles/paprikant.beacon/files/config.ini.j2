@@ -1,0 +1,125 @@
+# This file is used to configure the Beacon `/info` API endpoint
+# This file's default location is /beacon-python/beacon_api/conf/config.ini
+
+
+[beacon_general_info]
+# Name of the Beacon service
+title={{ beacon_info_title }}
+
+# Version of the Beacon implementation
+version=1.8.0
+
+# Author of this software
+author=CSC developers
+
+# Software license for this distribution
+license=Apache 2.0
+
+# Copyright holder for this software
+copyright=CSC - IT Center for Science
+
+# Documentation url for GA4GH Discovery
+docs_url={{ beacon_info_docs_url }}
+
+
+[beacon_api_info]
+# Version of the Beacon API specification this implementation adheres to
+apiVersion=1.1.0
+
+# Globally unique identifier for this Beacon instance
+beaconId={{ beacon_info_beacon_id }}
+
+# Description of this Beacon service
+description={{ beacon_info_description }}
+
+# Homepage for Beacon service
+url={{ beacon_info_url }}
+
+# Alternative URL for Beacon service for e.g. internal use cases
+alturl=
+
+# Datetime when this Beacon was created
+createtime={{ beacon_info_createtime }}
+ 1C
+# GA4GH Discovery type `groupId` and `artifactId`, joined in /service-info with apiVersion
+# See https://github.com/ga4gh-discovery/ga4gh-service-info for more information and possible values
+service_group={{ beacon_info_service_group }}
+service_artifact={{ beacon_info_service_artifact }}
+
+# GA4GH Discovery server environment, possible values: prod, dev, test
+environment={{ beacon_info_environment }}
+
+
+[organisation_info]
+# Globally unique identifier for organisation that hosts this Beacon service
+org_id={{ beacon_info_org_id }}
+
+# Name of organisation that hosts this Beacon service
+org_name={{ beacon_info_org_name }}
+
+# Description for organisation
+org_description={{ beacon_info_org_description }}
+
+# Visit address of organisation
+org_address={{ beacon_info_org_address }}
+
+# Homepage of organisation
+org_welcomeUrl={{ beacon_info_org_welcome_url }}
+
+# URL for contacting organisation
+org_contactUrl={{ beacon_info_org_contact_url }}
+
+# URL for organisation logo
+org_logoUrl={{ beacon_info_org_logo_url }}
+
+# Other organisational information
+org_info={{ beacon_info_org_info}}
+
+
+[handover_info]
+# The base url for all handovers
+# if this url is empty or commented, handover feature is disabled
+#drs=https://examplebrowser.org
+
+# Make the handovers 1- or 0-based
+handover_base = 1
+
+# Handovers for datasets
+dataset_paths=
+  Variants,browse the variants matched by the query,dataset/{dataset}/browser/variant/{chr}-{start}-{ref}-{alt}
+  Region,browse data of the region matched by the query,dataset/{dataset}/browser/region/{chr}-{start}-{end}
+  Data,retrieve information of the datasets,dataset/{dataset}/browser
+
+# Handovers for general beacon
+beacon_paths=
+  Project,retrieve information about the datasets,dataset/{dataset}
+
+
+[oauth2]
+# OAuth2 server that returns public key for JWT Bearer token validation
+server=https://login.elixir-czech.org/oidc/jwk
+
+# Authenticated Bearer token issuers, separated by commas if multiple
+issuers=https://login.elixir-czech.org/oidc/
+
+# Where to send access token to view user data (permissions, statuses, ...)
+userinfo=https://login.elixir-czech.org/oidc/userinfo
+
+# What the value of `AcceptedTermsAndPolicies` and `ResearcherStatus` must be in order
+# to be recognised as a Bona Fide researcher
+bona_fide_value=https://doi.org/10.1038/s41431-018-0219-y
+
+# String or URI to state the intended recipient of the token.
+# If your application is part of a larger network,
+# the network administrator should supply you with their `aud` identifier
+# in other cases, leave this empty or use the personal identifier given to you from your AAI
+# For multiple values, separate values with commas, e.g. aud1,aud2,aud3
+audience=
+
+# Verify `aud` claim of token.
+# If you want to validate the intended audience of a token, set this value to True.
+# This option requires you to also set a value for the `audience` key above.
+# If your service is not part of any network or AAI, but you still want to use tokens
+# produced by other AAI parties, set this value to False to skip the audience validation step
+verify_aud=False
+

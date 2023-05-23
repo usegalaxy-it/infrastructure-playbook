@@ -1,0 +1,14 @@
+{
+    "name": "example",
+    "datasetId": "example",
+    "description": "this is a meaningless example dataset to test beacon-python",
+    "assemblyId": "GRCh38",
+    "createDateTime": "2022-02-22 2:22:02",
+    "updateDateTime": "2022-02-22 2:22:02",
+    "version": "v1",
+    "externalUrl": "https://example.org/",
+    "accessType": "PUBLIC",
+    "callCount": 2222,
+    "variantCount": 2222
+}
+

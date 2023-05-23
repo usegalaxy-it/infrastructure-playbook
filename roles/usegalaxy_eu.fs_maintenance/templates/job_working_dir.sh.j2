@@ -1,13 +1,16 @@
 #!/bin/bash
 
-for path in "({{ fsm_scripts.job_working_dirs.paths | join(' ') }})"; do
-  for dir in $(path)/*/; do
-      dir=${dir%*/}      # remove the trailing "/"
-      echo "Cleaning $dir"
-      if [[ $dir == *"_cleared_contents"* ]]; then
-          tmpwatch -v -a --mtime --dirmtime {{ fsm_intervals.short }} "$dir"
-      else
-          tmpwatch -v -a --mtime --dirmtime {{ fsm_scripts.job_working_dirs.time }} "$dir"
-      fi
-  done;
+paths=( "{{ fsm_scripts.job_working_dirs.paths | join('" "') }}" )
+for path in "${paths[@]}"; do
+  if [ ! -z ${path+x} ]; then
+    for dir in $path/*/; do
+        dir=${dir%*/}      # remove the trailing "/"
+        echo "Cleaning $dir"
+        if [[ $dir == *"_cleared_contents"* ]]; then
+            tmpwatch -v -a --mtime --dirmtime {{ fsm_intervals.short }} "$dir"
+        else
+            tmpwatch -v -a --mtime --dirmtime {{ fsm_scripts.job_working_dirs.time }} "$dir"
+        fi
+    done;
+  fi
 done;

@@ -18,7 +18,8 @@
     mode: 0644
   loop:
     - { label: 'data', src: 'data.conf.j2', dest: '/etc/auto.data'}
-    - { label: 'usrlocal', src: 'usrlocal.conf.j2', dest: '/etc/auto.usrlocal'}    
+    - { label: 'usrlocal', src: 'usrlocal.conf.j2', dest: '/etc/auto.usrlocal'}
+    - { label: 'usrlocal_celerycluster', src: 'usrlocal.conf.j2', dest: '/etc/auto.usrlocal'}
     - { label: 'discontinued', src: 'discontinued.conf.j2', dest: '/etc/auto.discontinued'}
   when: "item.label in autofs_mount_points"
   notify: autofs restart

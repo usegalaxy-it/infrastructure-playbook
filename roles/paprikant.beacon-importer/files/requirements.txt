@@ -1,0 +1,11 @@
+argparse
+asyncio
+asyncpg
+datetime
+dataclasses
+numpy
+typing
+git+https://github.com/CSCfi/beacon-python
+bioblend
+cyvcf2
+

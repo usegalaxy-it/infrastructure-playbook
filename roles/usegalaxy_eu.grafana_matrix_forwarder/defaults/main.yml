@@ -1,0 +1,14 @@
+---
+# defaults file for grafana-matrix-forwarder
+matrix_forwarder_user: centos
+matrix_forwarder_group: centos
+
+matrix_forwarder_dir: "/home/{{ matrix_forwarder_user }}"
+
+matrix_forwarder_homeserver: https://matrix-client.matrix.org
+matrix_forwarder_username: "@exampleuser:matrix.org"
+matrix_forwarder_password: I_go_to_VAULT!
+matrix_forwarder_port: 6000
+matrix_forwarder_metric_rounding: 1
+matrix_forwarder_resolve_mode: message # choose from 'message', 'reaction' and 'reply'
+matrix_forwarder_host: 0.0.0.0

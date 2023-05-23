@@ -1,0 +1,23 @@
+galaxy_info:
+  author: Mira Kuntz
+  namespace: usegalaxy_eu
+  role_name: grafana_matrix_forwarder
+  description: Compiles hectorjsmith's grafana-matrix-forwarder and starts it as systemd process
+  company: UseGalaxy.eu
+
+  license: MIT
+
+  min_ansible_version: "2.4"
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all

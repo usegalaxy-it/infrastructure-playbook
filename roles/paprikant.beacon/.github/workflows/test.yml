@@ -1,0 +1,14 @@
+name: Test 
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Important: This sets up your GITHUB_WORKSPACE environment variable
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run tests on CentOS-Stream8 and rocky9
+        uses: gofrolist/molecule-action@v2

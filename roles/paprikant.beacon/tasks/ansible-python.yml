@@ -1,0 +1,23 @@
+# encountered at https://github.com/usegalaxy-eu/ansible-traefik/blob/main/tasks/ansible-python.yml
+---
+- name: Make sure sudo is available
+  ansible.builtin.package:
+    name: sudo
+    state: present
+
+- name: Install python docker
+  become: true
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    virtualenv: /ansible
+    virtualenv_command: python3 -m venv
+    virtualenv_site_packages: false
+    extra_args: --upgrade
+  loop:
+    - pip
+    - docker
+    - docker-compose
+
+- name: Set python interpreter
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: /ansible/bin/python

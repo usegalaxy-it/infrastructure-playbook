@@ -1,0 +1,73 @@
+---
+# tasks file for beacon
+#
+
+- name: Install python
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python39
+    - python3-pip
+    - python3-setuptools
+
+
+- name: Install cronie
+  ansible.builtin.package:
+    name: cronie
+    state: present
+
+- name: Ensure script user exists 
+  ansible.builtin.user:
+    name: "{{ script_user }}"
+    create_home: true
+    home: "{{ script_dir }}"
+    shell: /bin/bash
+
+- name: Provide requirements.txt
+  ansible.builtin.copy:
+    src: files/requirements.txt
+    dest: "{{ script_dir }}/requirements.txt"
+    mode: 0644
+
+- name: Provide importer script
+  ansible.builtin.copy:
+    src: files/beacon-import.py
+    dest: "{{ script_dir }}/beacon-import.py"
+    mode: 0755
+
+- name: Make sure git is installed
+  ansible.builtin.package:
+    name: git
+    state: present
+
+  # this is no mistake
+- name: Install python deps
+  ansible.builtin.pip:
+    requirements: "{{ script_dir }}/requirements.txt"
+    executable: /usr/bin/pip3.9
+
+- name: Create a cronjob for daily executions 
+  ansible.builtin.cron:
+    user: "{{ script_user }}"
+    name: "check dirs"
+    minute: "0"
+    hour: "5"
+    job: "{{ script_dir }}/beacon-import.py -k {{ galaxy_api_key }} -u {{ galaxy_api_url }} rebuild -H {{ beacon_db_host }} -P {{ beacon_db_port }} -U {{beacon_db_user }} -W {{ beacon_db_password }} -N {{ beacon_db_name }} || touch /tmp/job_error"
+
+- name: Make sure crond is started and enabled
+  ansible.builtin.systemd:
+    name: crond 
+    state: started
+    enabled: yes
+
+- name: Check for job errors
+  ansible.builtin.file:
+    path: /tmp/job_error
+    state: absent
+  register: error
+
+- name: Found an error
+  when: error.changed
+  ansible.builtin.fail:
+    msg: "There was an error in beacon import since last execution. Please check syslog for details"

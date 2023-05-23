@@ -1,0 +1,38 @@
+---
+- name: Ensure beacon settings directory is present
+  ansible.builtin.file:
+    path: "{{ bp_config_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Provide beacon config
+  ansible.builtin.template:
+    src: files/config.ini.j2
+    dest: "{{ bp_config_dir }}/config.ini"
+    owner: root
+    mode: 0644
+
+- name: Pull beacon-python image
+  community.docker.docker_image:
+    name: cscfi/beacon-python:{{ bp_version }}
+    source: pull
+    pull:
+      platform: amd64
+
+- name: Create beacon-python container
+  community.docker.docker_container:
+    name: "{{ bp_container_name }}"
+    image: cscfi/beacon-python:{{ bp_version }}
+    state: started
+    restart_policy: always
+    published_ports:
+      - "{{ bp_external_binding }}:5050"
+    volumes:
+      - "{{ bp_config_dir }}/config.ini:/usr/local/lib/python3.8/site-packages/beacon_api/conf/config.ini:ro"
+    env:
+      DATABASE_URL: "{{ postgres_container_name }}"
+      DATABASE_USER: "{{ postgres_user }}"
+      DATABASE_PASSWORD: "{{ postgres_pass }}"
+      DATABASE_NAME: "{{ postgres_database_name }}"
+    networks:
+      - name: "{{ shared_network_name }}"

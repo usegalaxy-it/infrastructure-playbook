@@ -1,0 +1,25 @@
+---
+- name: Set up pip
+  ansible.builtin.import_role:
+    name: geerlingguy.pip
+
+- name: Set up docker
+  ansible.builtin.import_role:
+    name: geerlingguy.docker
+
+# encountered at https://github.com/usegalaxy-eu/ansible-traefik/blob/main/tasks/main.yml#L3
+- name: Include EL9 python workaround
+  ansible.builtin.include_tasks: ansible-python.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Ensure docker network for the deployment exists
+  community.docker.docker_network:
+    name: "{{ shared_network_name }}"
+    state: present
+
+# This task will set
+- name: Set up postgres
+  ansible.builtin.include_tasks: "setup-postgres.yml"
+
+- name: Set up beacon-python
+  ansible.builtin.include_tasks: "setup-beacon-python.yml"

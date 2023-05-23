@@ -1,0 +1,37 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Check docker is up and running
+    shell: docker run hello-world
+    register: docker_hello_world
+    failed_when: docker_hello_world.rc > 0
+
+  - name: Provide example vcf
+    copy:
+      src: files/example.vcf
+      dest: /tmp
+
+  - name: Copy example vcf to beacon container
+    shell: docker cp /tmp/example.vcf beacon-python:/
+
+  - name: Provide example metadata
+    copy:
+      src: files/example_metadata.json
+      dest: /tmp
+
+  - name: Copy example vcf to beacon container
+    shell: docker cp /tmp/example_metadata.json beacon-python:/
+
+  - name: Check data can be imported to beacon
+    shell: docker exec -i beacon-python /bin/bash -c "beacon_init --min_allele_count 0 /example.vcf /example_metadata.json"
+    register: beacon_import
+    failed_when: beacon_import.rc > 0
+
+  - name: Check beacon api is responding
+    shell: curl localhost:5050
+    register: curl_index
+    failed_when: curl_index.rc > 0

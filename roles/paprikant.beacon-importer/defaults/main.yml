@@ -1,0 +1,17 @@
+---
+# defaults file for beacon
+
+# directory where the script lives
+#
+script_user: beacon-import
+script_dir: /opt/beacon-import/
+
+galaxy_api_key: 123213hiufho12h31h321
+galaxy_api_url: usegalaxy.eu
+
+
+beacon_db_host: localhost
+beacon_db_port: 5432
+beacon_db_user: beacon
+beacon_db_password: change_me!
+beacon_db_name: beacon

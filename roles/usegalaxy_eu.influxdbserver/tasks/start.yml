@@ -1,0 +1,23 @@
+---
+- name: Set container detail if standalone setup
+  set_fact:
+    influxdb_container_volumes: "{{ influxdb_container_standalone_setup_details.volumes|default([], true) }}"
+    influxdb_container_ports: "{{ influxdb_container_standalone_setup_details.ports|default([], true) }}"
+    influxdb_container_env: "{{ influxdb_container_standalone_setup_details.env|default({}, true) }}"
+  when: influxdb_setup == "standalone"
+
+- name: Start a influxdb container
+  community.docker.docker_container:
+    name: "{{ influxdb_container.name }}"
+    hostname: "{{ influxdb_container.hostname }}"
+    image: "{{ influxdb_container.image }}"
+    state: started
+    restart_policy: always
+    volumes: "{{ influxdb_container_volumes }}"
+    ports: "{{ influxdb_container_ports }}"
+    env: "{{ influxdb_container_env }}"
+
+- name: Pause for some seconds to give time to the container to come up
+  pause:
+    seconds: "{{ influxdb_container_pause }}"
+  when: influxdb_container_pause > 0

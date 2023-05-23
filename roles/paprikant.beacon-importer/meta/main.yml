@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Paprikant
+  namespace: paprikant
+  role_name: beacon_importer
+  description: a node that imports data to beacon
+  license: GPL-2.0-or-later
+  min_ansible_version: "2.1"
+  galaxy_tags:
+    - beacon
+    - python
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+
+dependencies: []

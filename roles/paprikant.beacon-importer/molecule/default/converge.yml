@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include paprikant.beacon_importer"
+      ansible.builtin.include_role:
+        name: "paprikant.beacon_importer"

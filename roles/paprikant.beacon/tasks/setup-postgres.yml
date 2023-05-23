@@ -1,0 +1,43 @@
+---
+- name: Ensure postgres data directory is present
+  ansible.builtin.file:
+    path: "{{ postgres_data_dir }}"
+    state: directory
+    mode: 0700
+
+- name: Ensure postgres init directory is present
+  ansible.builtin.file:
+    path: "{{ postgres_init_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Provide initial database file
+  ansible.builtin.copy:
+    src: files/init-postgres-db.sql
+    dest: "{{ postgres_init_dir }}"
+    mode: 0644
+
+- name: Pull postgres image
+  community.docker.docker_image:
+    name: postgres:{{ postgres_version }}
+    source: pull
+    pull:
+      platform: amd64
+
+- name: Create postgres container
+  community.docker.docker_container:
+    name: "{{ postgres_container_name }}"
+    image: postgres:{{ postgres_version }}
+    state: started
+    restart_policy: always
+    published_ports:
+      - "{{ postgres_external_binding }}:5432"
+    volumes:
+      - "{{ postgres_init_dir }}/init-postgres-db.sql:/docker-entrypoint-initdb.d/init-postgres-db.sql:ro"
+      - "{{ postgres_data_dir }}:/var/lib/postgresql/data"
+    env:
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_DB: "{{ postgres_database_name }}"
+      POSTGRES_PASSWORD: "{{ postgres_pass }}"
+    networks:
+      - name: "{{ shared_network_name }}"

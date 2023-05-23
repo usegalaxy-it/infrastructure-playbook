@@ -1,0 +1,67 @@
+---
+- name: Check need to create admin
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -execute "show users"
+  ignore_errors: true
+  register: should_create_admin
+  when: not ansible_check_mode
+
+- name: Create initial admin user
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -execute "CREATE USER "{{ item.username }}" WITH PASSWORD '"{{ item.password }}"' WITH ALL PRIVILEGES"
+  loop: "{{ influxdb_users.admin }}"
+  when: 'not ansible_check_mode and "unable to parse authentication credentials" not in should_create_admin.stdout'
+
+- name: Create users
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -username "{{ influxdb_users.admin[0].username }}" -password "{{ influxdb_users.admin[0].password }}"
+      -execute "CREATE USER "{{ item.username }}" WITH PASSWORD '"{{ item.password }}"' "
+  loop: "{{ influxdb_users.regular }}"
+  when: not ansible_check_mode
+
+- name: Create databases
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -username "{{ influxdb_users.admin[0].username }}" -password "{{ influxdb_users.admin[0].password }}"
+      -execute "CREATE DATABASE "{{ item }}""
+  loop: "{{ influxdb_databases }}"
+  when: not ansible_check_mode
+
+- name: create 2 week retention policy
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -username "{{ influxdb_users.admin[0].username }}" -password "{{ influxdb_users.admin[0].password }}"
+      -execute "CREATE RETENTION POLICY oneweek ON {{ item }} DURATION {{ influxdb_retention_policy.duration }} REPLICATION {{ influxdb_retention_policy.replication }} {{ influxdb_retention_policy.default }}"
+  loop: "{{ influxdb_retention_policy.databases }}"
+  when: not ansible_check_mode
+
+- name: Grant permissions to user galaxy
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -username "{{ influxdb_users.admin[0].username }}" -password "{{ influxdb_users.admin[0].password }}"
+      -execute "GRANT ALL ON {{ item }} TO {{ influxdb_users.regular[1].username }}"
+  loop: "{{ influxdb_databases }}"
+  when: not ansible_check_mode
+
+- name: Grant permissions to user grafana
+  community.docker.docker_container_exec:
+    container: "{{ influxdb_container.name }}"
+    command: |
+      influx -username "{{ influxdb_users.admin[0].username }}" -password "{{ influxdb_users.admin[0].password }}"
+      -execute "GRANT ALL ON {{ item }} TO {{ influxdb_users.regular[0].username }}"
+  loop:
+    - '_internal'
+    - galaxy
+    - galaxy_stats
+    - grt
+    - notifications
+  when: not ansible_check_mode

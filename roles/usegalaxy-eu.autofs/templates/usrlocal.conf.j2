@@ -3,3 +3,9 @@
 {{ row }}
 {% endfor %}
 {% endif %}
+
+{% if "usrlocal_celerycluster" in autofs_mount_points %}
+{% for row in autofs_conf_files.usrlocal_celerycluster %}
+{{ row }}
+{% endfor %}
+{% endif %}
