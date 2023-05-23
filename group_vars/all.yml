@@ -3,9 +3,9 @@
 certbot_auto_renew_hour: "{{ 23 |random(seed=inventory_hostname)  }}"
 certbot_auto_renew_minute: "{{ 59 |random(seed=inventory_hostname)  }}"
 certbot_install_method: virtualenv
-certbot_auto_renew: yes
+certbot_auto_renew: true
 certbot_auto_renew_user: root
-certbot_environment: production
+certbot_environment: staging # !!! CHECK -> change to production
 certbot_domains:
  - "{{ hostname }}"
 certbot_agree_tos: --agree-tos
@@ -22,47 +22,18 @@ nginx_selinux_allow_local_connections: true
 
 # Allow root login on all machines - TBD
 ssh_allow_root_with_key: true
-
 # Chrony
-#ITchrony_server: 'time.ruf.uni-freiburg.de iburst'
-#ITchrony_acquisitionport: 0
-#ITchrony_conf_file: '/etc/chrony.conf'
-#ITchrony_keyfile: '/etc/chrony.keys'
-
-#IT# Telegraf var
-#ITdc: ufr-rz
-#IT
-#IT# Telegraf
-#ITtelegraf_agent_package_state: latest
-#ITtelegraf_agent_output:
-#IT  - type: influxdb
-#IT    config:
-#IT    - urls = ["{{ influxdb.url }}"]
-#IT    - database = "{{ influxdb.node.database }}"
-#IT    - username = "{{ influxdb.node.username }}"
-#IT    - password = "{{ influxdb.node.password }}"
-#IT
-#ITtelegraf_plugins_default:
-#IT  - plugin: cpu
-#IT    config:
-#IT      - percpu = true
-#IT  - plugin: disk
-#IT  - plugin: kernel
-#IT  - plugin: processes
-#IT  - plugin: io
-#IT  - plugin: mem
-#IT  - plugin: system
-#IT  - plugin: swap
-#IT  - plugin: net
-#IT  - plugin: netstat
-#IT  - plugin: chrony
-#IT
-#ITtelegraf_plugins_extra: {}
-#IT
-# ???
-
+chrony_server: 'time.ruf.uni-freiburg.de iburst'
+chrony_acquisitionport: 0
+chrony_conf_file: '/etc/chrony.conf'
+chrony_keyfile: '/etc/chrony.keys'
 galaxy_uid: 999
 galaxy_gid: 999
+
+# OS Hardening
+os_auditd_max_log_file_action: rotate
+os_auditd_space_left: 500
+os_auditd_space_left_action: suspend
 
 # Automated yum updates
 yum_cron:
@@ -115,7 +86,7 @@ yum_cron_hourly:
 # Automated dnf updates
 # usegalaxy-eu.autoupdates role
 au_hostname: "{{ hostname }}"
-au_apply_updates: yes
+au_apply_updates: true
 au_random_sleep: 360
 
 # Do NOT disable ipv6
@@ -127,9 +98,9 @@ sysctl_config:
 # ALL hosts should have signed SSH keys.
 # ssh-host-(re)sign role
 ssh_host_key_cert_files:
-- /etc/ssh/ssh_host_rsa_key-cert.pub
-- /etc/ssh/ssh_host_ecdsa_key-cert.pub
-- /etc/ssh/ssh_host_ed25519_key-cert.pub
+  - /etc/ssh/ssh_host_rsa_key-cert.pub
+  - /etc/ssh/ssh_host_ecdsa_key-cert.pub
+  - /etc/ssh/ssh_host_ed25519_key-cert.pub
 
 # dev-sec.ssh-hardening role
 # Allow root login on all machines
@@ -145,4 +116,4 @@ sftp_enabled: true
 ssh_client_alive_interval: 600
 
 # Apollo env vars
-apollo_env: "GALAXY_WEBAPOLLO_URL={{ GALAXY_WEBAPOLLO_URL }} GALAXY_WEBAPOLLO_USER={{ GALAXY_WEBAPOLLO_USER }} GALAXY_WEBAPOLLO_PASSWORD={{ GALAXY_WEBAPOLLO_PASSWORD }} GALAXY_WEBAPOLLO_EXT_URL={{ GALAXY_WEBAPOLLO_EXT_URL }} GALAXY_SHARED_DIR={{ GALAXY_SHARED_DIR }} GALAXY_APOLLO_ORG_SUFFIX=id"
+# apollo_env: "GALAXY_WEBAPOLLO_URL={{ GALAXY_WEBAPOLLO_URL }} GALAXY_WEBAPOLLO_USER={{ GALAXY_WEBAPOLLO_USER }} GALAXY_WEBAPOLLO_PASSWORD={{ GALAXY_WEBAPOLLO_PASSWORD }} GALAXY_WEBAPOLLO_EXT_URL={{ GALAXY_WEBAPOLLO_EXT_URL }} GALAXY_SHARED_DIR={{ GALAXY_SHARED_DIR }} GALAXY_APOLLO_ORG_SUFFIX=id"
