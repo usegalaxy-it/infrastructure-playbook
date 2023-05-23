@@ -216,7 +216,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Override the Conda executable to use, it will default to the one on
   # the PATH (if available) and then to <conda_prefix>/bin/conda
-  #conda_exec: null
+  conda_exec: null
 
   # Pass debug flag to conda commands.
   #conda_debug: false
