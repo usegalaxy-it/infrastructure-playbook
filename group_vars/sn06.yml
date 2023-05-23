@@ -71,14 +71,7 @@ certbot_post_renewal: |
   systemctl restart nginx || true
 certbot_share_key_users:
   - nginx
-
-# AWS Credentials for certbot-route53
-#aws_cli_credentials:
-#  - access_key: "{{ aws_credentials.certbot.AWS_ACCESS_KEY }}"
-#    secret_key: "{{ aws_credentials.certbot.AWS_SECRET_KEY }}"
-#    homedir: /root
-#    owner: root
-#    group: root
+certbot_well_known_root: /srv/nginx/_well-known_root
 
 # rsync to nfs
 galaxy_nfs_location: /data/share
@@ -87,11 +80,11 @@ galaxy_nfs_location: /data/share
 nginx_servers:
   - redirect-ssl
 nginx_ssl_servers:
-  - galaxyproject
-  - telescope-ssl
+  # - galaxyproject
+  # - telescope-ssl
   - galaxy-main
-  - galaxy-ie-main
-  - galaxy-test-proxy
+  # - galaxy-ie-main
+  # - galaxy-test-proxy
 nginx_conf_http:
   client_max_body_size: 1g
   proxy_cache_path: "/tmp/nginx-cache levels=1:2 keys_zone=STATIC:10m inactive=24h  max_size=1g"
