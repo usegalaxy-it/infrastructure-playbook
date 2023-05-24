@@ -154,26 +154,24 @@ galaxy_systemd_memory_limit_workflow: 15
 
 
 # HTCondor
-condor_host: "{{ central_manager_ip }}"
-condor_allow_write: "*"
+condor_role: submit
+condor_host: "{{ central_manager_ip }}" # !!! CHECK CHANGE PORT TO 9618 IN TF
+condor_password: '{{ condor_pass }}'
+condor_allow_write: "*" # !!! CHECK
 condor_daemons:
   - MASTER
   - SCHEDD
-  - NEGOTIATOR
-condor_allow_negotiator: "$(ALLOW_WRITE)"
-condor_allow_administrator: "$(ALLOW_NEGOTIATOR)"
-
-#condor_system_periodic_hold: "{{ 30 * 24 * 60 * 60}}"
-#condor_system_periodic_remove:  "{{ 2 * 24 * 60 * 60}}"
+  # - NEGOTIATOR
+condor_allow_negotiator: $(ALLOW_WRITE)
+condor_allow_administrator: $(ALLOW_NEGOTIATOR)
 condor_network_interface: eth0
-condor_filesystem_domain: galaxy-it
-condor_uid_domain: galaxy-it
+condor_fs_domain: usegalaxy.it
+condor_uid_domain: usegalaxy.it
+condor_enforce_role: false
 condor_extra: |
-  MASTER_UPDATE_INTERVAL = 150
-  SCHEDD_INTERVAL = 60
-  JOB_START_COUNT = 250
-  JOB_START_DELAY = 0
-  CLAIM_WORKLIFE = 120
+  ALLOW_ADVERTISE_MASTER = $(ALLOW_WRITE)
+  ALLOW_ADVERTISE_STARTD = $(ALLOW_WRITE)
+  ALLOW_ADVERTISE_SCEHDD = $(ALLOW_WRITE)
 
 # gie_proxy
 gie_proxy_dir: "{{ galaxy_root }}/gie-proxy/proxy"
