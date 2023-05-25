@@ -115,7 +115,7 @@ server {
 	}
 
 	location ~ ^/plugins/(?<plug_type>[^/]+?)/((?<vis_d>[^/_]*)_?)?(?<vis_name>[^/]*?)/static/(?<static_file>.*?)$ {
-		alias /opt/galaxy/config/plugins/$plug_type/;
+		alias /opt/galaxy/server/config/plugins/$plug_type/;
 		try_files $vis_d/${vis_d}_${vis_name}/static/$static_file
 				  $vis_d/static/$static_file =404;
 	}
