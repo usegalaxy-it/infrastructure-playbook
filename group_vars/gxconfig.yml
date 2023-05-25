@@ -500,7 +500,7 @@ base_app_main: &BASE_APP_MAIN
   # visualization plugins.  The path is relative to the Galaxy root dir.
   # To use an absolute path begin the path with '/'.  This is a
   # comma-separated list.
-  #visualization_plugins_directory: config/plugins/visualizations
+  #visualization_plugins_directory: "{{ galaxy_server_dir }}/config/plugins/visualizations"
 
   # Interactive tour directory: where to store interactive tour
   # definition files. Galaxy ships with several basic interface tours
@@ -508,7 +508,7 @@ base_app_main: &BASE_APP_MAIN
   # specified here. The path is relative to the Galaxy root dir.  To use
   # an absolute path begin the path with '/'.  This is a comma-separated
   # list.
-  tour_config_dir: "config/plugins/tours,{{ galaxy_tour_dir }}"
+  tour_config_dir: "{{ galaxy_server_dir }}/config/plugins/tours,{{ galaxy_tour_dir }}"
 
   # Webhooks directory: where to store webhooks - plugins to extend the
   # Galaxy UI. By default none will be loaded.  Set to
@@ -516,7 +516,7 @@ base_app_main: &BASE_APP_MAIN
   # an absolute path begin the path with '/'.  This is a comma-separated
   # list. Add test/functional/webhooks to this list to include the demo
   # webhooks used to test the webhook framework.
-  webhooks_dir: config/plugins/webhooks, "{{ galaxy_webhook_dir }}"
+  webhooks_dir: "{{ galaxy_server_dir }}/config/plugins/webhooks, {{ galaxy_webhook_dir }}"
 
   # Each job is given a unique empty directory as its current working
   # directory. This option defines in what parent directory those
@@ -1672,7 +1672,7 @@ base_app_main: &BASE_APP_MAIN
   # Directory to check out for toolbox tool panel views. The path is
   # relative to the Galaxy root dir.  To use an absolute path begin the
   # path with '/'.  This is a comma-separated list.
-  #panel_views_dir: config/plugins/activities
+  #panel_views_dir: "{{ galaxy_server_dir }}/config/plugins/activities"
 
   # Definitions of static toolbox panel views embedded directly in the
   # config instead of reading YAML from directory with panel_views_dir.
@@ -1945,7 +1945,7 @@ base_app_main: &BASE_APP_MAIN
   # The syntax, available resolvers, and documentation of their options
   # is explained in detail in the documentation:
   # https://docs.galaxyproject.org/en/master/admin/dependency_resolvers.html
-  #dependency_resolvers: null
+  dependency_resolvers: null
 
   # Alternative representation of various dependency resolution
   # parameters. Takes the dictified version of a DependencyManager
