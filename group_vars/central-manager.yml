@@ -6,10 +6,13 @@ nfs_kernel_tuning: True
 
 autofs_mount_points:
   - data
+  - usrlocal
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid       {{ nfs_server_ip }}:/data/share
+    - share       -rw,hard,nosuid         {{ nfs_server_ip }}:/data/share
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid         {{ nfs_server_ip }}:/opt/galaxy
 
 
 # HTCondor
