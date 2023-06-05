@@ -227,26 +227,26 @@ base_app_main: &BASE_APP_MAIN
 
   # Override the Conda executable to use, it will default to the one on
   # the PATH (if available) and then to <conda_prefix>/bin/conda
-  conda_exec: null
+  # conda_exec: null
 
   # Pass debug flag to conda commands.
   #conda_debug: false
 
   # conda channels to enable by default
   # (https://conda.io/docs/user-guide/tasks/manage-channels.html)
-  conda_ensure_channels: "conda-forge,bioconda"
+  conda_ensure_channels: 'iuc,conda-forge,bioconda,defaults,bgruening'
 
   # Use locally-built conda packages.
   #conda_use_local: false
 
   # Set to true to instruct Galaxy to look for and install missing tool
   # dependencies before each job runs.
-  conda_auto_install: true
+  conda_auto_install: false
 
   # Set to true to instruct Galaxy to install Conda from the web
   # automatically if it cannot find a local copy and conda_exec is not
   # configured.
-  conda_auto_init: true
+  # conda_auto_init: true
 
   # You must set this to true if conda_prefix and job_working_directory
   # are not on the same volume, or some conda dependencies will fail to
