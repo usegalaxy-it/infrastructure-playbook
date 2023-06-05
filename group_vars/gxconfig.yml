@@ -314,13 +314,13 @@ base_app_main: &BASE_APP_MAIN
   # Monitor dynamic job rules. If changes are found, rules are
   # automatically reloaded. Takes the same values as the 'watch_tools'
   # option.
-  watch_job_rules: false
+  watch_job_rules: 'auto'
 
   # Monitor a subset of options in the core configuration file (See
   # RELOADABLE_CONFIG_OPTIONS in lib/galaxy/config/__init__.py).  If
   # changes are found, modified options are automatically reloaded.
   # Takes the same values as the 'watch_tools' option.
-  watch_core_config: false
+  watch_core_config: 'auto'
 
   # Monitor the interactive tours directory specified in the
   # 'tour_config_dir' option. If changes are found, modified tours are
@@ -516,14 +516,14 @@ base_app_main: &BASE_APP_MAIN
   # an absolute path begin the path with '/'.  This is a comma-separated
   # list. Add test/functional/webhooks to this list to include the demo
   # webhooks used to test the webhook framework.
-  webhooks_dir: "{{ galaxy_server_dir }}/config/plugins/webhooks, {{ galaxy_webhook_dir }}"
+  webhooks_dir: "{{ galaxy_server_dir }}/config/plugins/webhooks,{{ galaxy_webhook_dir }}"
 
   # Each job is given a unique empty directory as its current working
   # directory. This option defines in what parent directory those
   # directories will be created.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  job_working_directory: /data/share/jwd/main
+  job_working_directory: /data/share/jwd
 
   # Mako templates are compiled as needed and cached for reuse, this
   # directory is used for the cache
@@ -537,11 +537,11 @@ base_app_main: &BASE_APP_MAIN
 
   # Number of checks to execute if check_job_script_integrity is
   # enabled.
-  #check_job_script_integrity_count: 35
+  check_job_script_integrity_count: 35
 
   # Time to sleep between checks if check_job_script_integrity is
   # enabled (in seconds).
-  #check_job_script_integrity_sleep: 0.25
+  check_job_script_integrity_sleep: 1
 
   # Set the default shell used by non-containerized jobs Galaxy-wide.
   # This defaults to bash for all jobs and can be overridden at the
@@ -710,7 +710,7 @@ base_app_main: &BASE_APP_MAIN
   # and tool error reports.  We recommend using a string in the
   # following format: Galaxy Project <galaxy-no-reply@example.com>. If
   # not configured, '<galaxy-no-reply@HOSTNAME>' will be used.
-  email_from: "European Galaxy Team <galaxy-no-reply@informatik.uni-freiburg.de>"
+  # email_from: "European Galaxy Team <galaxy-no-reply@informatik.uni-freiburg.de>"
 
   # This text will be inserted at the end of the activation email's
   # message, before the 'Your Galaxy Team' signature.
@@ -833,7 +833,7 @@ base_app_main: &BASE_APP_MAIN
   # This flag enables an AWS cost estimate for every job based on their
   # runtime matrices. CPU, RAM and runtime usage is mapped against AWS
   # pricing table. Please note, that those numbers are only estimates.
-  # aws_estimate: true
+  aws_estimate: true
 
   # Enable InteractiveTools.
   interactivetools_enable: true
@@ -858,7 +858,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Prefix to use in the formation of the subdomain or path for
   # interactive tools
-  #interactivetools_prefix: interactivetool
+  # interactivetools_prefix: interactivetool
 
   # Shorten the uuid portion of the subdomain or path for interactive
   # tools. Especially useful for avoiding the need for wildcard
@@ -1079,7 +1079,7 @@ base_app_main: &BASE_APP_MAIN
   # proxy in front of Galaxy - please ensure this header remains intact
   # to protect your users.  Uncomment and leave empty to not set the
   # `X-Frame-Options` header.
-  x_frame_options: ""
+  x_frame_options: ''
 
   # nginx can also handle file uploads (user-to-Galaxy) via
   # nginx_upload_module. Configuration for this is complex and explained
@@ -1945,7 +1945,7 @@ base_app_main: &BASE_APP_MAIN
   # The syntax, available resolvers, and documentation of their options
   # is explained in detail in the documentation:
   # https://docs.galaxyproject.org/en/master/admin/dependency_resolvers.html
-  dependency_resolvers: null
+  # dependency_resolvers: null
 
   # Alternative representation of various dependency resolution
   # parameters. Takes the dictified version of a DependencyManager
@@ -2276,7 +2276,7 @@ base_app_main: &BASE_APP_MAIN
   # either, Galaxy will automatically create and use a separate sqlite
   # database located in your <galaxy>/database folder (indicated in the
   # commented out line below).
-  # amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_password_galaxy }}@{{ rabbitmq_dns }}:5671/galaxy?ssl=1" # !!! CHECK ADD
+  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_password_galaxy }}@{{ rabbitmq_dns }}:5671/galaxy?ssl=1" # !!! CHECK ADD
   # amqp_internal_connection: "amqp://galaxy:{{ rabbitmq_password_galaxy }}@localhost:5672/galaxy"
 
   # Configuration options passed to Celery.
