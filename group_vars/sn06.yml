@@ -278,6 +278,9 @@ galaxy_dirs:
   - "{{ galaxy_webhook_dir }}"
   - "{{ galaxy_tour_dir }}"
   - "{{ galaxy_log_dir }}"
+  - "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/" # !!! CHECK
+  - "{{ tpv_mutable_dir }}"
+  - "{{ tpv_config_dir }}"
 
 galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
@@ -297,9 +300,9 @@ galaxy_jobconf:
     max_grab: 16
     ready_window_size: 32
   plugins:
-    - id: dynamic
-      params:
-        rules_module: "usegalaxy"
+    # - id: dynamic
+    #   params:
+    #     rules_module: "usegalaxy"
     - id: condor
       load: galaxy.jobs.runners.condor:CondorJobRunner
     - id: local
@@ -307,8 +310,8 @@ galaxy_jobconf:
     # - id: pulsar_embedded
     #   load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
     #   pulsar_config: "{{ galaxy_config_dir }}/pulsar_app.yml"
-  default_destination: condor
-  # default_destination: tpv_dispatcher # !!! CHECK
+  # default_destination: condor
+  default_destination: tpv_dispatcher
   destinations:
     - id: local
       runner: local
@@ -316,72 +319,70 @@ galaxy_jobconf:
       runner: condor
       params:
         tmp_dir: true
-    - local:
-      runner: local
-    # - id: tpv_dispatcher # !!! CHECK
-    #   runner: dynamic
-    #   type: python
-    #   function: map_tool_to_destination
-    #   rules_module: tpv.rules
-    #   tpv_config_files:
-    #     # - "{{ tpv_config_dir }}/tpv_rules_local.yml"
-    #     # - "{{ galaxy_config_dir }}/total_perspective_vortex/tool_defaults.yml" # !!! CHECK AND ADD LATER
-    #     # - "https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml"
-    #     # - "{{ galaxy_config_dir }}/total_perspective_vortex/destinations.yml"
-    #     # - "{{ galaxy_config_dir }}/total_perspective_vortex/tools.yml"
-    #     # - "{{ galaxy_config_dir }}/total_perspective_vortex/interactive_tools.yml"
-    #     # - "{{ galaxy_config_dir }}/total_perspective_vortex/users.yml"
-    #     # - "{{ galaxy_config_dir }}/total_perspective_vortex/roles.yml"
-  # resources: # !!! CHECK
-  #   default: default
-  #   groups:
-  #     default: []
-  #     # testing: [cores, time]
+    - id: tpv_dispatcher
+      runner: dynamic
+      type: python
+      function: map_tool_to_destination
+      rules_module: tpv.rules
+      tpv_config_files:
+        # - "{{ tpv_config_dir }}/tpv_rules_local.yml"
+        - "{{ tpv_config_dir }}/tool_defaults.yml"
+        - "https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml"
+        - "{{ tpv_config_dir }}/destinations.yml"
+        - "{{ tpv_config_dir }}/tools.yml"
+        - "{{ tpv_config_dir }}/interactive_tools.yml"
+        # - "{{ tpv_config_dir }}/users.yml"
+        # - "{{ tpv_config_dir }}/roles.yml"
+  resources:
+    default: default
+    groups:
+      default: []
+      testing: [cores, time]
   tools:
     # TODO(hxr): implement validation that checks that every destination
     # used here is defined above.
     - id: upload1
-      destination: gateway_singlerun
-    - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
-      execution: local
+      destination: local
+    # - class: local # these special tools that aren't parameterized for remote execution - expression tools, upload, etc
+    #   execution: local
     - id: keras_train_and_eval
       resources: usegpu
     - id: gmx_sim
       resources: usegpu
-    # - id: testing
-    #   environment: tpv_dispatcher
-    #   resources: testing
+    - id: testing
+      environment: tpv_dispatcher
+      resources: testing
   resources:
     - id: usegpu
-      names: gpu
+      names: [gpu]
   limits:
-    - type: "destination_user_concurrent_jobs"
-      id: "condor_upload"
-      value: "10"
+    # - type: "destination_user_concurrent_jobs"
+    #   id: "condor_upload"
+    #   value: "10"
     - type: "walltime"
       value: "'148:00:00'"
     # Limited time for Interactive tools
-    - type: "destination_user_concurrent_jobs"
-      value: "4"
-      id: "interactive_pulsar"
-    - type: "destination_user_concurrent_jobs"
-      value: "4"
-      id: "interactive_pulsar_hi_mem"
+    # - type: "destination_user_concurrent_jobs"
+    #   value: "4"
+    #   id: "interactive_pulsar"
+    # - type: "destination_user_concurrent_jobs"
+    #   value: "4"
+    #   id: "interactive_pulsar_hi_mem"
     - type: "output_size"
       value: "'300GB'"
-    - type: "registered_user_concurrent_jobs"
-      value: "30"
-    - type: "anonymous_user_concurrent_jobs"
-      value: "3"
-    - type: "destination_user_concurrent_jobs"
-      id: "sh_fdid_condor_docker_ie"
-      value: "3"
-    - type: "destination_user_concurrent_jobs"
-      id: "sh_fdid_condor_docker_ie_interactive"
-      value: "3"
-    - type: "destination_user_concurrent_jobs"
-      id: "sh_fdid_condor_intensive_jobs"
-      value: "10"
+    # - type: "registered_user_concurrent_jobs"
+    #   value: "30"
+    # - type: "anonymous_user_concurrent_jobs"
+    #   value: "3"
+    # - type: "destination_user_concurrent_jobs"
+    #   id: "sh_fdid_condor_docker_ie"
+    #   value: "3"
+    # - type: "destination_user_concurrent_jobs"
+    #   id: "sh_fdid_condor_docker_ie_interactive"
+    #   value: "3"
+    # - type: "destination_user_concurrent_jobs"
+    #   id: "sh_fdid_condor_intensive_jobs"
+    #   value: "10"
 
 galaxy_config: "{{ galaxy_config_hash }}"
 
@@ -389,41 +390,53 @@ galaxy_config_file_src_dir: files/galaxy
 galaxy_config_files:
   # TODO(bgruening): sync this with cvmfs? can we have ours be just a small additional builds.txt?
   - src: "{{ galaxy_config_file_src_dir }}/config/builds.txt"
-    dest: "{{ galaxy_config['app:main']['builds_file_path'] }}"
+    dest: "{{ galaxy_config['galaxy']['builds_file_path'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/data_manager_conf.xml"
-    dest: "{{ galaxy_config['app:main']['data_manager_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['data_manager_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/datatypes_conf.xml"
-    dest: "{{ galaxy_config['app:main']['datatypes_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['datatypes_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/dependency_resolvers_conf.xml"
-    dest: "{{ galaxy_config['app:main']['dependency_resolvers_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['dependency_resolvers_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/email_domain_blocklist.conf"
-    dest: "{{ galaxy_config['app:main']['email_domain_blocklist_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['email_domain_blocklist_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/user_preferences_extra_conf.yml"
-    dest: "{{ galaxy_config['app:main']['user_preferences_extra_conf_path'] }}"
-  - src: "{{ galaxy_config_file_src_dir }}/config/job_resource_params_conf.xml"
-    dest: "{{ galaxy_config['app:main']['job_resource_params_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['user_preferences_extra_conf_path'] }}"
+  - src: "{{ galaxy_config_file_src_dir }}/config/job_resource_params_conf.xml" # for tvp
+    dest: "{{ galaxy_config['galaxy']['job_resource_params_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/trs_servers_conf.yml"
-    dest: "{{ galaxy_config['app:main']['trs_servers_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['trs_servers_config_file'] }}"
   # test? Unknown if this works.
   - src: "{{ galaxy_config_file_src_dir }}/config/error_report.yml"
     dest: "{{ galaxy_config_dir }}/error_report.yml"
-  - src: "{{ galaxy_config_file_src_dir }}/config/job_metrics_conf.xml"
-    dest: "{{ galaxy_config['app:main']['job_metrics_config_file'] }}"
+  - src: "{{ galaxy_config_file_src_dir }}/config/job_metrics_conf.yml"
+    dest: "{{ galaxy_config['galaxy']['job_metrics_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/migrated_tools_conf.xml"
-    dest: "{{ galaxy_config['app:main']['migrated_tools_config'] }}"
-  - src: "{{ galaxy_config_file_src_dir }}/config/object_store_conf.xml"
-    dest: "{{ galaxy_config['app:main']['object_store_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['migrated_tools_config'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/tool_data_table_conf.xml"
     dest: "{{ galaxy_config_dir }}/tool_data_table_conf.xml"
   - src: "{{ galaxy_config_file_src_dir }}/config/tool_sheds_conf.xml"
-    dest: "{{ galaxy_config['app:main']['tool_sheds_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['tool_sheds_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/ucsc_build_sites.txt"
-    dest: "{{ galaxy_config['app:main']['ucsc_build_sites'] }}"
+    dest: "{{ galaxy_config['galaxy']['ucsc_build_sites'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/echo_main_env.xml"
     dest: "{{ galaxy_config_dir }}/echo_main_env.xml"
+  - src: "{{ galaxy_config_file_src_dir }}/tpv/tool_defaults.yml" # !!! CHECK AND ADD LATER
+    dest: "{{ tpv_mutable_dir }}/tool_defaults.yml"
+  - src: "{{ galaxy_config_file_src_dir }}/tpv/destinations.yml"
+    dest: "{{ tpv_mutable_dir }}/destinations.yml"
+  - src: "{{ galaxy_config_file_src_dir }}/tpv/tools.yml"
+    dest: "{{ tpv_mutable_dir }}/tools.yml"
+  # - src: "{{ galaxy_config_file_src_dir }}/tpv/roles.yml"
+  #   dest: "{{ tpv_mutable_dir }}/roles.yml"
+  - src: "{{ galaxy_config_file_src_dir }}/tpv/interactive_tools.yml"
+    dest: "{{ tpv_mutable_dir }}/interactive_tools.yml"
+  # - src: "{{ galaxy_config_file_src_dir }}/tpv/users.yml"
+  #   dest: "{{ tpv_mutable_dir }}/users.yml"
+  # - src: "{{ galaxy_config_file_src_dir }}/config/tpv_rules_local.yml"
+  #   dest: "{{ tpv_config_dir }}/tpv_rules_local.yml"
 
   #- src: files/galaxy/config/job_resource_params_conf.xml
-  #dest: "{{ galaxy_config['app:main']['job_resource_params_file'] }}"
+  #dest: "{{ galaxy_config['galaxy']['job_resource_params_file'] }}"
   #- src: files/galaxy/config/pulsar_stampede_actions.yml
   #dest: "{{ galaxy_config_dir }}/pulsar_stampede_actions.yml"
   #- src: files/galaxy/config/pulsar_bridges_actions.yml
@@ -436,33 +449,45 @@ galaxy_config_files:
 galaxy_config_template_src_dir: templates/galaxy
 galaxy_config_templates:
   - src: "{{ galaxy_config_template_src_dir }}/config/build_sites.yml.j2"
-    dest: "{{ galaxy_config['app:main']['build_sites_config_file'] }}"
-  - src: "{{ galaxy_config_template_src_dir }}/config/global_host_filters.py.j2"
-    dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py"
-  - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.xml.j2"
-    dest: "{{ galaxy_config_dir }}/job_conf.xml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.xml.j2"
-    dest: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2"
-    dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
-  - src: "{{ galaxy_config_template_src_dir }}/config/uwsgi.ini.j2"
-    dest: "{{ galaxy_config_dir }}/uwsgi.ini"
-  #  - src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml"
-  #    dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
-  #  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
-  #    dest: "{{ galaxy_config['app:main']['oidc_backends_config_file'] }}"
+    dest: "{{ galaxy_config['galaxy']['build_sites_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/global_host_filters.py.j2" # !!! CHECK
+    dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py" # !!! CHECK
+  - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.yml.j2"
+    dest: "{{ galaxy_config_dir }}/job_conf.yml"
+  - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.yml.j2"
+    dest: "{{ galaxy_config_dir }}/container_resolvers_conf.yml"
+  - src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2" # !!! CHECK
+    dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py" # !!! CHECK
+  - src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml"
+    dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
+  #   dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
   - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
-    dest: "{{ galaxy_config['app:main']['oidc_config_file'] }}"
-  #  - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
-  #    dest: "{{ galaxy_config_dir }}/grt.yml"
-  #  - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
-  #    dest: "{{ galaxy_config_dir }}/pulsar_app.yml"
+    dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
+  #   dest: "{{ galaxy_config_dir }}/grt.yml"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
+  #   dest: "{{ galaxy_config_dir }}/pulsar_app.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/tool_conf.xml.j2"
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/galaxy_workflow_scheduler.j2"
     dest: "{{ galaxy_config_dir }}/workflow_schedulers_conf.xml"
-#  - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2"
-#    dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2"
+  #   dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.xml.j2"
+  #   dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
+
+# TPV 
+tpv_config_dir_name: total_perspective_vortex
+galaxy_local_tools:
+  - testing.xml
+galaxy_job_config_file: "{{ galaxy_config_dir }}/job_conf.yml"
+galaxy_extra_privsep_dirs:
+  - "{{ tpv_mutable_dir }}"
+tpv_privsep: true
+tpv_mutable_dir: "{{ galaxy_mutable_data_dir }}/{{ tpv_config_dir_name }}"
+tpv_config_dir: "{{ galaxy_config_dir }}/{{ tpv_config_dir_name }}"
+
 # TUS
 tus_upload_store: /data/share/tus
 galaxy_tusd_port: 1080
