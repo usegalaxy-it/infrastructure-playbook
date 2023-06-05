@@ -1,5 +1,5 @@
 ---
-- name: Galaxy
+- name: UseGalaxy
   hosts: sn06
   become: true
   become_user: root
@@ -16,9 +16,11 @@
     # refactoring / multiple certbot runs.
     #
     #
-    # The best way to expand them is to run the playbook, it will leave a message with the command it would have run (look for `skipped, since /etc/letsencrypt/renewal/usegalaxy.eu.conf exists`)
+    # The best way to expand them is to run the playbook, it will leave a message with 
+    # the command it would have run (look for `skipped, since /etc/letsencrypt/renewal/usegalaxy.eu.conf exists`)
     #
-    # Then take this command to the command line (root@sn04) and run it with `--expand`. E.g. (DO NOT COPY PASTE (in case the config changes))
+    # Then take this command to the command line (root@sn04) and run it with `--expand`. 
+    # E.g. (DO NOT COPY PASTE (in case the config changes))
     #
     # $ /opt/certbot/bin/certbot certonly --non-interactive --dns-route53 \
     #     -m security@usegalaxy.eu --agree-tos -d 'usegalaxy.eu,*.usegalaxy.eu,galaxyproject.eu,*.galaxyproject.eu,*.interactivetoolentrypoint.interactivetool.usegalaxy.eu,*.interactivetoolentrypoint.interactivetool.live.usegalaxy.eu,*.interactivetoolentrypoint.interactivetool.test.usegalaxy.eu' --expand
@@ -34,19 +36,20 @@
     server_names:
       - '{{ hostname }}'
   vars_files:
-          #IT- group_vars/tiaas.yml             # All of the training infrastructure
-      #IT- group_vars/custom-sites.yml      # Subdomains are listed here
+    # - group_vars/tiaas.yml             # All of the training infrastructure
+    # - group_vars/custom-sites.yml      # Subdomains are listed here
     - group_vars/gxconfig.yml          # The base galaxy configuration
     - group_vars/toolbox.yml           # User controlled toolbox
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
+    - secret_group_vars/htcondor.yml   # condor secrets
+  collections:
+    - devsec.hardening
   handlers:
-          #- name: Restart Galaxy
-          #  shell: |
-          #    echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
-    - name: Restart Galaxy #it temporally removed " sudo -u galaxy /usr/bin/galaxy-sync-to-nfs "
+    - name: Restart Galaxy # sync nfs to document
       shell: |
-        echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+        echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+# echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
   pre_tasks:
     - name: Install Packages for Rocky Linux
       dnf:
@@ -89,154 +92,156 @@
         append: yes
       loop:
         - "{{ galaxy_user.name }}"
-          # - "telegraf"
+        # - "telegraf"
     - name: Install utilities
       package:
         name: [ 'mosh' ]
-      become: yes
+      become: true
     - name: Install pdf export dependencies
       package:
         name: [ 'cairo', 'cairo-devel', 'pango-devel' ]
-      become: yes
-    #it
-    - name: create local tool directory and give right permissions
+      become: true
+########## .it ##########
+    - name: Create local tool directory and give right permissions
       file:
         path: /usr/local/tools
         owner: galaxy
         group: galaxy
         state: directory
         mode: '0755'
-    - name: create local tool directory and give right permissions
+    - name: Create local tool directory and give right permissions
       file:
         path: /opt/galaxy/server/compliance.log
         owner: galaxy
         group: galaxy
         state: touch
         mode: '0755'
+##########################
   roles:
-    - hostname
-
-    ## remap user
-    - usegalaxy-eu.remap-user
-
-    ## Dependencies
-    # - geerlingguy.repo-epel # Install EPEL
-    #- usegalaxy-eu.powertools # geerlingguy.repo-epel role doesn't enable (yet) PowerTools repository
-    #yum install epel-release
-    #yum install dnf-plugins-core
-    #yum config-manager --set-enabled powertools
-
-      # We want to exclude a couple of packages as we will fetch those
-    # dependencies from other repos: condor, node/npm
-    #T- hxr.exclude-repo
+    ## Starting configuration of the operating system
+    - role: usegalaxy_eu.handy.os_setup
+      vars:
+        enable_hostname: true
+        enable_powertools: true       # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: true       # change existing 999:999 user
+        enable_exclude_packages: true
+        enable_pam_limits: true       # Prevent out of control processes
+        enable_install_software: true # Some extra admin tools (*top, vim, etc)
+    ## Dependencies 
+    - geerlingguy.repo-epel # Install EPEL 
+    
     - usegalaxy-eu.autoupdates # keep all of our packages up to date
-      #    - hxr.admin-tools # Some extra admin tools (*top, vim, etc)
-      #    - influxdata.chrony # Keep our time in sync.
+    - influxdata.chrony # Keep our time in sync. 
 
-    ## Filesystems
-    #T- hxr.autofs # Setup the mount points which will be needed later
-    #BUG- usegalaxy-eu.autofs
-    - galaxyproject.cvmfs # Galaxy datasets
+    ## Filesystem
+    - usegalaxy-eu.autofs 
+    - galaxyproject.cvmfs # Galaxy datasets 
 
-    ## Monitoring
-    #- hxr.monitor-cluster
-    #- hxr.monitor-email
-    #- hxr.monitor-uwsgi
-    #- hxr.monitor-galaxy-journalctl
-    #- usegalaxy-eu.monitor-disk-access-time
-    #- usegalaxy-eu.monitoring
+    # Monitoring
+    # - hxr.monitor-cluster
+    # - hxr.monitor-email
+    # - hxr.monitor-uwsgi
+    # - hxr.monitor-galaxy-journalctl
+    # - usegalaxy-eu.monitor-disk-access-time
+    # - usegalaxy-eu.monitoring
 
-    # Setup Galaxy user
+    ## Setup Galaxy user
     - role: galaxyproject.galaxy
       vars:
-        galaxy_create_user: yes
-        galaxy_manage_clone: no
-        galaxy_manage_paths: yes
-        galaxy_manage_static_setup: no
-        galaxy_manage_mutable_setup: no
-        galaxy_manage_database: no
-        galaxy_fetch_dependencies: no
-        galaxy_build_client: no
-    # The bashrc needs to be created for several later features.
+        galaxy_create_user: true
+        galaxy_manage_clone: false
+        galaxy_manage_download: false
+        galaxy_manage_existing: true
+        galaxy_manage_paths: true
+        galaxy_manage_static_setup: false
+        galaxy_manage_mutable_setup: false
+        galaxy_manage_database: false
+        galaxy_fetch_dependencies: false
+        galaxy_build_client: false
+
+    ## The bashrc needs to be created for several later features.
     - usegalaxy-eu.bashrc
 
     ## Setup docker
-    - geerlingguy.docker
+    - geerlingguy.docker 
 
-    # HTCondor Cluster setup
-    #IT change
-    # - role: usegalaxy-eu.htcondor
-    #  condor_package_label: condor-all
+    ## HTCondor Cluster setup
+    - usegalaxy_eu.htcondor
 
-    - htcondor
-
-    # Misc.
-    - role: hxr.galaxy-nonreproducible-tools
-      become: yes
+    ## Misc.
+    - role: hxr.galaxy-nonreproducible-tools 
+      become: true
       become_user: galaxy
-   #T - hxr.galaxy-misc           # fix-ftp - make users FTP directories
-    - usegalaxy-eu.dynmotd      # nicer MOTD/welcome message
-      #T- usegalaxy-eu.rsync-to-nfs # sync codebase to NFS
-    - role: usegalaxy-eu.webhooks     # Clone webhook repository
-      become: yes
+    - usegalaxy-eu.dynmotd      # nicer MOTD/welcome message 
+    - role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS 
+      # vars:
+      #   execute_galaxy_sync_to_nfs: true
+    - role: usegalaxy-eu.webhooks     # Clone webhook repository 
+      become: true
       become_user: galaxy
-    - role: usegalaxy-eu.tours        # Clone tour repository
-      become: yes
+    - role: usegalaxy-eu.tours        # Clone tour repository 
+      become: true
       become_user: galaxy
 
     ## SSL / Security
     # https://en.wikipedia.org/wiki/Trust_on_first_use
-    #T- ssh-host-sign # Sign the server host key to prevent TOFU for SSH
-    #- hxr.aws-cli   # Setup the AWS client that will be needed for route53 authentication of certbot. MUST come before nginx role
+    # - ssh-host-sign # Sign the server host key to prevent TOFU for SSH
+    # - hxr.aws-cli   # Setup the AWS client that will be needed for route53 authentication of certbot. MUST come before nginx role
 
     ## GALAXY
     - hxr.postgres-connection
-   #T - galaxyproject.gxadmin
-    - role: usegalaxy-eu.certbot
-      vars: 
-        certbot_install_method: virtualenv
-        certbot_virtualenv_command: virtualenv-3
-
+    # - galaxyproject.gxadmin
+    # - galaxyproject.tiaas2
+    # - role: usegalaxy-eu.certbot # !!! CHECK not present in usegalaxy
+    #   vars: 
+    #     certbot_install_method: virtualenv
     - role: usegalaxy-eu.nginx
-      ## TODO move under monitoring + telegraf.
-      #- usegalaxy-eu.galaxy-slurp
-      #- usegalaxy_eu.tiaas2
-      #- usegalaxy-eu.gapars-galaxy
-    # The REAL galaxy role
+
+    ## TODO move under monitoring + telegraf.
+    # - usegalaxy-eu.galaxy-slurp
+    # - usegalaxy-eu.gapars-galaxy
+
+    ## The REAL galaxy role
     - role: galaxyproject.galaxy
       vars:
-        galaxy_create_user: yes
-        galaxy_manage_clone: yes
-        galaxy_manage_static_setup: yes
-        galaxy_manage_mutable_setup: yes
-        galaxy_manage_database: yes
-        galaxy_fetch_dependencies: yes
-        galaxy_build_client: yes
+        galaxy_create_user: true
+        galaxy_manage_clone: true
+        galaxy_manage_download: false
+        galaxy_manage_existing: false
+        galaxy_manage_static_setup: true
+        galaxy_manage_mutable_setup: true
+        galaxy_manage_database: true # !!! CHECK
+        galaxy_fetch_dependencies: true
+        galaxy_build_client: true
 
     ## Extras!
-    #T - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
-      #T- hxr.install-to-venv                # Some extra packages our site needs.
-    - usegalaxy-eu.galaxy-systemd        # Manage the Galaxy processes with SystemD
-      #T- usegalaxy-eu.update-hosts          # Update hosts list
-   #T - usegalaxy-eu.gie_proxy             # Setup the NodeJS proxy for GxIT
-      #- usegalaxy-eu.subdomain-themes      # Custom subdomain themes
-    - usegalaxy-eu.limits                # Prevent out of control processes
-  #T  - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
-    - usegalaxy-eu.logrotate             # Rotate logs
-    - usegalaxy-eu.error-pages           # Copy the NGINX error pages
+    # - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
+    - hxr.install-to-venv                # Some extra packages our site needs.
+    - usegalaxy-eu.galaxy-systemd        # Manage the Galaxy processes with SystemD 
+    # - usegalaxy-eu.update-hosts          # Update hosts list
+    - usegalaxy_eu.gie_proxy             # Setup the NodeJS proxy for GxIT 
+    # - usegalaxy-eu.subdomain-themes      # Custom subdomain themes
+    - usegalaxy-eu.limits                # Prevent out of control processes 
+    # - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
+    - usegalaxy-eu.logrotate             # Rotate logs 
+    - usegalaxy-eu.error-pages           # Copy the NGINX error pages 
+    
+    ## TUSD
+    - galaxyproject.tusd
+
     # Various ugly fixes
-#T    - usegalaxy-eu.fix-oidc                  # Workaround for https://github.com/galaxyproject/galaxy/issues/8244
-#T    - usegalaxy-eu.fix-unscheduled-jobs      # Workaround for ???
-#T    - usegalaxy-eu.fix-unscheduled-workflows # Workaround for https://github.com/galaxyproject/galaxy/issues/8209
-#T    - usegalaxy-eu.fix-stuck-handlers        # Restart handlers to prevent several classes of issues
-#T    - usegalaxy-eu.log-cleaner               # do not retain journalctl logs, they are unnecessary/risky under GDPR
-#T      #T- usegalaxy-eu.fix-ancient-ftp-data      # Remove FTP data older than 3 months
-#T    - usegalaxy-eu.galaxy-procstat           # Some custom telegraf monitoring that's templated
-#T    - usegalaxy-eu.fix-missing-api-keys      # Workaround for IE users not have a key set.
-#T    - usegalaxy-eu.fix-user-quotas           # Automatically recalculate user quotas and attribute ELIXIR quota to ELIXIR AAI user on a regular basis
+    # - usegalaxy-eu.fix-unscheduled-jobs # Workaround for ???
+    # - usegalaxy-eu.fix-unscheduled-workflows # Workaround for https://github.com/galaxyproject/galaxy/issues/8209
+    # - usegalaxy-eu.fix-stuck-handlers # Restart handlers to prevent several classes of issues
+    # - usegalaxy-eu.log-cleaner # do not retain journalctl logs, they are unnecessary/risky under GDPR
+    # - usegalaxy-eu.fix-ancient-ftp-data # Remove FTP data older than 3 months, create FTP user directories
+    # - usegalaxy-eu.galaxy-procstat # Some custom telegraf monitoring that's templated
+    # - usegalaxy-eu.fix-user-quotas # Automatically recalculate user quotas and attribute ELIXIR quota to ELIXIR AAI user on a regular basis
+    # - usegalaxy-eu.fix-stop-ITs # remove IT jobs after 24h from queue
+    - usegalaxy_eu.tpv_auto_lint 
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
-    #- dj-wasabi.telegraf
-    #- dev-sec.os-hardening
-    - dev-sec.ssh-hardening
-    - galaxyproject.tusd
+    # - dj-wasabi.telegraf
+    # - os_hardening    
+    # - ssh_hardening   # !!! CHECK ADD
+    # - usegalaxy-eu.vgcn-monitoring
