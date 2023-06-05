@@ -48,54 +48,39 @@
       shell: |
         echo 'Manual zergling restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
   pre_tasks:
-
-    - name: Set default version to Python2 for yum module
-      alternatives:
-        name: python
-        path: /usr/bin/python2
-        link: /usr/bin/python
-    - name: solve python macros and devel conflict
+    - name: Install Packages for Rocky Linux
+      dnf:
+        name:
+          - langpacks-en
+          - glibc-all-langpacks
+          - epel-release
+        state: present
+    - name: Install python3-wheel-wheel 
       yum:
-        enablerepo: cr
-        update_cache: true
-        disable_gpg_check: true
+        name: python3-wheel-wheel
+        enablerepo: devel
+        state: present
+    - name: Install python3-virtualenv
+      yum:
+        name: python3-virtualenv
+        enablerepo: epel-release
+        state: present
     - name: Install Dependencies
       package:
-        name: [ 'git', 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python3','make' ] #itaddmake
-      become: yes
-
+        name: [ 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python3', 'make', 'pip',  'gcc', 'openssl-devel', 'bzip2', 'bzip2-devel', 'libffi-devel', 'zlib-devel', 'xz-devel', 'sqlite-devel', 'wget', 'tar', 'acl' ]
+      become: true
+    - name: '[EL] Install virtualenv for python3'
+      pip:
+        name: virtualenv
+        executable: pip3
+      when: ansible_os_family == "RedHat"
+    - name: Update ca-certificates
+      yum:
+        name: ca-certificates
+        state: latest
     - name: Disable SELinux
       selinux:
         state: disabled
-    - name: Install epel-release and dnf-plugins-core for installing powertools on centos8 #it add
-      package:
-        name: [ 'epel-release', 'dnf-plugins-core' ]
-      become: yes
-      #  - name: enable powertools #itadd
-      #    shell:
-      #      cmd: yum config-manager --set-enabled powertools 
-      #    become: yes
-    - name: change 
-      ansible.posix.sysctl:
-        name: net.core.somaxconn
-        value: '1024'
-        state: present
-    - name: Install compiling nginx dependencies
-      package:
-        name: ['openssl-devel', 'libxslt-devel', 'gd', 'gd-devel', 'perl-ExtUtils-Embed', 'pcre-devel','gcc' ]
-      become: yes
-      #    - name: nginx upload module addition
-      #      script: files/nginx_upload/nginx_upload.sh 1.14.1 2.3.0
-      #      args:
-      #        executable: /usr/bin/bash
-      #        chdir: /home/centos
-
-      #- name: Set default version of Python to python3
-      #  alternatives:
-      #    name: python
-      #    path: /usr/bin/python3
-      #    link: /usr/bin/python
-
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:
