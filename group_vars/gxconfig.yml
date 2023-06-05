@@ -141,7 +141,7 @@ base_app_main: &BASE_APP_MAIN
   # directory exists before using 'objects' as the default.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  #file_path: objects
+  file_path: /data/share/datasets
 
   # Where temporary files are stored. It must be accessible at the same
   # path on any cluster nodes that will run Galaxy jobs, unless using
