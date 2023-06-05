@@ -168,10 +168,6 @@ condor_network_interface: eth0
 condor_fs_domain: usegalaxy.it
 condor_uid_domain: usegalaxy.it
 condor_enforce_role: false
-condor_extra: |
-  ALLOW_ADVERTISE_MASTER = $(ALLOW_WRITE)
-  ALLOW_ADVERTISE_STARTD = $(ALLOW_WRITE)
-  ALLOW_ADVERTISE_SCEHDD = $(ALLOW_WRITE)
 
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
