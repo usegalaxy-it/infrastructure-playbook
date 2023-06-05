@@ -35,7 +35,6 @@ server {
 		internal;
 	}
 
-
 	# Move to remote storage, hopefully hammer local disk slightly less?
 	#client_body_temp_path  /data/dnb01/nginx_upload_store/;
 	client_body_buffer_size 1024m;
@@ -80,42 +79,52 @@ server {
 		}
 	}
 
-	location /_job_files {
-		if ($request_method != POST) {
-				rewrite "" /api/jobs/$arg_job_id/files last;
-		}
-	}
 
-	location /_upload_job_files_done {
-		internal;
-		rewrite "" /api/jobs/$arg_job_id/files;
+	location /api/upload/resumable_upload {
+		# Disable request and response buffering
+		proxy_request_buffering  off;
+		proxy_buffering          off;
+		proxy_http_version       1.1;
+
+		# Add X-Forwarded-* headers
+        proxy_set_header X-Forwarded-Host   $host;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+
+        proxy_set_header Upgrade            $http_upgrade;
+        proxy_set_header Connection         "upgrade";
+        client_max_body_size        0;
+        proxy_pass http://localhost:{{ galaxy_tusd_port }}/files;
 	}
 
 	location /phinch {
 		root /opt;
 	}
 
-	location /static/welcome.html {
-		alias /opt/multisite-css/$host.html;
-	}
 
 	location /static {
 		alias {{ galaxy_server_dir }}/static;
 		expires 24h;
+		location /static/vgcn {
+				autoindex on;
+				alias /data/dnb01/vgcn/;
+		}
+		location /static/share {
+				autoindex on;
+				alias /data/dnb01/share/;
+		}
 	}
 
 	location /static/style {
-		alias /home/galaxy/galaxy/server/static/style;
+		alias {{ galaxy_server_dir }}/static/style;
 		expires 24h;
 	}
 
 	location /robots.txt {
 		alias {{ galaxy_server_dir }}/static/robots.txt;
-		expires 24h;
 	}
 
 	location ~ ^/plugins/(?<plug_type>[^/]+?)/((?<vis_d>[^/_]*)_?)?(?<vis_name>[^/]*?)/static/(?<static_file>.*?)$ {
-		alias /opt/galaxy/server/config/plugins/$plug_type/;
+		alias {{ galaxy_server_dir }}/config/plugins/$plug_type/;
 		try_files $vis_d/${vis_d}_${vis_name}/static/$static_file
 				  $vis_d/static/$static_file =404;
 	}
@@ -149,22 +158,20 @@ server {
 		proxy_pass_request_headers on;
 	}
 
-	##### adding TUS
-    location /api/upload/resumable_upload {
-        # Disable request and response buffering
-        proxy_request_buffering     off;
-        proxy_buffering             off;
-        proxy_http_version          1.1;
+	{{ gapars_nginx_config }}
 
-        # Add X-Forwarded-* headers
-        proxy_set_header X-Forwarded-Host   $host;
-        proxy_set_header X-Forwarded-Proto  $scheme;
+	location /external/phdcomics/ {
+		proxy_pass http://phdcomics.com/;
+		# The comics are extremely cacheable. No sense waiting for a server from USA to respond.
+		proxy_cache           STATIC;
+		proxy_cache_valid     200  10d;
+		proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+	}
 
-        proxy_set_header Upgrade            $http_upgrade;
-        proxy_set_header Connection         "upgrade";
-        client_max_body_size        0;
-        proxy_pass http://localhost:{{ galaxy_tusd_port }}/files;
-    }
+	# For GTN in Galaxy Webhook
+	location /training-material/ {
+		proxy_pass https://training.galaxyproject.org/training-material/;
+	}
 
 	resolver 8.8.8.8 8.8.4.4 valid=300s;
 	resolver_timeout 5s;
