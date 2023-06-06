@@ -426,8 +426,6 @@ galaxy_config_files:
     dest: "{{ tpv_mutable_dir }}/interactive_tools.yml"
   # - src: "{{ galaxy_config_file_src_dir }}/tpv/users.yml"
   #   dest: "{{ tpv_mutable_dir }}/users.yml"
-  # - src: "{{ galaxy_config_file_src_dir }}/config/tpv_rules_local.yml"
-  #   dest: "{{ tpv_config_dir }}/tpv_rules_local.yml"
 
   #- src: files/galaxy/config/job_resource_params_conf.xml
   #dest: "{{ galaxy_config['galaxy']['job_resource_params_file'] }}"
@@ -473,8 +471,6 @@ galaxy_config_templates:
 
 # TPV 
 tpv_config_dir_name: total_perspective_vortex
-galaxy_local_tools:
-  - testing.xml
 galaxy_job_config_file: "{{ galaxy_config_dir }}/job_conf.yml"
 galaxy_extra_privsep_dirs:
   - "{{ tpv_mutable_dir }}"
