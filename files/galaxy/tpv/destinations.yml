@@ -113,42 +113,53 @@ destinations:
         - docker
         - condor-tpv
 
-  pulsar_mira_tpv:
-    inherits: pulsar_default
-    runner: pulsar_mira_runner
-    max_accepted_cores: 8
-    max_accepted_mem: 15
-    min_accepted_gpus: 0
-    max_accepted_gpus: 0
-    scheduling:
-      require:
-        - mira-pulsar
+  # pulsar_mira_tpv:
+  #   inherits: pulsar_default
+  #   runner: pulsar_mira_runner
+  #   max_accepted_cores: 8
+  #   max_accepted_mem: 15
+  #   min_accepted_gpus: 0
+  #   max_accepted_gpus: 0
+  #   scheduling:
+  #     require:
+  #       - mira-pulsar
 
-  pulsar_sanjay_tpv:
-    inherits: pulsar_default
-    runner: pulsar_sanjay_runner
-    max_accepted_cores: 8
-    max_accepted_mem: 15
-    min_accepted_gpus: 0
-    max_accepted_gpus: 0
-    scheduling:
-      require:
-        - sanjay-pulsar
+  # pulsar_sanjay_tpv:
+  #   inherits: pulsar_default
+  #   runner: pulsar_sanjay_runner
+  #   max_accepted_cores: 8
+  #   max_accepted_mem: 15
+  #   min_accepted_gpus: 0
+  #   max_accepted_gpus: 0
+  #   scheduling:
+  #     require:
+  #       - sanjay-pulsar
 
-  pulsar_sk01_tpv:
-    inherits: pulsar_default
-    runner: pulsar_eu_sk01
-    max_accepted_cores: 8
-    max_accepted_mem: 16
-    min_accepted_gpus: 0
-    max_accepted_gpus: 0
-    scheduling:
-      require:
-        - sk-pulsar
+  # pulsar_sk01_tpv:
+  #   inherits: pulsar_default
+  #   runner: pulsar_eu_sk01
+  #   max_accepted_cores: 8
+  #   max_accepted_mem: 16
+  #   min_accepted_gpus: 0
+  #   max_accepted_gpus: 0
+  #   scheduling:
+  #     require:
+  #       - sk-pulsar
 
-  pulsar_it_tpv:
+  # pulsar_it01_tpv:
+  #   inherits: pulsar_default
+  #   runner: pulsar_eu_it01
+  #   max_accepted_cores: 16
+  #   max_accepted_mem: 31
+  #   min_accepted_gpus: 0
+  #   max_accepted_gpus: 0
+  #   scheduling:
+  #     require:
+  #       - it-pulsar
+
+  remote_cluster_mq_2wdtrue_it03:
     inherits: pulsar_default
-    runner: pulsar_eu_it01
+    runner: pulsar_eu_it03
     max_accepted_cores: 16
     max_accepted_mem: 31
     min_accepted_gpus: 0
@@ -156,39 +167,43 @@ destinations:
     scheduling:
       require:
         - it-pulsar
+    params:
+      outputs_to_working_directory: true
+      singularity_volumes: "$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,$job_directory/inputs:rw,/cvmfs/data.galaxyproject.org:ro"
 
-  pulsar_fr01_tpv:
-    runner: pulsar_eu_fr01
-    inherits: pulsar_default
-    max_accepted_cores: 8
-    max_accepted_mem: 63
-    min_accepted_gpus: 0
-    max_accepted_gpus: 0
-    scheduling:
-      require:
-        - fr-pulsar
 
-  pulsar_be_tpv:
-    inherits: pulsar_default
-    runner: pulsar_eu_be01
-    max_accepted_cores: 8
-    max_accepted_mem: 15
-    min_accepted_gpus: 0
-    max_accepted_gpus: 0
-    scheduling:
-      require:
-        - be-pulsar
+  # pulsar_fr01_tpv:
+  #   runner: pulsar_eu_fr01
+  #   inherits: pulsar_default
+  #   max_accepted_cores: 8
+  #   max_accepted_mem: 63
+  #   min_accepted_gpus: 0
+  #   max_accepted_gpus: 0
+  #   scheduling:
+  #     require:
+  #       - fr-pulsar
 
-  pulsar_cz01_tpv:
-    inherits: pulsar_default
-    runner: pulsar_eu_cz01
-    max_accepted_cores: 32
-    max_accepted_mem: 128
-    scheduling:
-      require:
-        - cz-pulsar
-      accept:
-        - singularity
+  # pulsar_be_tpv:
+  #   inherits: pulsar_default
+  #   runner: pulsar_eu_be01
+  #   max_accepted_cores: 8
+  #   max_accepted_mem: 15
+  #   min_accepted_gpus: 0
+  #   max_accepted_gpus: 0
+  #   scheduling:
+  #     require:
+  #       - be-pulsar
+
+  # pulsar_cz01_tpv:
+  #   inherits: pulsar_default
+  #   runner: pulsar_eu_cz01
+  #   max_accepted_cores: 32
+  #   max_accepted_mem: 128
+  #   scheduling:
+  #     require:
+  #       - cz-pulsar
+  #     accept:
+  #       - singularity
 
   #############################
   # LOCAL CONDOR DESTINATIONS #
