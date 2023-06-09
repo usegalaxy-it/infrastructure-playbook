@@ -2278,8 +2278,7 @@ base_app_main: &BASE_APP_MAIN
   # either, Galaxy will automatically create and use a separate sqlite
   # database located in your <galaxy>/database folder (indicated in the
   # commented out line below).
-  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_password_galaxy }}@{{ rabbitmq_dns }}:5671/galaxy?ssl=1" # !!! CHECK ADD
-  # amqp_internal_connection: "amqp://galaxy:{{ rabbitmq_password_galaxy }}@localhost:5672/galaxy"
+  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@{{ rabbitmq_dns }}:5671/galaxy?ssl=1" # !!! CHECK ADD
 
   # Configuration options passed to Celery.
   # To refer to a task by name, use the template `galaxy.foo` where
