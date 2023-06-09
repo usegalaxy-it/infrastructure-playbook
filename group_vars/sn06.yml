@@ -281,6 +281,9 @@ galaxy_dirs:
   - "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/" # !!! CHECK
   - "{{ tpv_mutable_dir }}"
   - "{{ tpv_config_dir }}"
+  - "{{ galaxy_nfs_location }}/persisted_data" # pulsar
+  - "{{ galaxy_nfs_location }}/staging"
+  - "{{ galaxy_nfs_location }}/tools/"
 
 galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
