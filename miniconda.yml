@@ -1,0 +1,29 @@
+---
+- name: Install Miniconda
+  hosts: sn06
+  become: true
+  # become_user: galaxy
+  vars:
+    miniconda_prefix: "/data/share/tool_deps/_conda" # !!! CHECK CHANGE VAR
+    miniconda_manage_dependencies: true
+    galaxy_conda_create_env: true
+    galaxy_conda_env_packages:
+      - python=3.9
+      - pip
+      - virtualenv
+  post_tasks:
+    # - name: Copy miniconda to shared dir
+    #   ansible.builtin.copy:
+    #     src: /usr/local/tools/_conda
+    #     dest: /data/share/tool_deps/
+    - name: Change ownership
+      file:
+        path: '{{ miniconda_prefix }}'
+        owner: galaxy
+        group: galaxy
+        state: directory
+        recurse: true
+  roles:
+    - galaxyproject.miniconda
+
+    # !!! CHECK install miniconda and change the conda_prefix to this one 
