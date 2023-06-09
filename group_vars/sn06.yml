@@ -42,11 +42,6 @@ pip_install_dependencies:
   # - python-openstackclient
   # # Needed by Gunicorn
   - sentry-sdk
-  # # Install TPV
-  # - total-perspective-vortex # !!! CHECK not working if installed to galaxy env --> installed to VM by pip install ....
-  # - sqlalchemy
-  # - boltons
-  # - social-auth-core 
 
 yum_exclude_repos:
   - condor*
@@ -68,7 +63,7 @@ monitor_condor_split_util: true
 # Certbot
 certbot_virtualenv_package_name: python3-virtualenv
 #certbot_dns_provider:
-certbot_auth_method: --standalone
+certbot_auth_method: --webroot
 certbot_domains: "{{ server_names }}"
 certbot_post_renewal: |
   systemctl restart nginx || true
@@ -214,7 +209,6 @@ galaxy_system_group: galaxy
 galaxy_log_dir: "/var/log/galaxy"
 galaxy_layout: root-dir
 galaxy_separate_privileges: true
-# galaxy_privsep_user: galaxy # !!! CHECK
 galaxy_manage_paths: true
 galaxy_build_client: false
 galaxy_restart_handler_name: Restart Galaxy
