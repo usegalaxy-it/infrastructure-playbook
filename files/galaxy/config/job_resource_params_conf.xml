@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <parameters>
     <param label="Use GPU resources" name="gpu" type="select" help="Choose if use GPU resources or not">
-        <option value="1">No (default)</option>
-        <option value="2">Yes</option>
+        <option value="0">No (default)</option>
+        <option value="1">Yes</option>
     </param>
 </parameters>
-
-<!-- !!! CHECK cores betweem 0 and 1 or 1 and 2 as in training -->
