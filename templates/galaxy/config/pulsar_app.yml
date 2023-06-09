@@ -1,6 +1,7 @@
 private_token: {{ pulsar_private_token }}
-staging_directory: /data/share/dnb/pulsar_staging/
-tool_dependency_dir: /data/share/dnb/pulsar_dependencies/
+persistence_directory: /data/share/persisted_data
+staging_directory: /data/share/staging
+tool_dependency_dir: /data/share/tools/
 
 managers:
   _default_:
