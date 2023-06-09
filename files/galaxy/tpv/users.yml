@@ -17,8 +17,9 @@ users:
       require:
         - cz-pulsar
         - pulsar
-  khmelevskayapv@gmail.com:
+  pulsar-test@test.com:
     scheduling:
       require:
         - it-pulsar
         - pulsar
+        - upload
