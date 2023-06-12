@@ -1,51 +1,64 @@
-# REWRITE usegalaxy.eu infrastructure playbook
+# usegalaxy.eu infrastructure playbook
 
-Ansible playbook for UseGalaxy.it infrastructure. For the playbook
-managing Galaxy itself, see https://github.com/galaxyproject/usegalaxy-playbook/
+Ansible playbooks for UseGalaxy.it infrastructure.   
+<!-- For the playbook managing Galaxy itself, see https://github.com/galaxyproject/usegalaxy-playbook/ -->
 
-## Running Notes
+## Provisioned infrastructure
 
-This probably won't work for your infra. We require everything to run on
-CentOS7. We make no effort in this repository that the playbooks can be re-used
-on other infrastructure as-is.
+At least 5 VMs are required:
+| VM                       | Image      | Tested on                          |
+| ------------------------ | ---------- | ---------------------------------- |
+| Galaxy VM                | RockyLinux | RockyLinux 9.1                     |
+| NFS server               | vggp       | vggp-v60-j225-1a1df01ec8f3-dev.raw |
+| HTCondor Central Manager | vggp       | vggp-v60-j225-1a1df01ec8f3-dev.raw |
+| Database                 | RockyLinux | RockyLinux 9.1                     |
+| Rabbit-MQ server         | RockyLinux | RockyLinux 9.1                     |
 
-A virtualenv located at .venv is *required*:
+vggp images are located at https://usegalaxy.eu/static/vgcn/  
+Recommended to use the latest main version.
+
+
+## Requiremets
+
+On the control VM you need to install:
+1. Virtual environment
 
 ```
-virtualenv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv master_env/
 ```
+2. Ansible [core 2.11.3] in the venv
 
-Install the ansible roles that are not tracked in this repository
+```
+. master_env/bin/activate
+pip install wheel ansible-core==2.11.3
+```
+3. Install the ansible roles that are not tracked in this repository
 
 ```
 ansible-galaxy install -r requirements.yml
 ```
 
-And then you can run playbooks. No venv activation is required for this step.
+## Infrastructure-playbook
 
-```
-make cvmfs CHECK=1
-```
+`hosts` inventory file contains each infrastructure element created using Terraform (IP adresses of machines and FQDNs)  
+Make sure, there are FQDNs for Galaxy and RabbitMQ VMs.  
 
-### Role naming convention
+### Configuration playbooks in order of execution
 
-There is none. `hxr.` used to mean Helena's custom code that isn't reusable but the division is not a good one. It could all be renamed `usegalaxy-eu.`
+1. `database.yml` creates PostgresQL database. Variables:  
+   - `secret_group_vars/db-main.yml` (sensitive data)
+2. `mount.yml` creates shared directories.
+3. `central-manager.yml` creates and configures HTCondor Central Manager. Variabes:  
+   - `secret_group_vars/htcondor.yml` (sensitive data)
+   - `group_vars/central-manager.yml`
+4. `sn06.yml` creates and configures Galaxy instance. Variables:
+   - `group_vars/gxconfig.yml` (the base galaxy configuration)
+   - `secret_group_vars/db-main.yml` (database secrets)
+   - `secret_group_vars/htcondor.yml` (condor secrets)
+   - `secret_group_vars/rabbitmq.yml` (rabbitmq and pulsar secrets)
+   - `secret_group_vars/all.yml` (all of the other assorted secrets)
+5. `rabbitmq.yml` configures RabbitMQ server. Variables:
+   - `secret_group_vars/rabbitmq.yml`
+   - `group_vars/rabbitmq.yml`
 
-# Build Statuses
-
-The playbooks are being automatically and regularly run against the following machines:
-
-Server          | Status
----             | ---
-Apollo          | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fapollo)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/apollo/)
-Build           | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fbuild)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/build/)
-Central-Manager | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fsn05)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/sn05/)
-CVMFS           | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fcvmfs)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/cvmfs/)
-Galaxy          | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fsn06)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/sn06/)
-Galaxy/Test     | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fgalaxy-test)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/galaxy-test/)
-Grafana         | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fstats)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/stats/)
-HAProxy         | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Fhaproxy-internal)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/haproxy-internal/)
-InfluxDB        | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Finfluxdb)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/influxdb/)
-Telescope       | [![Build Status](https://build.galaxyproject.eu/buildStatus/icon?job=usegalaxy-eu%2Fplaybooks%2Ftelescope)](https://build.galaxyproject.eu/job/usegalaxy-eu/job/playbooks/job/telescope/)
+Executors for HTCondor are managed by Terrform+Jenkins (https://github.com/usegalaxy-it/vgcn-infrastructure)
