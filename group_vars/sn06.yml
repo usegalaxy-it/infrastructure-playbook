@@ -307,7 +307,7 @@ galaxy_jobconf:
     - id: pulsar_eu_it03
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       params:
-        amqp_url: "pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_dns }}:5671//pulsar/pulsar_it03?ssl=1"
+        amqp_url: "pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar_it03 }}@{{ rabbitmq_dns }}:5671//pulsar/pulsar_it03?ssl=1"
         galaxy_url: "https://usegalaxy-it.ext.cineca.it"
         manager: production
         amqp_acknowledge: "true"
