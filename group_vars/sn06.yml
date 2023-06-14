@@ -307,8 +307,8 @@ galaxy_jobconf:
     - id: pulsar_eu_it03
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       params:
-        amqp_url: "pyamqp://galaxy_it03:{{ rabbitmq_password_galaxy_it03 }}@mq.galaxyproject.eu:5671//pulsar/galaxy_it03?ssl=1"
-        galaxy_url: "https://usegalaxy-it.ext.cineca.it" # "https://usegalaxy.eu"
+        amqp_url: "pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar }}@{{ rabbitmq_dns }}:5671//pulsar/pulsar_it03?ssl=1"
+        galaxy_url: "https://usegalaxy-it.ext.cineca.it"
         manager: production
         amqp_acknowledge: "true"
         amqp_ack_republish_time: 300
