@@ -22,4 +22,5 @@ users:
       require:
         - it-pulsar
         - pulsar
+      accept:
         - upload
