@@ -3,19 +3,6 @@
   hosts: database
   become: true
   become_user: root
-  vars:
-    postgresql_version: 12
-    postgresql_objects_users:
-      - name: galaxy
-        password: "{{ _galaxy_db_pass }}"
-    postgresql_objects_databases:
-      - name: galaxy
-        owner: galaxy
-      # - name: galaxy_tools
-    postgresql_conf:
-      - listen_addresses: "'{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}'"
-    postgresql_pg_hba_conf:
-      - host    all             all        {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24              md5
   vars_files:
     - secret_group_vars/db-main.yml # DB URL + some postgres stuff
   pre_tasks:
