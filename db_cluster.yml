@@ -1,12 +1,12 @@
 ---
 - name: Configure Backup VM
-  include: backup.yml
+  import_playbook: backup.yml
 
 - name: Configure Database VM
-  include: database.yml
+  import_playbook: database.yml
 
 - name: Configure Replica VM
-  include: replica.yml
+  import_playbook: replica.yml
 
 - name: Exchange Keys between servers
   become: yes
@@ -28,5 +28,5 @@
         key: "{{ public_key.content | b64decode }}"
       delegate_to: "{{ item.dest }}"
       with_items:
-        - { dest: "{{groups['replica'][0]}}"}
-        - { dest: "{{groups['backup'][0]}}"}
+        - { dest: "{{ groups['replica'][0] }}"}
+        - { dest: "{{ groups['backup'][0] }}"}
