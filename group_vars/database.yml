@@ -24,3 +24,9 @@ postgresql_backup_command: >-
   {{ '--pg-bin-dir ' ~ __postgresql_pgdg_bin_dir if ansible_os_family == 'RedHat' else '' }}
   --backup {{ postgresql_backup_dir | quote }}
 backup_ip: "{{groups['backup'][0]}}"
+
+#replication
+postgres_replication: true
+replica_user_name: replica
+master_ip: "{{groups['database'][0]}}"
+replica_ip: "{{groups['replica'][0]}}"

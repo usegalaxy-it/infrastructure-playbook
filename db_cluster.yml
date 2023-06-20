@@ -1,0 +1,32 @@
+---
+- name: Configure Backup VM
+  include: backup.yml
+
+- name: Configure Database VM
+  include: database.yml
+
+- name: Configure Replica VM
+  include: replica.yml
+
+- name: Exchange Keys between servers
+  become: yes
+  become_user: postgres
+  hosts: database
+  tasks:
+    - name: SSH KeyGen command
+      shell: >
+        ssh-keygen -q -b 2048 -t rsa -N "" -C "creating SSH" -f ~/.ssh/id_rsa
+        creates="~/.ssh/id_rsa"
+    - name: Fetch SSH public key
+      slurp:
+        src: ~/.ssh/id_rsa.pub
+      register: public_key
+    - name: Add SSH public key to authorized keys on target server
+      authorized_key:
+        user: postgres
+        state: present
+        key: "{{ public_key.content | b64decode }}"
+      delegate_to: "{{ item.dest }}"
+      with_items:
+        - { dest: "{{groups['replica'][0]}}"}
+        - { dest: "{{groups['backup'][0]}}"}

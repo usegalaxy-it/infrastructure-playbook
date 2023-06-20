@@ -5,14 +5,10 @@
   become_user: root
   vars_files:
     - secret_group_vars/db-main.yml # DB URL + some postgres stuff
+    - group_vars/database.yml
+  vars:
+    postgresql_backup_dir: "postgres@{{ backup_ip }}:{{ postgresql_backup_dir_daily }}"
   pre_tasks:
-    - name: Install pgdg repository package (RedHat)
-      yum:
-        name: >-
-          https://download.postgresql.org/pub/repos/yum/reporpms/{{ postgresql_pgdg_shortfamilies[ansible_distribution]
-            | default("EL") }}-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{
-            postgresql_pgdg_families[ansible_distribution] | default("redhat") }}-repo-latest.noarch.rpm
-        disable_gpg_check: true
     - name: install acl and psycopg2 packages
       package:
         name: ["acl", "python3-psycopg2"]
@@ -28,7 +24,7 @@
       when: postgresql_backup_dir[0] == '/' and postgresql_create_backup_dir
     - name: Add weekly backup to cron
       vars:
-        postgresql_backup_dir: "{{ postgresql_backup_dir_weekly }}"
+        postgresql_backup_dir: "postgres@{{ backup_ip }}:{{ postgresql_backup_dir_weekly }}"
       cron:
         name: "PostgreSQL Backup"
         cron_file: ansible_postgresql_backup_weekly
@@ -41,9 +37,13 @@
           {{
             ' && ' ~ postgresql_backup_post_command if postgresql_backup_post_command is defined else ''
           }}
-
   roles:
     - galaxyproject.postgresql
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+    - role: usegalaxy-it.postgresql_replication
+      become: true
+      vars: 
+        replication_role: master
+      when: postgres_replication
