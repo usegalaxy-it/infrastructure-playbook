@@ -29,7 +29,7 @@
 #   tasks:
 #     - name: Mount network share
 #       ansible.posix.mount:
-#         src: "{{ nfs_server_ip }}:/data/share"
+#         src: "{{ groups['nfs'][0] }}:/data/share"
 #         path: /data/share
 #         fstype: nfs
 #         state: mounted
@@ -41,7 +41,7 @@
 #   tasks:
 #     - name: Mount network share
 #       ansible.posix.mount:
-#         src: "{{ nfs_server_ip }}:/data/share"
+#         src: "{{ groups['nfs'][0] }}:/data/share"
 #         path: /data/share
 #         fstype: nfs
 #         state: mounted
@@ -93,8 +93,8 @@
         fstype: nfs
         state: mounted
       with_items:
-        - { src: "{{ nfs_server_ip }}:/data/share", mountpoint: /data/share } 
-        - { src: "{{ nfs_server_ip }}:/opt/galaxy", mountpoint: /opt/galaxy }
+        - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share } 
+        - { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
 
 - name: Mount NFS on CM
   hosts: central_manager
@@ -108,5 +108,5 @@
         fstype: nfs
         state: mounted
       with_items:
-        - { src: "{{ nfs_server_ip }}:/data/share", mountpoint: /data/share }
-        - { src: "{{ nfs_server_ip }}:/opt/galaxy", mountpoint: /opt/galaxy }
+        - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share }
+        - { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }

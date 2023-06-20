@@ -42,10 +42,6 @@ rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky
 
 [all:vars]
 ansible_ssh_user=centos
-nfs_server_ip=192.168.0.249
-central_manager_ip=192.168.0.98
-postgres_ip=192.168.0.90
-rabbitmq_dns="rabbitmq-usegalaxy-it.ext.cineca.it"
 ##########################################################
 
 [incoming]

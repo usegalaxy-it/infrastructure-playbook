@@ -16,9 +16,9 @@ autofs_mount_points:
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid         {{ nfs_server_ip }}:/data/share
+    - share       -rw,hard,nosuid         {{ groups['nfs'][0] }}:/data/share
   usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid         {{ nfs_server_ip }}:/opt/galaxy
+    - /opt/galaxy        -rw,hard,nosuid         {{ groups['nfs'][0] }}:/opt/galaxy
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -150,7 +150,7 @@ galaxy_systemd_memory_limit_workflow: 15
 
 # HTCondor
 condor_role: submit
-condor_host: "{{ central_manager_ip }}" # !!! CHECK CHANGE PORT TO 9618 IN TF
+condor_host: "{{ groups['central_manager'][0] }}" # !!! CHECK CHANGE PORT TO 9618 IN TF
 condor_password: '{{ condor_pass }}'
 condor_allow_write: "*" # !!! CHECK
 condor_daemons:
@@ -178,7 +178,7 @@ gie_proxy_verbose: true
 
 # gxadmin
 postgres_user: galaxy
-postgres_host: '{{ postgres_ip }}'
+postgres_host: '{{ groups['database'][0] }}'
 postgres_port: 5432
 
 # Slurp script
@@ -307,7 +307,7 @@ galaxy_jobconf:
     - id: pulsar_eu_it03
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       params:
-        amqp_url: "pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar_it03 }}@{{ rabbitmq_dns }}:5671//pulsar/pulsar_it03?ssl=1"
+        amqp_url: "pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar_it03 }}@{{ groups['rabbitmq'][0] }}:5671//pulsar/pulsar_it03?ssl=1"
         galaxy_url: "https://usegalaxy-it.ext.cineca.it"
         manager: production
         amqp_acknowledge: "true"

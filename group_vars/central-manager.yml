@@ -10,14 +10,14 @@ autofs_mount_points:
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid         {{ nfs_server_ip }}:/data/share
+    - share       -rw,hard,nosuid         {{ groups['nfs'][0] }}:/data/share
   usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid         {{ nfs_server_ip }}:/opt/galaxy
+    - /opt/galaxy        -rw,hard,nosuid         {{ groups['nfs'][0] }}:/opt/galaxy
 
 
 # HTCondor
 condor_role: central-manager
-condor_host: '{{ central_manager_ip }}' # !!! CHECK CHANGE PORT TO 9618 IN TF
+condor_host: '{{ groups['central_manager'][0] }}' # !!! CHECK CHANGE PORT TO 9618 IN TF
 condor_password: '{{ condor_pass }}' # secret_group_vars/htconodor.yml
 condor_allow_write: "*"
 condor_daemons:
