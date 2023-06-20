@@ -6,16 +6,21 @@ postgresql_objects_users:
 postgresql_objects_databases:
   - name: galaxy
     owner: galaxy
-  # - name: galaxy_tools
-
 postgresql_conf:
-  - listen_addresses: "'{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}'"
+  - listen_addresses: "'*'" # "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 postgresql_pg_hba_conf:
-  - host    all             all        {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24              md5
+  - host     all     all     {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24     md5
 
-# PostgreSQL Backups
-postgresql_backup_dir: /data/backups
-postgresql_backup_dir_weekly: /data/backups/weekly
+#backup
 postgresql_backup_local_dir: /var/lib/pgsql/backups # for redhat
 postgresql_backup_rsync_backup_opts: '-r -p -t -g'
-
+postgresql_backup_dir_daily: /data/backups/daily
+postgresql_backup_dir_weekly: /data/backups/weekly
+postgresql_backup_command: >-
+  {{ postgresql_backup_local_dir | quote }}/bin/backup.py
+  {{ '--rsync-connect-opts ' ~ (postgresql_backup_rsync_connect_opts | quote) if postgresql_backup_rsync_connect_opts else '' }}
+  --rsync-backup-opts {{ postgresql_backup_rsync_backup_opts | quote }}
+  --keep {{ postgresql_backup_keep | quote }}
+  {{ '--pg-bin-dir ' ~ __postgresql_pgdg_bin_dir if ansible_os_family == 'RedHat' else '' }}
+  --backup {{ postgresql_backup_dir | quote }}
+backup_ip: "{{groups['backup'][0]}}"
