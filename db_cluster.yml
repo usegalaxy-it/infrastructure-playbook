@@ -30,15 +30,23 @@
         key: "{{ public_key.content | b64decode }}"
       delegate_to: "{{ item.dest }}"
       with_items:
-        - { dest: "{{ groups['replica'][0] }}"}
-        - { dest: "{{ groups['backup'][0] }}"}
+        - { dest: "{{ groups['replica'][0] }}" }
+        - { dest: "{{ groups['backup'][0] }}" }
 
-    - name: Retrieve SSH fingerprints of target VMs
-      command: "ssh-keyscan -H {{ item.dest }}"
+    - name: Retrieve SSH fingerprints of backup VM
+      command: "ssh-keyscan -H {{ groups['backup'][0] }}"
       register: ssh_fingerprints
-      with_items:
-        - { dest: "{{ groups['replica'][0] }}"}
-        - { dest: "{{ groups['backup'][0] }}"}
+
+    - name: Add SSH fingerprints to known_hosts file
+      lineinfile:
+        path: ~/.ssh/known_hosts
+        line: "{{ item }}"
+        create: yes
+      loop: "{{ ssh_fingerprints.stdout_lines }}"
+
+    - name: Retrieve SSH fingerprints of replica VM
+      command: "ssh-keyscan -H {{ groups['replica'][0] }}"
+      register: ssh_fingerprints
 
     - name: Add SSH fingerprints to known_hosts file
       lineinfile:
