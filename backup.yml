@@ -4,22 +4,9 @@
   become: true
   vars_files:
     - group_vars/database.yml  
-  tasks:
-    - name: Create postgres group
-      group:
-        name: postgres
-        state: present
-    - name: Create postgres user
-      user:
-        name: postgres
-        group: postgres
-    - name: Create backup output directories
-      file:
-        owner: postgres
-        group: postgres
-        mode: 0750
-        state: directory
-        path: "{{ item }}"
-      with_items: 
-        - "{{ postgresql_backup_dir_daily }}"
-        - "{{ postgresql_backup_dir_weekly }}"
+  roles:  
+    - role: usegalaxy-it.postgresql_backup
+      become: true
+      vars: 
+        backup_role: backup
+      when: postgres_backup
