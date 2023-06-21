@@ -4,46 +4,28 @@
   become: true
   become_user: root
   vars_files:
-    - secret_group_vars/db-main.yml # DB URL + some postgres stuff
+    - secret_group_vars/db-main.yml
     - group_vars/database.yml
-  vars:
-    postgresql_backup_dir: "postgres@{{ backup_ip }}:{{ postgresql_backup_dir_daily }}"
   pre_tasks:
     - name: install acl and psycopg2 packages
       package:
         name: ["acl", "python3-psycopg2"]
       become: true
-  post_tasks:
-    - name: Create backup output directory for weekly backups 
-      file:
-        owner: postgres
-        group: postgres
-        mode: 0750
-        state: directory
-        path: "{{ postgresql_backup_dir_weekly }}"
-      when: postgresql_backup_dir[0] == '/' and postgresql_create_backup_dir
-    - name: Add weekly backup to cron
-      vars:
-        postgresql_backup_dir: "postgres@{{ backup_ip }}:{{ postgresql_backup_dir_weekly }}"
-      cron:
-        name: "PostgreSQL Backup"
-        cron_file: ansible_postgresql_backup_weekly
-        user: postgres
-        hour: 1
-        minute: 5
-        weekday: 6
-        job: >-
-          {{ postgresql_backup_command }}
-          {{
-            ' && ' ~ postgresql_backup_post_command if postgresql_backup_post_command is defined else ''
-          }}
   roles:
     - galaxyproject.postgresql
+
     - role: galaxyproject.postgresql_objects
       become: true
       become_user: postgres
+
     - role: usegalaxy-it.postgresql_replication
       become: true
       vars: 
         replication_role: master
       when: postgres_replication
+
+    - role: usegalaxy-it.postgresql_backup
+      become: true
+      vars: 
+        backup_role: database
+      when: postgres_backup

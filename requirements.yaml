@@ -129,4 +129,5 @@ roles:
     version: 1.8.0
   - name: usegalaxy-it.postgresql_replication
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-replication
- 
+  - name: usegalaxy-it.postgresql_backup
+    src: https://github.com/po-khmel/ansible-postgresql-backup
