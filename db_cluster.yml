@@ -1,12 +1,12 @@
 ---
-- name: Configure Backup VM
-  import_playbook: backup.yml
+# - name: Configure Backup VM
+#   import_playbook: backup.yml
 
-- name: Configure Database VM
-  import_playbook: database.yml
+# - name: Configure Database VM
+#   import_playbook: database.yml
 
-- name: Configure Replica VM
-  import_playbook: replica.yml
+# - name: Configure Replica VM
+#   import_playbook: replica.yml
 
 - name: Exchange Keys between servers
   become: yes
@@ -17,10 +17,12 @@
       shell: >
         ssh-keygen -q -b 2048 -t rsa -N "" -C "creating SSH" -f ~/.ssh/id_rsa
         creates="~/.ssh/id_rsa"
+
     - name: Fetch SSH public key
       slurp:
         src: ~/.ssh/id_rsa.pub
       register: public_key
+
     - name: Add SSH public key to authorized keys on target server
       authorized_key:
         user: postgres
@@ -30,3 +32,17 @@
       with_items:
         - { dest: "{{ groups['replica'][0] }}"}
         - { dest: "{{ groups['backup'][0] }}"}
+
+    - name: Retrieve SSH fingerprints of target VMs
+      command: "ssh-keyscan -H {{ item.dest }}"
+      register: ssh_fingerprints
+      with_items:
+        - { dest: "{{ groups['replica'][0] }}"}
+        - { dest: "{{ groups['backup'][0] }}"}
+
+    - name: Add SSH fingerprints to known_hosts file
+      lineinfile:
+        path: ~/.ssh/known_hosts
+        line: "{{ item }}"
+        create: yes
+      loop: "{{ ssh_fingerprints.stdout_lines }}"
