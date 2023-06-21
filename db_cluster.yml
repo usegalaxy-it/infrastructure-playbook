@@ -1,12 +1,12 @@
 ---
-# - name: Configure Backup VM
-#   import_playbook: backup.yml
+- name: Configure Backup VM
+  import_playbook: backup.yml
 
-# - name: Configure Database VM
-#   import_playbook: database.yml
+- name: Configure Database VM
+  import_playbook: database.yml
 
-# - name: Configure Replica VM
-#   import_playbook: replica.yml
+- name: Configure Replica VM
+  import_playbook: replica.yml
 
 - name: Exchange Keys between servers
   become: yes
