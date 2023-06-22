@@ -35,8 +35,6 @@ server {
 		internal;
 	}
 
-	# Move to remote storage, hopefully hammer local disk slightly less?
-	#client_body_temp_path  /data/dnb01/nginx_upload_store/;
 	client_body_buffer_size 1024m;
 
 	location / {
@@ -104,14 +102,11 @@ server {
 	location /static {
 		alias {{ galaxy_server_dir }}/static;
 		expires 24h;
-		location /static/vgcn {
-				autoindex on;
-				alias /data/dnb01/vgcn/;
-		}
-		location /static/share {
-				autoindex on;
-				alias /data/dnb01/share/;
-		}
+	}
+
+	location /static/welcome.html {
+		alias {{ galaxy_server_dir }}/static/welcome.html.sample;
+		expires 24h;
 	}
 
 	location /static/style {
@@ -126,7 +121,7 @@ server {
 	location ~ ^/plugins/(?<plug_type>[^/]+?)/((?<vis_d>[^/_]*)_?)?(?<vis_name>[^/]*?)/static/(?<static_file>.*?)$ {
 		alias {{ galaxy_server_dir }}/config/plugins/$plug_type/;
 		try_files $vis_d/${vis_d}_${vis_name}/static/$static_file
-				  $vis_d/static/$static_file =404;
+		          $vis_d/static/$static_file =404;
 	}
 
 	# Global GIE configuration
