@@ -5,7 +5,7 @@ user_uid: 999
 user_group_name: rabbitmq
 user_gid: 999
 
-hostname: '{{ groups['rabbitmq'][0] }}'
+hostname: "{{ groups['rabbitmq'][0] }}"
 
 # Certbot
 certbot_admin_email: security@usegalaxy.eu
@@ -78,8 +78,8 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.9.11 # rabbitmq:3.11-management # !!! CHECK
-  hostname: '{{ groups['rabbitmq'][0] }}'
+  image: rabbitmq:3.9.11
+  hostname: "{{ groups['rabbitmq'][0] }}"
 
 rabbitmq_container_pause: 60
 

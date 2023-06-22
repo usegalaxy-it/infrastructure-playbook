@@ -3,7 +3,7 @@
   hosts: rabbitmq
   become: true
   vars:
-    hostname: '{{ groups['rabbitmq'][0] }}'
+    hostname: "{{ groups['rabbitmq'][0] }}"
   vars_files:
     - secret_group_vars/all.yml
     - secret_group_vars/rabbitmq.yml     # Pulsar + MQ Connections
