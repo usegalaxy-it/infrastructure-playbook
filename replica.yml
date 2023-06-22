@@ -13,7 +13,7 @@
       become: true
   roles:
     - galaxyproject.postgresql
-    - role: usegalaxy-it.postgresql_replication
+    - role: usegalaxy-it.postgres_replication
       become: true
       vars: 
         replication_role: standby

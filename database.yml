@@ -18,13 +18,13 @@
       become: true
       become_user: postgres
 
-    - role: usegalaxy-it.postgresql_replication
+    - role: usegalaxy-it.postgres_replication
       become: true
       vars: 
         replication_role: master
       when: postgres_replication
 
-    - role: usegalaxy-it.postgresql_backup
+    - role: usegalaxy-it.postgres_backup
       become: true
       vars: 
         backup_role: database

@@ -29,10 +29,10 @@ usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky
 192.168.0.90 ansible_ssh_user=rocky 
 
 [replica]
-192.168.0.90 ansible_ssh_user=rocky
+192.168.0.204 ansible_ssh_user=rocky
 
 [backup]
-192.168.0.90 ansible_ssh_user=rocky
+192.168.0.14 ansible_ssh_user=rocky
 
 [central_manager]
 131.175.207.129 ansible_ssh_user=centos 

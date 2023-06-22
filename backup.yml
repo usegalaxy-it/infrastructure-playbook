@@ -5,7 +5,7 @@
   vars_files:
     - group_vars/database.yml  
   roles:  
-    - role: usegalaxy-it.postgresql_backup
+    - role: usegalaxy-it.postgres_backup
       become: true
       vars: 
         backup_role: backup
