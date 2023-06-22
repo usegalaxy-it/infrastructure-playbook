@@ -14,6 +14,12 @@ At least 5 VMs are required:
 | Database                 | RockyLinux | RockyLinux 9.1                     |
 | Rabbit-MQ server         | RockyLinux | RockyLinux 9.1                     |
 
+Addtitional VMs for Database management:
+| VM      | Image      | Tested on      |
+| ------- | ---------- | -------------- |
+| Replica | RockyLinux | RockyLinux 9.2 |
+| Backup  | RockyLinux | RockyLinux 9.2 |
+
 vggp images are located at https://usegalaxy.eu/static/vgcn/  
 Recommended to use the latest main version.
 
@@ -45,12 +51,13 @@ Make sure, there are FQDNs for Galaxy and RabbitMQ VMs.
 
 ### Configuration playbooks in order of execution
 
-1. `database.yml` creates PostgresQL database. Variables:  
-   - `secret_group_vars/db-main.yml` (sensitive data)
+1. `db_cluster.yml` creates PostgresQL cluster: `database`, `replica` and `backup` servers. Variables:  
+   - `group_vars/database.yml` (backup and replication are enabled by default, may be changed in this var file)  
+   - `secret_group_vars/db-main.yml` (sensitive data)  
 2. `mount.yml` creates shared directories.
 3. `central-manager.yml` creates and configures HTCondor Central Manager. Variabes:  
-   - `secret_group_vars/htcondor.yml` (sensitive data)
    - `group_vars/central-manager.yml`
+   - `secret_group_vars/htcondor.yml` (sensitive data)
 4. `sn06.yml` creates and configures Galaxy instance. Variables:
    - `group_vars/gxconfig.yml` (the base galaxy configuration)
    - `secret_group_vars/db-main.yml` (database secrets)
@@ -58,7 +65,7 @@ Make sure, there are FQDNs for Galaxy and RabbitMQ VMs.
    - `secret_group_vars/rabbitmq.yml` (rabbitmq and pulsar secrets)
    - `secret_group_vars/all.yml` (all of the other assorted secrets)
 5. `rabbitmq.yml` configures RabbitMQ server. Variables:
-   - `secret_group_vars/rabbitmq.yml`
    - `group_vars/rabbitmq.yml`
+   - `secret_group_vars/rabbitmq.yml`
 
 Executors for HTCondor are managed by Terrform+Jenkins (https://github.com/usegalaxy-it/vgcn-infrastructure)
