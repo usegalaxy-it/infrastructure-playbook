@@ -1561,7 +1561,7 @@ base_app_main: &BASE_APP_MAIN
   # Admin section of the server, and will have access to create users,
   # groups, roles, libraries, and more.  For more information, see:
   # https://galaxyproject.org/admin/
-  admin_users: "khmelevskayapv@gmail.com, ma.tangaro@gmail.com"
+  admin_users: ["khmelevskayapv@gmail.com", "ma.tangaro@gmail.com"]
 
   # Force everyone to log in (disable anonymous access).
   #require_login: false
