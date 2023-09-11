@@ -143,7 +143,7 @@
     - influxdata.chrony # Keep our time in sync. 
 
     ## Filesystem
-    - usegalaxy-eu.autofs 
+    # - usegalaxy-eu.autofs 
     - galaxyproject.cvmfs # Galaxy datasets 
 
     # Monitoring
