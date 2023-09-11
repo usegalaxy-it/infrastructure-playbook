@@ -200,9 +200,6 @@
     ## GALAXY
     - hxr.postgres-connection
     - galaxyproject.gxadmin
-    - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
-      vars: 
-        certbot_install_method: virtualenv
     - usegalaxy-eu.nginx
 
     ## TODO move under monitoring + telegraf.
