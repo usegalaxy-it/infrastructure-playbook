@@ -890,7 +890,7 @@ base_app_main: &BASE_APP_MAIN
   message_box_class: warning
 
   # Append "{brand}" text to the masthead.
-  brand: IT-test
+  brand: ITALY
 
   # This option has been deprecated, use the `logo_src` instead to
   # change the default logo including the galaxy brand title.
@@ -1564,7 +1564,7 @@ base_app_main: &BASE_APP_MAIN
   admin_users: ["khmelevskayapv@gmail.com", "ma.tangaro@gmail.com"]
 
   # Force everyone to log in (disable anonymous access).
-  #require_login: false
+  require_login: true
 
   # Show the site's welcome page (see welcome_url) alongside the login
   # page (even if require_login is true).
