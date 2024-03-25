@@ -11,7 +11,7 @@ map $http_upgrade $connection_upgrade {
 server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
-	server_name ~^(?<key>[0-9a-f-]*)\.interactivetoolentrypoint\.interactivetool\.(?<domain>[a-z0-9.-]*)usegalaxy-it\.ext\.cineca\.it$;
+	server_name ~^(?<key>[0-9a-f-]*)\.interactivetoolentrypoint\.interactivetool\.(?<domain>[a-z0-9.-]*)usegalaxy\.it$;
 
 	error_log /var/log/nginx/interactive.err;
 	access_log /var/log/nginx/interactive.log;

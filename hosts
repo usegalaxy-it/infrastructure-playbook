@@ -20,7 +20,7 @@ influxdb.galaxyproject.eu
 # rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
 
 [sn06]
-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky
+usegalaxy.it ansible_ssh_user=rocky
 
 [nfs]
 192.168.0.249 ansible_ssh_user=centos
