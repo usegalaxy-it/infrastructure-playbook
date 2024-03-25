@@ -1561,10 +1561,10 @@ base_app_main: &BASE_APP_MAIN
   # Admin section of the server, and will have access to create users,
   # groups, roles, libraries, and more.  For more information, see:
   # https://galaxyproject.org/admin/
-  admin_users: "khmelevskayapv@gmail.com, ma.tangaro@gmail.com"
+  admin_users: "f.zambelli@gmail.com, ma.tangaro@gmail.com"
 
   # Force everyone to log in (disable anonymous access).
-  #require_login: false
+  require_login: true ### DISABLE LOGIN for usegalaxy.it domain connection
 
   # Show the site's welcome page (see welcome_url) alongside the login
   # page (even if require_login is true).
@@ -1576,7 +1576,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Allow unregistered users to create new accounts (otherwise, they
   # will have to be created by an admin).
-  #allow_user_creation: true
+  allow_user_creation: false ### DISABLE LOGIN for usegalaxy.it domain connection
 
   # Allow administrators to delete accounts.
   allow_user_deletion: true
