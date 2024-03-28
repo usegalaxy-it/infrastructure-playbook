@@ -309,7 +309,7 @@ galaxy_jobconf:
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       params:
         amqp_url: "pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar_it03 }}@{{ groups['rabbitmq'][0] }}:5671//pulsar/pulsar_it03?ssl=1"
-        galaxy_url: "https://usegalax.it"
+        galaxy_url: "https://usegalaxy.it"
         manager: production
         amqp_acknowledge: "true"
         amqp_ack_republish_time: 300
