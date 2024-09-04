@@ -104,7 +104,7 @@ roles:
     version: 0.0.5
   - name: usegalaxy-eu.autofs
     src: https://github.com/mtangaro/ansible-autofs.git
-    version: master
+    version: main
   - name: usegalaxy_eu.fs_maintenance
     version: 0.0.5
   - name: galaxyproject.tusd
