@@ -74,7 +74,7 @@ roles:
   - name: influxdata.chrony
     src: https://github.com/usegalaxy-eu/ansible-chrony
     version: 0.1.0
-  - name: linuxhq.yum_cron
+  - name: linuxhq.linux
     version: master
   - name: galaxyproject.gxadmin
     version: 0.0.8
