@@ -9,6 +9,7 @@ docker_users:
 autofs_service.install: True
 autofs_service.enable: True
 nfs_kernel_tuning: True
+nfs_version: 4
 
 autofs_mount_points:
   - data
