@@ -30,7 +30,8 @@ collections:
     type: galaxy
   - name: ansible.posix
     version: 1.3.0
-
+  - name: linuxhq.linux
+    version: 1.7.3
 
 roles:
   - name: dev-sec.os-hardening
@@ -74,8 +75,6 @@ roles:
   - name: influxdata.chrony
     src: https://github.com/usegalaxy-eu/ansible-chrony
     version: 0.1.0
-  - name: linuxhq.linux
-    version: master
   - name: galaxyproject.gxadmin
     version: 0.0.8
   - name: usegalaxy-eu.certbot
