@@ -6,19 +6,19 @@ docker_users:
   - galaxy
 
 # Autofs
-autofs_service.install: True
-autofs_service.enable: True
-nfs_kernel_tuning: True
-
-autofs_mount_points:
-  - data
-  - usrlocal
-
-autofs_conf_files:
-  data:
-    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/data/share
-  usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/opt/galaxy
+#autofs_service.install: True
+#autofs_service.enable: True
+#nfs_kernel_tuning: True
+#
+#autofs_mount_points:
+#  - data
+#  - usrlocal
+#
+#autofs_conf_files:
+#  data:
+#    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/data/share
+#  usrlocal:
+#    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/opt/galaxy
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -284,7 +284,7 @@ galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
 galaxy_repo: "https://github.com/usegalaxy-eu/galaxy.git"
-galaxy_commit_id: "release_23.0_europe"
+galaxy_commit_id: "release_23.2_europe"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
