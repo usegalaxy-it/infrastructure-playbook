@@ -55,6 +55,7 @@ preferences:
           - ["Rennes (France) - GenOuest bioinformatics", fr-pulsar]
           - ["Bari (Italy) - RECAS", it-pulsar]
           - ["Bari (Italy) - RECAS 2", it02-pulsar]
+          - ["Bari (Italy) - RECAS 5", it05-pulsar]
           - ["Palermo (Italy) - GARR 3", pulsar_it03_tpv]
           # - ["Palermo (Italy) - GARR, 2wd true", remote_cluster_mq_2wdtrue_it03]
           # - ["Palermo (Italy) - GARR, 2wd falsef", remote_cluster_mq_2wdfalse_it03]
