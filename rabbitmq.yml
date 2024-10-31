@@ -86,7 +86,7 @@
         - https
         - http
     # Redis needed by Celery starting from galaxy v.23.0
-    - name: Create redis group
+        - name: Create redis group
       group:
         name: redis
         state: present
@@ -130,10 +130,14 @@
     - geerlingguy.repo-epel     # Install EPEL repository
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - influxdata.chrony         # Keep our time in sync.
-    
+        
     # Applications
     - geerlingguy.docker
-    - galaxyproject.nginx
+    # - galaxyproject.nginx
+    - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
+      vars:
+        certbot_install_method: virtualenv
+    - usegalaxy-eu.nginx    
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
     # - dj-wasabi.telegraf
