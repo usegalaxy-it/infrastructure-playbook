@@ -19,26 +19,40 @@ influxdb.galaxyproject.eu
 # usegalaxy-it.ext.cineca.it ->  131.175.207.122
 # rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
 
-[sn06]
-usegalaxy.it ansible_ssh_user=rocky
+#[usegalaxy_it_01]
+#212.189.202.137.cloud.ba.infn.it ansible_ssh_user=rocky
+
+[usegalaxy_it_01]
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 
 [nfs]
-192.168.0.249 ansible_ssh_user=centos
+172.18.12.115 ansible_ssh_user=rocky
+
+[condor-nfs2]
+172.18.12.143 ansible_ssh_user=rocky
 
 [database]
-192.168.0.90 ansible_ssh_user=rocky 
+172.18.12.136 ansible_ssh_user=rocky 
 
 [replica]
-192.168.0.204 ansible_ssh_user=rocky
+172.18.12.249 ansible_ssh_user=rocky
 
 [backup]
-192.168.0.14 ansible_ssh_user=rocky
+172.18.12.24 ansible_ssh_user=rocky
 
 [central_manager]
-131.175.207.129 ansible_ssh_user=centos 
+172.18.12.121 ansible_ssh_user=rocky 
+
+#[rabbitmq] 
+#212.189.202.175.cloud.ba.infn.it ansible_ssh_user=rocky 
 
 [rabbitmq] 
-rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky 
+rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
+
+
+
+[rr]
+212.189.202.108.cloud.ba.infn.it ansible_ssh_user=rocky
 
 [all:vars]
 ansible_ssh_user=centos
@@ -74,6 +88,7 @@ test.internal.usegalaxy.eu
 
 [denbistratum0]
 cvmfs-stratum0-test.galaxyproject.eu
+
 
 [plausible]
 plausible.galaxyproject.eu
