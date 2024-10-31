@@ -5,7 +5,7 @@ certbot_auto_renew_minute: "{{ 59 |random(seed=inventory_hostname)  }}"
 certbot_install_method: virtualenv
 certbot_auto_renew: true
 certbot_auto_renew_user: root
-certbot_environment: production # !!! CHECK -> change to production
+certbot_environment: staging # !!! CHECK -> change to production
 certbot_domains:
  - "{{ hostname }}"
 certbot_agree_tos: --agree-tos
@@ -30,10 +30,22 @@ chrony_keyfile: '/etc/chrony.keys'
 galaxy_uid: 999
 galaxy_gid: 999
 
+# WallE
+walle_verbose: true
+walle_tool: interactive
+walle_user_name: "{{ galaxy_user.name }}"
+walle_user_group: "{{ galaxy_group.name }}"
+walle_virtualenv: "{{ galaxy_venv_dir }}"
+walle_bashrc: "{{ galaxy_user.home }}/.bashrc"
+walle_pgpass_file: "{{ galaxy_user.home }}/.pgpass"
+walle_malware_database_location: "/data/share/maintenance/walle"
+walle_database_file: checksums.yml
+
 # OS Hardening
 os_auditd_max_log_file_action: rotate
 os_auditd_space_left: 500
 os_auditd_space_left_action: suspend
+
 
 # Automated yum updates
 yum_cron:
