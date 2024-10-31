@@ -55,6 +55,9 @@ rabbitmq_users:
   - user: pulsar_it03
     password: "{{ rabbitmq_users_password.pulsar_it03 }}"
     vhost: /pulsar/pulsar_it03
+  - user: pulsar_it05
+    password: "{{ rabbitmq_users_password.pulsar_it05 }}"
+    vhost: /pulsar/pulsar_it05
 
 rabbitmq_plugins:
   - rabbitmq_management
@@ -78,7 +81,8 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.9.11
+  image: rabbitmq:3-management
+    #hostname: rabbitmq
   hostname: "{{ groups['rabbitmq'][0] }}"
 
 rabbitmq_container_pause: 60
