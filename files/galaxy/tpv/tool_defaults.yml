@@ -29,6 +29,19 @@ tools:
           entity.params['requirements'] = '(GalaxyGroup == "compute") || (%s)' % training_expr if training_expr else '(GalaxyGroup == "compute")'
           entity.params['+Group'] = training_labels
           entity.params['accounting_group_user'] = str(user.id)
+      - id: remote_resources
+        if: user is not None
+        execute: |
+          from tpv.core.entities import Tag, TagSetManager, TagType
+
+          user_preferences = user.extra_preferences
+          pulsar_tag = user_preferences.get("distributed_compute|remote_resources", "None")
+          pulsar_tag = Tag("scheduling", pulsar_tag, TagType.REQUIRE) if pulsar_tag != "None" else None
+
+          if pulsar_tag:
+              entity.tpv_tags = entity.tpv_tags.combine(
+                  TagSetManager(tags=[pulsar_tag])
+              )
     rank: |
       final_destinations = helpers.weighted_random_sampling(candidate_destinations)
       final_destinations
