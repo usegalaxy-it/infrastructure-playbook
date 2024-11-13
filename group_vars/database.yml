@@ -1,4 +1,4 @@
-postgresql_version: 12
+postgresql_version: 13
 postgresql_objects_users:
   - name: galaxy
     password: "{{ _galaxy_db_pass }}"

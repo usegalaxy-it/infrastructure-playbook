@@ -30,7 +30,7 @@ collections:
     type: galaxy
   - name: ansible.posix
     version: 1.3.0
-
+    
 roles:
   - name: dev-sec.os-hardening
     version: 4.2.0
@@ -42,7 +42,7 @@ roles:
     #  version: 0.14.0
   - name: galaxyproject.galaxy
     src: https://github.com/galaxyproject/ansible-galaxy
-    version: 0.9.18
+    version: 0.10.18
   - name: galaxyproject.cvmfs
     src: https://github.com/usegalaxy-eu/ansible-cvmfs
     version: master
@@ -56,12 +56,9 @@ roles:
   - name: galaxyproject.nginx
     version: 0.7.1
   - name: galaxyproject.postgresql
-    version: 1.1.2
+    version: 1.1.6
   - name: galaxyproject.postgresql_objects
     version: 1.2.0
-  - name: usegalaxy-eu.ansible-postgresql
-    src: https://github.com/usegalaxy-eu/ansible-postgresql
-    version: main
   - name: geerlingguy.docker
     version: 6.1.0
   - name: geerlingguy.java
@@ -129,5 +126,7 @@ roles:
     version: 1.8.0
   - name: usegalaxy-it.postgres_replication
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-replication
+  - name: usegalaxy-eu.ansible-htcondor-grycap
+    src: https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git
   - name: usegalaxy-it.postgres_backup
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-backup

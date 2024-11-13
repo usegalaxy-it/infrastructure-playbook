@@ -61,8 +61,8 @@
         mode: "{{ item.mode }}"
         state: directory
       with_items:
-        - { dir: /opt/galaxy, mode: "0755", owner: centos, group: centos } 
-        - { dir: /data/share, mode: "0755", owner: centos, group: centos } 
+        - { dir: /opt/galaxy, mode: "0755", owner: rocky, group: rocky } 
+        - { dir: /data/share, mode: "0755", owner: rocky, group: rocky } 
     - name: Remove old entries in /etc/export
       lineinfile:
         path: /etc/exports
@@ -82,7 +82,7 @@
       command: exportfs -r
 
 - name: Mount NFS
-  hosts: sn06
+  hosts: usegalaxy_it_01
   become: true
   become_user: root
   tasks:
@@ -95,6 +95,7 @@
       with_items:
         - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share } 
         - { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
+
 
 - name: Mount NFS on CM
   hosts: central_manager

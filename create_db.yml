@@ -1,6 +1,6 @@
 ---
 - name: UseGalaxy.eu
-  hosts: sn06
+  hosts: usegalaxy_it_01
   become: true
   become_user: root
   vars:
