@@ -383,8 +383,7 @@ galaxy_config: "{{ galaxy_config_hash }}"
 
 galaxy_config_file_src_dir: files/galaxy
 galaxy_config_files:
-  # TODO(bgruening): sync this with cvmfs? can we have ours be just a small addi
-tional builds.txt?
+  # TODO(bgruening): sync this with cvmfs? can we have ours be just a small additional builds.txt?
   - src: "{{ galaxy_config_file_src_dir }}/config/builds.txt"
     dest: "{{ galaxy_config['galaxy']['builds_file_path'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/data_manager_conf.xml"
