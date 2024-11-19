@@ -47,6 +47,7 @@
     - secret_group_vars/all.yml        # All of the other assorted secrets...
     - secret_group_vars/htcondor.yml   # condor secrets
     - secret_group_vars/rabbitmq.yml   # rabbitmq + pulsar
+    - templates/galaxy/config/job_conf.yml
   collections:
     - devsec.hardening
   handlers:
