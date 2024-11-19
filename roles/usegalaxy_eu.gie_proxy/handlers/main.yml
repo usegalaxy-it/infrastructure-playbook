@@ -4,7 +4,8 @@
   systemd:
     daemon_reload: yes
 
-- name: Restart GIE Proxy
+- name: Start and enable GIE Proxy
   service:
     name: "{{ gie_proxy_service_name }}"
-    state: restarted
+    state: started
+    enabled: yes

@@ -38,6 +38,9 @@ Including an example of how to use your role (for instance, with variables passe
     gie_proxy_nodejs_version: "10.13.0"
     gie_proxy_virtualenv: /srv/gie-proxy/venv
     gie_proxy_setup_service: systemd
+    # configuring this path prefix enables path-based interactive tools
+    # (https://docs.galaxyproject.org/en/master/admin/special_topics/interactivetools.html#nginx-proxy-server-configuration-in-production)
+    gie_proxy_path_prefix: /interactivetool/ep  
     gie_proxy_port: 4002
     gie_proxy_verbose: true
     gie_proxy_sessions_path: "/srv/galaxy/var/data/interactivetools_map.sqlite"
