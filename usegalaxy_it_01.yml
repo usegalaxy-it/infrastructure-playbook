@@ -235,7 +235,7 @@
     - hxr.install-to-venv                # Some extra packages our site needs.
     - usegalaxy-eu.galaxy-systemd        # Manage the Galaxy processes with SystemD 
     # - usegalaxy-eu.update-hosts          # Update hosts list
-    - usegalaxy_eu.gie_proxy             # Setup the NodeJS proxy for GxIT 
+    #- usegalaxy_eu.gie_proxy             # Setup the NodeJS proxy for GxIT 
     # - usegalaxy-eu.subdomain-themes      # Custom subdomain themes
     # - usegalaxy-eu.limits                # Prevent out of control processes, role does not exist anymore 
     # - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
