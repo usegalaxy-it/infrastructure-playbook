@@ -98,7 +98,7 @@ roles:
     version: 0.2.0
   - name: usegalaxy_eu.gie_proxy
     src: https://github.com/usegalaxy-eu/ansible-gie-proxy
-    version: 0.0.5
+    version: 0.1.0
   - name: usegalaxy-eu.autofs
     src: https://github.com/usegalaxy-eu/ansible-autofs
     version: 1.0.0
