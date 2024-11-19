@@ -50,9 +50,6 @@ galaxy_jobconf:
         - "{{ tpv_config_dir }}/interactive_tools.yml"
         - "{{ tpv_config_dir }}/users.yml"
         - "{{ tpv_config_dir }}/roles.yml"
-  resources:
-    - id: usegpu
-      names: [gpu]
   tools:
     # TODO(hxr): implement validation that checks that every destination
     # used here is defined above.
