@@ -223,7 +223,7 @@ base_app_main: &BASE_APP_MAIN
   # conda_prefix is the location on the filesystem where Conda packages
   # and environments are installed.
   # Sample default '<tool_dependency_dir>/_conda'
-  conda_prefix: "/data/share/tool_deps/_conda"
+  conda_prefix: "{{ conda_prefix }}"
 
   # Override the Conda executable to use, it will default to the one on
   # the PATH (if available) and then to <conda_prefix>/bin/conda

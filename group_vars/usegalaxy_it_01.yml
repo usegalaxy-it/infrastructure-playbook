@@ -20,6 +20,9 @@ autofs_conf_files:
   usrlocal:
     - /opt/galaxy        -rw,hard,nosuid        {{ groups['nfs'][0] }}:/opt/galaxy
 
+# Miniconda role variables (galaxyproject.miniconda)
+conda_prefix: /data/tool_deps/_conda
+
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
 pip_install_dependencies:
