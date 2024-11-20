@@ -18,7 +18,7 @@ galaxy_jobconf:
       load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
       pulsar_config: "{{ galaxy_config_dir }}/pulsar_app.yml" # !!! CHECK
 
-    - pulsar_it03:
+    - id: pulsar_it03
         load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
         amqp_ack_republish_time: 300
         amqp_acknowledge: true
