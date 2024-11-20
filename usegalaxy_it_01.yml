@@ -56,6 +56,9 @@
         echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
 # echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
   pre_tasks:
+    - name: test
+      debug:
+        msg: '{{ conda_prefix }}'
     - name: Install Packages for Rocky Linux
       dnf:
         name:
