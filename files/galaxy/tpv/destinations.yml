@@ -149,6 +149,9 @@ destinations:
     max_accepted_mem: 124
     min_accepted_gpus: 0
     max_accepted_gpus: 0
+    params:
+      jobs_directory: "/data/share/it/staging"
+      persistence_directory: "/data/share/it/persisted_data"
     scheduling:
       require:
         - it03-pulsar
