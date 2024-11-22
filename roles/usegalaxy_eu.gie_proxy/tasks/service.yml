@@ -9,7 +9,13 @@
         dest: "/etc/systemd/system/{{ gie_proxy_service_name }}.service"
       notify:
         - Reload Systemd
-        - Restart GIE Proxy
+        - Start and enable GIE Proxy
+
+    # Need an exclusive restart here in cases when the service file does not get udpated but the code does
+    - name: Restart GIE Proxy
+      service:
+        name: "{{ gie_proxy_service_name }}"
+        state: restarted
 
     - name: Flush handlers
       meta: flush_handlers

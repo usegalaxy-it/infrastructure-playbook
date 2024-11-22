@@ -1,26 +1,3 @@
 ---
 users:
-  kuntzm@informatik.uni-freiburg.de:
-    scheduling:
-  jan.astalos@savba.sk:
-    scheduling:
-      require:
-        - sk-pulsar
-        - pulsar
-  eva.mercier@irisa.fr:
-    scheduling:
-      require:
-        - fr-pulsar
-        - pulsar
-  demko@cesnet.cz:
-    scheduling:
-      require:
-        - cz-pulsar
-        - pulsar
   pulsar-test@test.com:
-    scheduling:
-      require:
-        - it-pulsar
-        - pulsar
-      accept:
-        - upload

@@ -20,6 +20,9 @@ autofs_conf_files:
   usrlocal:
     - /opt/galaxy        -rw,hard,nosuid        {{ groups['nfs'][0] }}:/opt/galaxy
 
+# Miniconda role variables (galaxyproject.miniconda)
+conda_prefix: /data/tool_deps/_conda
+
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
 pip_install_dependencies:
@@ -166,13 +169,14 @@ condor_enforce_role: false
 
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
-gie_proxy_git_version: main
+gie_proxy_git_version: "v0.0.6"
 gie_proxy_setup_nodejs: nodeenv
-gie_proxy_virtualenv_command: /usr/bin/python3 -m virtualenv #"{{ pip_virtualenv_command }}"
+gie_proxy_virtualenv_command: "{{ conda_prefix }}/envs/_galaxy_/bin/python -m venv --copies" #"{{ pip_virtualenv_command }}"
 gie_proxy_nodejs_version: '10.13.0'
 gie_proxy_virtualenv: '{{ galaxy_root }}/gie-proxy/venv'
 gie_proxy_setup_service: systemd
 gie_proxy_sessions_path: '{{ galaxy_mutable_data_dir }}/interactivetools_map.sqlite'
+gie_proxy_path_prefix: /interactivetool/ep
 gie_proxy_port: 8800
 gie_proxy_verbose: true
 
@@ -289,102 +293,12 @@ galaxy_force_checkout: true # discard any modified files
 
 galaxy_singularity_images_cvmfs_path: "/cvmfs/singularity.galaxyproject.org/all/"
 
-galaxy_jobconf:
-  plugin_workers: 8
-  handlers:
-    count: "{{ galaxy_systemd_handlers }}"
-    assign_with: db-skip-locked
-    max_grab: 16
-    ready_window_size: 32
-  plugins:
-    - id: condor
-      load: galaxy.jobs.runners.condor:CondorJobRunner
-    - id: local
-      load: galaxy.jobs.runners.local:LocalJobRunner
-    - id: pulsar_embedded
-      load: galaxy.jobs.runners.pulsar:PulsarEmbeddedJobRunner
-      pulsar_config: "{{ galaxy_config_dir }}/pulsar_app.yml" # !!! CHECK
-    - id: pulsar_it05
-      load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
-      params:
-        amqp_url: "pyamqp://pulsar_it05:{{ rabbitmq_users_password.pulsar_it05 }}@{{ groups['rabbitmq'][0] }}:5671//pulsar/pulsar_it05?ssl=1"
-        galaxy_url: "https://usegalaxy-it.cloud.ba.infn.it"
-        manager: production
-        amqp_acknowledge: "true"
-        amqp_ack_republish_time: 300
-        amqp_consumer_timeout: 2.0
-        amqp_publish_retry: "true"
-        amqp_publish_retry_max_retries: 60
-  default_destination: tpv_dispatcher
-  destinations:
-    - id: local
-      runner: local
-    - id: condor
-      runner: condor
-      params:
-        tmp_dir: true
-    - id: tpv_dispatcher
-      runner: dynamic
-      type: python
-      function: map_tool_to_destination
-      rules_module: tpv.rules
-      tpv_config_files:
-        - "{{ tpv_config_dir }}/tool_defaults.yml"
-        - "https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml"
-        - "{{ tpv_config_dir }}/destinations.yml"
-        - "{{ tpv_config_dir }}/tools.yml"
-        - "{{ tpv_config_dir }}/interactive_tools.yml"
-        - "{{ tpv_config_dir }}/users.yml"
-        - "{{ tpv_config_dir }}/roles.yml"
-  resources:
-    - id: usegpu
-      names: [gpu]
-  tools:
-    # TODO(hxr): implement validation that checks that every destination
-    # used here is defined above.
-    - id: keras_train_and_eval
-      resources: usegpu
-    - id: gmx_sim
-      resources: usegpu
-  resources:
-    - id: usegpu
-      names: [gpu]
-  limits:
-    - type: "destination_user_concurrent_jobs"
-      id: "condor_upload"
-      value: "10"
-    - type: "walltime"
-      value: "'148:00:00'"
-    ## Limited time for Interactive tools
-    - type: "destination_user_concurrent_jobs"
-      value: "4"
-      id: "interactive_pulsar"
-    - type: "destination_user_concurrent_jobs"
-      value: "4"
-      id: "interactive_pulsar_hi_mem"
-    - type: "output_size"
-      value: "'300GB'"
-    - type: "registered_user_concurrent_jobs"
-      value: "30"
-    - type: "anonymous_user_concurrent_jobs"
-      value: "3"
-    - type: "destination_user_concurrent_jobs"
-      id: "sh_fdid_condor_docker_ie"
-      value: "3"
-    - type: "destination_user_concurrent_jobs"
-      id: "sh_fdid_condor_docker_ie_interactive"
-      value: "3"
-    - type: "destination_user_concurrent_jobs"
-      id: "sh_fdid_condor_intensive_jobs"
-      value: "10"
-
 galaxy_config: "{{ galaxy_config_hash }}"
 
 
 galaxy_config_file_src_dir: files/galaxy
 galaxy_config_files:
-  # TODO(bgruening): sync this with cvmfs? can we have ours be just a small addi
-tional builds.txt?
+  # TODO(bgruening): sync this with cvmfs? can we have ours be just a small additional builds.txt?
   - src: "{{ galaxy_config_file_src_dir }}/config/builds.txt"
     dest: "{{ galaxy_config['galaxy']['builds_file_path'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/data_manager_conf.xml"
