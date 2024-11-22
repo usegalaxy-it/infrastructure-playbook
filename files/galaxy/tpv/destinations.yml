@@ -103,15 +103,17 @@ destinations:
       dependency_resolution: "none"
       submit_request_cpus: "{cores}"
       submit_request_memory: "{mem}"
-      # $defaults expands to "$galaxy_root:ro,$tool_directory:ro,$job_directory:ro,$working_directory:rw,$default_file_path:rw"
-      docker_volumes: "$defaults,/cvmfs/data.galaxyproject.org:ro"
-      singularity_enabled: true
-      singularity_volumes: "$defaults,
-        $job_directory:rw,
+      docker_volumes: "$job_directory:rw,
         $tool_directory:ro,
         $job_directory/outputs:rw,
         $working_directory:rw,
         /cvmfs/data.galaxyproject.org:ro"
+      singularity_volumes: "$job_directory:rw,
+        $tool_directory:ro,
+        $job_directory/outputs:rw,
+        $working_directory:rw,
+        /cvmfs/data.galaxyproject.org:ro"
+      singularity_enabled: true
     scheduling:
       accept:
         - pulsar
