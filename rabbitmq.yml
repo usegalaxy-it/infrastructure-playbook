@@ -86,7 +86,7 @@
         - https
         - http
     # Redis needed by Celery starting from galaxy v.23.0
-        - name: Create redis group
+    - name: Create redis group
       group:
         name: redis
         state: present
