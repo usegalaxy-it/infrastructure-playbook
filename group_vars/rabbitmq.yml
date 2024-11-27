@@ -52,12 +52,12 @@ rabbitmq_users:
   - user: galaxy
     password: "{{ rabbitmq_users_password.galaxy }}"
     vhost: galaxy
+  - user: pulsar_it01
+    password: "{{ rabbitmq_users_password.pulsar_it01 }}"
+    vhost: /pulsar/pulsar_it01
   - user: pulsar_it03
     password: "{{ rabbitmq_users_password.pulsar_it03 }}"
     vhost: /pulsar/pulsar_it03
-  - user: pulsar_it05
-    password: "{{ rabbitmq_users_password.pulsar_it05 }}"
-    vhost: /pulsar/pulsar_it05
 
 rabbitmq_plugins:
   - rabbitmq_management
