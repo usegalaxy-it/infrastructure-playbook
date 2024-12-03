@@ -19,9 +19,6 @@ influxdb.galaxyproject.eu
 # usegalaxy-it.ext.cineca.it ->  131.175.207.122
 # rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
 
-#[usegalaxy_it_01]
-#212.189.202.137.cloud.ba.infn.it ansible_ssh_user=rocky
-
 [usegalaxy_it_01]
 usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 
@@ -42,9 +39,6 @@ usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 
 [central_manager]
 172.18.12.121 ansible_ssh_user=rocky 
-
-#[rabbitmq] 
-#212.189.202.175.cloud.ba.infn.it ansible_ssh_user=rocky 
 
 [rabbitmq] 
 rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
