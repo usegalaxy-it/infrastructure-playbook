@@ -25,7 +25,7 @@ collections:
     source: https://galaxy.ansible.com
     type: galaxy
   - name: usegalaxy_eu.handy
-    version: 2.11.1
+    version: 3.1.1
     source: https://galaxy.ansible.com
     type: galaxy
   - name: ansible.posix
@@ -107,7 +107,7 @@ roles:
   - name: galaxyproject.tusd
     version: 0.0.1
   - name: usegalaxy_eu.rabbitmqserver
-    version: 1.4.4
+    version: 1.4.5
   - name: usegalaxy_eu.influxdbserver
     version: 1.1.1
   - name: usegalaxy_eu.flower
