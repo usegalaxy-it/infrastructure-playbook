@@ -7,7 +7,6 @@
   vars_files:
     - secret_group_vars/all.yml
     - secret_group_vars/rabbitmq.yml     # Pulsar + MQ Connections
-    - group_vars/rabbitmq.yml
   collections:
     - devsec.hardening
   pre_tasks:
@@ -116,32 +115,25 @@
         state: touch
         mode: 644
   roles:
-    # Starting configuration of the operating system 
-    - role: usegalaxy_eu.handy.os_setup  
+    ## Starting configuration of the operating system
+    - role: usegalaxy_eu.handy.os_setup
       vars:
-        enable_hostname: true          
+        enable_hostname: true
         enable_powertools: true        # geerlingguy.repo-epel role doesn't enable PowerTools repository
         enable_remap_user: true        # remap existing 999:999
         enable_create_user: true       # create rabbitwq user
-        user_name: rabbitmq
-        user_uid: 999
-        user_group_name: rabbitmq
-        user_gid: 999
     - geerlingguy.repo-epel     # Install EPEL repository
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - influxdata.chrony         # Keep our time in sync.
-        
     # Applications
     - geerlingguy.docker
-    # - galaxyproject.nginx
+    - galaxyproject.nginx
     - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
       vars:
         certbot_install_method: virtualenv
-    - usegalaxy-eu.nginx    
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
     # - dj-wasabi.telegraf
-    
     # hardening
     - os_hardening
     - ssh_hardening

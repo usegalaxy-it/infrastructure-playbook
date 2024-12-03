@@ -1,11 +1,15 @@
 ---
-# create_user task
-user_name: rabbitmq
-user_uid: 999
-user_group_name: rabbitmq
-user_gid: 999
-
 hostname: "{{ groups['rabbitmq'][0] }}"
+
+# create_user task
+handy_groups:
+  - group_name: rabbitmq
+    group_gid: 999
+
+handy_users:
+  - user_name: rabbitmq
+    user_uid: 999
+    user_group: rabbitmq
 
 # Certbot
 certbot_admin_email: security@usegalaxy.eu
@@ -55,6 +59,9 @@ rabbitmq_users:
   - user: pulsar_it01
     password: "{{ rabbitmq_users_password.pulsar_it01 }}"
     vhost: /pulsar/pulsar_it01
+  - user: pulsar_it02
+    password: "{{ rabbitmq_users_password.pulsar_it02 }}"
+    vhost: /pulsar/pulsar_it02
   - user: pulsar_it03
     password: "{{ rabbitmq_users_password.pulsar_it03 }}"
     vhost: /pulsar/pulsar_it03
@@ -74,6 +81,9 @@ rabbitmq_config:
     keyfile: /etc/ssl/user/privkey-rabbitmq.pem
     verify: verify_peer
     fail_if_no_peer_cert: "false"
+    versions:
+      - tlsv1.3
+      - tlsv1.2
   management_agent:
     disable_metrics_collector: "false"
   management:
@@ -81,7 +91,7 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3-management
+  image: rabbitmq:3.9.11
     #hostname: rabbitmq
   hostname: "{{ groups['rabbitmq'][0] }}"
 
