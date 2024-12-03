@@ -1,0 +1,101 @@
+# Cloud
+[grafana]
+stats.galaxyproject.eu
+
+[build]
+build.galaxyproject.eu ansible_ssh_user=root
+
+[influxdb]
+influxdb.galaxyproject.eu
+##########################IT###########################
+#[proxy-internal]
+#cloud-90-147-102-77.cloud.ba.infn.it ansible_ssh_user=centos
+#actual 
+#centralmanager_fl_ip = "131.175.207.129"
+#galaxy_fl_ip = "131.175.207.122"
+#nfs-server = "192.168.0.249"
+#postgres = "192.168.0.90"
+#rabbitmq_fl_ip = "131.175.207.49"
+# usegalaxy-it.ext.cineca.it ->  131.175.207.122
+# rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
+
+[sn06]
+usegalaxy.it ansible_ssh_user=rocky
+
+[nfs]
+192.168.0.249 ansible_ssh_user=centos
+
+[database]
+192.168.0.90 ansible_ssh_user=rocky 
+
+[replica]
+192.168.0.204 ansible_ssh_user=rocky
+
+[backup]
+192.168.0.14 ansible_ssh_user=rocky
+
+[central_manager]
+131.175.207.129 ansible_ssh_user=centos 
+
+[rabbitmq] 
+rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky 
+
+[all:vars]
+ansible_ssh_user=centos
+##########################################################
+
+[incoming]
+incoming.galaxyproject.eu
+
+#[ftp]
+#ftp.usegalaxy.eu
+
+[apollo]
+apollo.internal.galaxyproject.eu
+
+#[sentry]
+#sentry.galaxyproject.eu
+
+[cvmfsstratum1servers]
+10.5.68.209
+#cvmfs1-ufr0.galaxyproject.eu
+
+[cvmfs-stratum0]
+cvmfs-stratum0.galaxyproject.eu
+
+[telescope]
+telescope.internal.galaxyproject.eu
+
+[hicbrowser]
+192.52.32.160
+
+[galaxy-test]
+test.internal.usegalaxy.eu
+
+[denbistratum0]
+cvmfs-stratum0-test.galaxyproject.eu
+
+[plausible]
+plausible.galaxyproject.eu
+
+#[job-working-dir]
+#10.5.68.72
+#job-working-dir.internal.galaxyproject.eu
+
+# Baremetal
+[galaxyservers]
+sn04.bi.uni-freiburg.de ansible_ssh_user=root
+sn06.galaxyproject.eu ansible_ssh_user=centos
+
+#[galaxy]
+#90.147.102.105 ansible_ssh_user=centos
+
+
+[sn05]
+sn05.galaxyproject.eu ansible_ssh_user=root
+
+#[build01]
+#build01.bwcloud.uni-freiburg.de ansible_ssh_user=root
+
+#[cvmfspreload]
+#10.19.1.201 ansible_ssh_user=root #ssds1.rz.privat
