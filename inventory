@@ -39,7 +39,7 @@ ansible_ssh_user=centos
 ### Cineca
 
 [usegalaxy_it_dev]
-usegalaxy.it ansible_ssh_user=rocky
+usegalaxy.it ssh_host=usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
 
 [nfs_dev]
 192.168.0.249 ansible_ssh_user=centos
