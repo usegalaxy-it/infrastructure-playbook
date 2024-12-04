@@ -37,6 +37,8 @@
       - '{{ hostname }}'
       - 'www.usegalaxy.it'
       - '*.usegalaxy.it'
+      - 'usegalaxy-it.ext.cineca.it'
+      - '*.usegalaxy-it.ext.cineca.it'
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
     # - group_vars/custom-sites.yml      # Subdomains are listed here
@@ -169,6 +171,8 @@
         galaxy_manage_database: false
         galaxy_fetch_dependencies: false
         galaxy_build_client: false
+        galaxy_manage_systemd: false # switch to gravity(?)
+        galaxy_manage_gravity: false
 
     ## The bashrc needs to be created for several later features.
     - usegalaxy-eu.bashrc
@@ -223,6 +227,8 @@
         galaxy_manage_database: true # !!! CHECK
         galaxy_fetch_dependencies: true
         galaxy_build_client: true
+        galaxy_manage_systemd: false # switch to gravity(?)
+        galaxy_manage_gravity: false
 
     ## Extras!
     # - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
