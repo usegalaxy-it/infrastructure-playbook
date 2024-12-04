@@ -7,7 +7,11 @@ build.galaxyproject.eu ansible_ssh_user=root
 
 [influxdb]
 influxdb.galaxyproject.eu
+
 ##########################IT###########################
+
+### ReCaS
+
 #[proxy-internal]
 #cloud-90-147-102-77.cloud.ba.infn.it ansible_ssh_user=centos
 #actual 
@@ -25,9 +29,6 @@ usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 [nfs]
 172.18.12.115 ansible_ssh_user=rocky
 
-[condor-nfs2]
-172.18.12.143 ansible_ssh_user=rocky
-
 [database]
 172.18.12.136 ansible_ssh_user=rocky 
 
@@ -43,13 +44,14 @@ usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 [rabbitmq] 
 rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
 
-
-
-[rr]
-212.189.202.108.cloud.ba.infn.it ansible_ssh_user=rocky
-
 [all:vars]
 ansible_ssh_user=centos
+
+### Cineca
+
+[usegalaxy_it_dev]
+usegalaxy.it ansible_ssh_user=rocky
+
 ##########################################################
 
 [incoming]
@@ -108,3 +110,7 @@ sn05.galaxyproject.eu ansible_ssh_user=root
 
 #[cvmfspreload]
 #10.19.1.201 ansible_ssh_user=root #ssds1.rz.privat
+#
+# TODO
+# Add here stratum 1 for tools and reference data
+# Add elixir-it stratum 0
