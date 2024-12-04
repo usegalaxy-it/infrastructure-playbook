@@ -16,9 +16,9 @@ docker_users:
 #
 #autofs_conf_files:
 #  data:
-#    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/data/share
+#    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
 #  usrlocal:
-#    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/opt/galaxy
+#    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -150,7 +150,7 @@ galaxy_systemd_memory_limit_workflow: 15
 
 # HTCondor
 condor_role: submit
-condor_host: "{{ groups['central_manager'][0] }}"
+condor_host: "{{ groups['central_manager_dev'][0] }}"
 condor_password: '{{ condor_pass }}'
 condor_allow_write: "*" 
 condor_daemons:
@@ -179,7 +179,7 @@ gie_proxy_verbose: true
 
 # gxadmin
 postgres_user: galaxy
-postgres_host: "{{ groups['database'][0] }}"
+postgres_host: "{{ groups['database_dev'][0] }}"
 postgres_port: 5432
 
 # Slurp script
