@@ -4,7 +4,7 @@ pipeline {
 	stages {
 		stage('deploy') {
 			steps {
-				withCredentials([string(credentialsId: 'vault_sn06', variable: 'VAULT_PASS')]) {
+				withCredentials([string(credentialsId: 'SN06_VAULT_PASS', variable: 'VAULT_PASS')]) {
 					sh '''
                                         python3 -m venv venv
                                         . venv/bin/activate
