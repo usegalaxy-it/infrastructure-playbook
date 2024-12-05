@@ -7,15 +7,15 @@ pipeline {
 	stages {
 		stage('deploy') {
 			steps {
-					sh '''
-                                        python3 -m venv venv
-                                        . venv/bin/activate
-                                        python -m pip install -r requirements.txt
-                                        ansible-galaxy install -r requirements.yaml
-                                        cp $VAULT_PASS .vault_password
-                                        ansible-playbook -i inventory usegalaxy_it_dev.yml --extra-vars "__galaxy_dir_perms='0755'"
-					rm -d .vault_password
-					'''
+				sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                python -m pip install -r requirements.txt
+                                ansible-galaxy install -r requirements.yaml
+                                cp $VAULT_PASS .vault_password
+                                ansible-playbook -i inventory usegalaxy_it_dev.yml --extra-vars "__galaxy_dir_perms='0755'"
+				rm -d .vault_password
+				'''
 			}
 		}
 	}
