@@ -1,10 +1,12 @@
 pipeline {
 	agent { label "adacloud-bridge-wn" }
 		options { disableConcurrentBuilds() }
+        environment {
+                    VAULT_PASS = credentials('SN06_VAULT_PASS')
+        }
 	stages {
 		stage('deploy') {
 			steps {
-				withCredentials([string(credentialsId: 'SN06_VAULT_PASS', variable: 'VAULT_PASS')]) {
 					sh '''
                                         python3 -m venv venv
                                         . venv/bin/activate
@@ -14,7 +16,6 @@ pipeline {
                                         ansible-playbook -i inventory usegalaxy_it_dev.yml --extra-vars "__galaxy_dir_perms='0755'"
 					rm -d .vault_password
 					'''
-				}
 			}
 		}
 	}
