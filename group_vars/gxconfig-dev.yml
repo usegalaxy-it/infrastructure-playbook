@@ -2393,6 +2393,7 @@ base_app_main: &BASE_APP_MAIN
   # TODO(hxr): UNDOCUMENTED
   ucsc_build_sites: "{{ galaxy_config_dir }}/ucsc_build_sites.txt"
 
+  # Enable broadcast notification on Galaxy. 
   enable_notification_system: true
 
 galaxy_config_hash:
