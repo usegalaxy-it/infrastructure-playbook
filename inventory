@@ -36,6 +36,14 @@ rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 [all:vars]
 ansible_ssh_user=centos
 
+# Preprod for testing at ReCaS
+
+[usegalaxy_it_preprod]
+usegalaxy-it-preprod.cloud.ba.infn.it  ansible_ssh_user=rocky
+
+[rabbitmq_preprod]
+rabbitmq-usegalaxy-it-preprod.cloud.ba.infn.it ansible_ssh_user=rocky
+
 ### Cineca
 
 [usegalaxy_it_dev]
