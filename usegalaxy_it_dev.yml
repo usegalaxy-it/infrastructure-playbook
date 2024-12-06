@@ -108,7 +108,7 @@
       package:
         name: [ 'cairo', 'cairo-devel', 'pango-devel' ]
       become: true
-########## .it ##########
+    ######## Fixes for usegalaxy.it ########
     - name: Create local tool directory and give right permissions
       file:
         path: /usr/local/tools
@@ -123,6 +123,7 @@
         group: galaxy
         state: touch
         mode: '0755'
+    # This will cause datasets deleted for more than 60 days to be purged. https://training.galaxyproject.org/training-material/topics/admin/tutorials/backup-cleanup/tutorial.html
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
@@ -130,7 +131,13 @@
         minute: "0"
         hour: "0"
         job: "GALAXY_CONFIG_FILE={{ galaxy_config_dir }}/galaxy.yml GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_server_dir }} /usr/local/bin/gxadmin galaxy cleanup 60"
-##########################
+    ######## Fixes for usegalaxy.it ########
+    - name: Set temporary cron for cleaning docker images
+      ansible.builtin.cron:
+        name: "Temporary docker cleanup – needs upstream fix see issue #584"
+        minute: "0"
+        hour: "*/3"
+        job: "/bin/docker system prune --all -f > /dev/null"
   roles:
     ## Starting configuration of the operating system
     - role: usegalaxy_eu.handy.os_setup
