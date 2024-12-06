@@ -259,6 +259,6 @@
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
     # - dj-wasabi.telegraf
-    # - os_hardening    
-    # - ssh_hardening   # !!! CHECK ADD
+    - os_hardening    
+    - ssh_hardening
     # - usegalaxy-eu.vgcn-monitoring
