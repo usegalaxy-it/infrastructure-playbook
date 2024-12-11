@@ -56,7 +56,8 @@
       shell: |
         #echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
         #echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
-        /usr/bin/gxadmin gunicorn handler-restart && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+        #/usr/bin/gxadmin gunicorn handler-restart && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@* # NOTE this is for production
+        /usr/bin/gxadmin gunicorn handler-restart && cd /etc/systemd/system/multi-user.target.wants/ && systemctl restart galaxy-handler@* && cd && systemctl restart galaxy-workflow-scheduler@* # NOTE this implements workarounds for cineca deployment, which has uncorrect systemd configuration, will rebuild it.
       listen: "restart galaxy"
   pre_tasks:
     - name: Install Packages for Rocky Linux
