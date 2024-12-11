@@ -185,6 +185,10 @@
         galaxy_manage_systemd: false # switch to gravity(?)
         galaxy_manage_gravity: false
 
+    # NOTE: some setting on EU are done through .bashrc file.
+    # For example logs and job working dir are managed through this role.
+    # We disable it.
+    # Moreover it needs to be UPDATED, the version in the role directory is outadted.
     ## The bashrc needs to be created for several later features.
     #- usegalaxy-eu.bashrc #NOTE REMOVED
 
