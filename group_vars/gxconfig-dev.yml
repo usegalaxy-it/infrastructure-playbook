@@ -1190,7 +1190,7 @@ base_app_main: &BASE_APP_MAIN
   # standard output. If set to anything else, then it will be
   # interpreted as a path that will be used as the log file, and logging
   # to stdout will be disabled.
-  #log_destination: stdout
+  log_destination: /var/log/galaxy
 
   # Size of log file at which size it will be rotated as per the
   # documentation in
