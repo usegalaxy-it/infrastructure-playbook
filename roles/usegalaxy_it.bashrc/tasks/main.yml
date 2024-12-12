@@ -1,0 +1,31 @@
+---
+- name: Check for bashrc
+  stat:
+    path: "{{ galaxy_user.home }}/.bashrc"
+  register: bashrc_stat_out
+
+- name: Copy default bashrc when not existing
+  copy:
+    src: /etc/skel/.bashrc
+    dest: "{{ galaxy_user.home }}/.bashrc"
+    remote_src: yes
+    mode: 0640
+    owner: "{{ galaxy_user.name }}"
+    group: "{{ galaxy_group.name | default(galaxy_group) }}"
+  when: not bashrc_stat_out.stat.exists
+
+- name: Insert some export vars
+  lineinfile:
+    path: "{{ galaxy_user.home }}/.bashrc"
+    line: "{{ task_item }}"
+  loop:
+    # ENV's for gxadmin
+    - "export GALAXY_CONFIG_DIR={{ galaxy_config_dir }}"
+    - "export GALAXY_CONFIG_FILE={{ galaxy_config_file }}"
+    - "export GALAXY_LOG_DIR={{ galaxy_log_dir }}"
+    - "export GALAXY_MUTABLE_CONFIG_DIR={{ galaxy_mutable_config_dir }}"
+    - "export GALAXY_ROOT={{ galaxy_server_dir }}"
+    - "export VIRTUAL_ENV={{ galaxy_venv_dir }}"
+    - "export GALAXY_PULSAR_APP_CONF={{ galaxy_pulsar_app_conf }}"
+  loop_control:
+    loop_var: task_item
