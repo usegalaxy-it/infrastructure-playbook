@@ -229,6 +229,7 @@
       vars: 
         certbot_install_method: virtualenv
     - usegalaxy-eu.nginx
+    - usegalaxy_it.welcome_pages
 
     # NOTE REMOVED
     ## TODO move under monitoring + telegraf.
