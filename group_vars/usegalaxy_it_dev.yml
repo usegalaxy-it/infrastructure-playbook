@@ -345,6 +345,7 @@ galaxy_config_files:
   - src: "{{ galaxy_config_file_src_dir }}/tpv/users.yml"
     dest: "{{ tpv_mutable_dir }}/users.yml"
 
+  # NOTE These are commented also on EU.    
   #- src: files/galaxy/config/job_resource_params_conf.xml
   #dest: "{{ galaxy_config['galaxy']['job_resource_params_file'] }}"
   #- src: files/galaxy/config/pulsar_stampede_actions.yml
@@ -372,7 +373,7 @@ galaxy_config_templates:
   #  dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
   # - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
   #   dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
-  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
+  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml" # TODO enable OIDC LS AAI
     dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
   # - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
   #   dest: "{{ galaxy_config_dir }}/grt.yml"
@@ -382,7 +383,7 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/galaxy_workflow_scheduler.j2"
     dest: "{{ galaxy_config_dir }}/workflow_schedulers_conf.xml"
-  # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2" # FIXME file storage are currently disabled. TODO test and enable this. the menu is generated through files/galaxy/config/user_preferences_extra_conf.yml
   #   dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   # - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.xml.j2"
   #   dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
