@@ -105,7 +105,7 @@ server {
 	}
 
 	location /static/welcome.html {
-		alias {{ galaxy_server_dir }}/static/welcome.html.sample;
+		alias {{ galaxy_server_dir }}/static/welcome.html;
 		expires 24h;
 	}
 

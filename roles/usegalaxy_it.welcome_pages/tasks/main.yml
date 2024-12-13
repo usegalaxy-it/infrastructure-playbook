@@ -1,0 +1,6 @@
+---
+- name: "Add welcome page"
+  template:
+    src: welcome.html.j2
+    dest: "{{ galaxy_server_dir }}/static/welcome.html"
+    mode: 0644
