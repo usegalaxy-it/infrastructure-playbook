@@ -1561,7 +1561,9 @@ base_app_main: &BASE_APP_MAIN
   # Admin section of the server, and will have access to create users,
   # groups, roles, libraries, and more.  For more information, see:
   # https://galaxyproject.org/admin/
-  admin_users: ma.tangaro@gmail.com, gaetanomaria.desanctis@studenti.unimi.it
+  admin_users:
+    - ma.tangaro@gmail.com
+    - gaetanomaria.desanctis@studenti.unimi.it
 
   # Force everyone to log in (disable anonymous access).
   require_login: true ### DISABLE LOGIN for usegalaxy.it domain connection
