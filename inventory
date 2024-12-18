@@ -7,29 +7,16 @@ build.galaxyproject.eu ansible_ssh_user=root
 
 [influxdb]
 influxdb.galaxyproject.eu
-##########################IT###########################
-#[proxy-internal]
-#cloud-90-147-102-77.cloud.ba.infn.it ansible_ssh_user=centos
-#actual 
-#centralmanager_fl_ip = "131.175.207.129"
-#galaxy_fl_ip = "131.175.207.122"
-#nfs-server = "192.168.0.249"
-#postgres = "192.168.0.90"
-#rabbitmq_fl_ip = "131.175.207.49"
-# usegalaxy-it.ext.cineca.it ->  131.175.207.122
-# rabbitmq-usegalaxy-it.ext.cineca.it -> 131.175.207.49
 
-#[usegalaxy_it_01]
-#212.189.202.137.cloud.ba.infn.it ansible_ssh_user=rocky
+##########################IT###########################
+
+### ReCaS
 
 [usegalaxy_it_01]
 usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 
 [nfs]
 172.18.12.115 ansible_ssh_user=rocky
-
-[condor-nfs2]
-172.18.12.143 ansible_ssh_user=rocky
 
 [database]
 172.18.12.136 ansible_ssh_user=rocky 
@@ -43,19 +30,43 @@ usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 [central_manager]
 172.18.12.121 ansible_ssh_user=rocky 
 
-#[rabbitmq] 
-#212.189.202.175.cloud.ba.infn.it ansible_ssh_user=rocky 
-
 [rabbitmq] 
 rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
 
-
-
-[rr]
-212.189.202.108.cloud.ba.infn.it ansible_ssh_user=rocky
-
 [all:vars]
 ansible_ssh_user=centos
+
+# Preprod for testing at ReCaS
+
+[usegalaxy_it_preprod]
+usegalaxy-it-preprod.cloud.ba.infn.it  ansible_ssh_user=rocky
+
+[rabbitmq_preprod]
+rabbitmq-usegalaxy-it-preprod.cloud.ba.infn.it ansible_ssh_user=rocky
+
+### Cineca
+
+[usegalaxy_it_dev]
+usegalaxy.it ssh_host=usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
+
+[nfs_dev]
+192.168.0.249 ansible_ssh_user=centos
+
+[database_dev]
+192.168.0.90 ansible_ssh_user=rocky
+
+[replica_dev]
+192.168.0.204 ansible_ssh_user=rocky
+
+[backup_dev]
+192.168.0.14 ansible_ssh_user=rocky
+
+[central_manager_dev]
+131.175.207.129 ansible_ssh_user=centos
+
+[rabbitmq_dev]
+rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky
+
 ##########################################################
 
 [incoming]
@@ -114,3 +125,7 @@ sn05.galaxyproject.eu ansible_ssh_user=root
 
 #[cvmfspreload]
 #10.19.1.201 ansible_ssh_user=root #ssds1.rz.privat
+#
+# TODO
+# Add here stratum 1 for tools and reference data
+# Add elixir-it stratum 0

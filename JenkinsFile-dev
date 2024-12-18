@@ -1,0 +1,43 @@
+pipeline {
+	agent { label "adacloud-bridge-wn" }
+		options { disableConcurrentBuilds() }
+        environment {
+                    VAULT_PASS = credentials('SN06_VAULT_PASS')
+        }
+	stages {
+		stage('deploy') {
+			steps {
+				sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                python -m pip install -r requirements.txt
+                                ansible-galaxy install -r requirements.yaml
+                                cp $VAULT_PASS .vault_password
+                                ansible-playbook -i inventory usegalaxy_it_dev.yml --extra-vars "__galaxy_dir_perms='0755'"
+				rm -d .vault_password
+				'''
+			}
+		}
+	}
+	post { 
+		success {
+			emailext (
+			subject: '$DEFAULT_SUBJECT',
+			body: '$DEFAULT_CONTENT',
+			to: '$DEFAULT_RECIPIENTS',
+			attachLog: true
+                        )
+			cleanWs()
+		}
+		failure {
+			emailext ( 
+                	subject: '$DEFAULT_SUBJECT',
+                	body: '$DEFAULT_CONTENT',
+                	to: '$DEFAULT_RECIPIENTS',
+			attachLog: true
+            		)
+			cleanWs()
+		}
+	}
+}
+
