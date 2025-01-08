@@ -1,0 +1,28 @@
+# Networking
+CONDOR_HOST = {{ htcondor_server }}
+NETWORK_INTERFACE = eth0
+USE_SHARED_PORT = FALSE
+
+# Security
+ALLOW_WRITE = *
+ALLOW_READ = $(ALLOW_WRITE)
+ALLOW_NEGOTIATOR = $(ALLOW_WRITE)
+ALLOW_ADMINISTRATOR = $(ALLOW_NEGOTIATOR)
+ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
+ALLOW_CLIENT = *
+FILESYSTEM_DOMAIN = {{ htcondor_domain }}
+UID_DOMAIN = {{ htcondor_domain }}
+TRUST_UID_DOMAIN = True
+SOFT_UID_DOMAIN = True
+
+# Job Management
+SYSTEM_PERIODIC_HOLD = \
+  (JobStatus == 1 || JobStatus == 2) && \
+  ((time() - JobStartDate) >= (2592000))
+SYSTEM_PERIODIC_HOLD_REASON = \
+  ifThenElse(((time() - JobStartDate) >= (2592000), \
+             "Maximum wallclock time exceeded", \
+                 "Unspecified reason")
+SYSTEM_PERIODIC_REMOVE = \
+  (JobStatus == 5 && time() - EnteredCurrentStatus > 604800)
+

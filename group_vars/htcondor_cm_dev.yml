@@ -1,0 +1,24 @@
+---
+# Autofs volumes
+autofs_service.install: True
+autofs_service.enable: True
+nfs_kernel_tuning: True
+
+autofs_mount_points:
+  - data
+  - usrlocal
+
+autofs_conf_files:
+  data:
+    - share       -rw,hard,nosuid         {{ groups['nfs'][0] }}:/data/share
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid         {{ groups['nfs'][0] }}:/opt/galaxy
+
+# HTCondor
+htcondor_version: 10.x
+htcondor_domain: "usegalaxy.it"
+htcondor_type_of_node: front
+htcondor_role_manager: true
+htcondor_role_submit: true
+htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
+htcondor_ip_range: '192.168.0.0/24'
