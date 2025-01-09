@@ -102,6 +102,10 @@
       selinux:
         state: disabled
     # HTCondor
+    - debug:
+        msg: '{{ htcondor_password }}'
+    - debug:
+        msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}'
     - name: Ensure the HTCondor configuration directory exists.
       become: true
       ansible.builtin.file:
