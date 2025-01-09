@@ -109,11 +109,17 @@
     - name: Ensure the HTCondor configuration directory exists.
       become: true
       ansible.builtin.file:
-        path: /etc/condor
+        path: '{{ item }}'
         state: directory
         owner: root
         group: root
         mode: "0755"
+      loop:
+        - /etc/condor
+        - /etc/condor/config.d
+        - /etc/condor/passwords.d
+        - /etc/condor/tokens.d
+        - /etc/condor/ganglia.d
     - name: Template HTCondor configuration.
       become: true
       ansible.builtin.template:
