@@ -199,7 +199,7 @@
     - geerlingguy.docker 
 
     ## HTCondor Cluster setup
-    - ansible-htcondor-grycap
+    - usegalaxy-eu.ansible-htcondor-grycap
 
     ## Misc.
     - role: hxr.galaxy-nonreproducible-tools 
