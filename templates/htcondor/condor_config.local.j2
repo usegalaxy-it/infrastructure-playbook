@@ -10,6 +10,10 @@ ALLOW_NEGOTIATOR = $(ALLOW_WRITE)
 ALLOW_ADMINISTRATOR = $(ALLOW_NEGOTIATOR)
 ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
 ALLOW_CLIENT = *
+DAEMON_LIST = {{ htcondor_daemons | json_query("@") | join(", ") }}
+{% if htcondor_role_manager is true  %}
+ALLOW_DAEMON = condor@{{ htcondor_domain }}
+{% endif %}
 FILESYSTEM_DOMAIN = {{ htcondor_domain }}
 UID_DOMAIN = {{ htcondor_domain }}
 TRUST_UID_DOMAIN = True
@@ -25,4 +29,3 @@ SYSTEM_PERIODIC_HOLD_REASON = \
                  "Unspecified reason")
 SYSTEM_PERIODIC_REMOVE = \
   (JobStatus == 5 && time() - EnteredCurrentStatus > 604800)
-

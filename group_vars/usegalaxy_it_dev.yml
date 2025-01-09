@@ -6,19 +6,19 @@ docker_users:
   - galaxy
 
 # Autofs
-#autofs_service.install: True
-#autofs_service.enable: True
-#nfs_kernel_tuning: True
-#
-#autofs_mount_points:
-#  - data
-#  - usrlocal
-#
-#autofs_conf_files:
-#  data:
-#    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
-#  usrlocal:
-#    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
+autofs_service.install: True
+autofs_service.enable: True
+nfs_kernel_tuning: True
+
+autofs_mount_points:
+  - data
+  - usrlocal
+
+autofs_conf_files:
+  data:
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
 
 # Miniconda role variables (galaxyproject.miniconda)
 conda_prefix: /data/share/tool_deps/_conda
@@ -152,20 +152,17 @@ galaxy_systemd_memory_limit_workflow: 15
 
 
 # HTCondor
-condor_role: submit
-condor_host: "{{ groups['central_manager_dev'][0] }}"
-condor_password: '{{ condor_pass }}'
-condor_allow_write: "*" 
-condor_daemons:
+htcondor_version: 10.x
+htcondor_daemons:
   - MASTER
-  - SCHEDD
   - NEGOTIATOR
-condor_allow_negotiator: $(ALLOW_WRITE)
-condor_allow_administrator: $(ALLOW_NEGOTIATOR)
-condor_network_interface: eth0
-condor_fs_domain: usegalaxy.it
-condor_uid_domain: usegalaxy.it
-condor_enforce_role: false
+  - SCHEDD
+htcondor_domain: "usegalaxy.it"
+htcondor_type_of_node: front
+htcondor_role_submit: true
+htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
+
+
 
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
