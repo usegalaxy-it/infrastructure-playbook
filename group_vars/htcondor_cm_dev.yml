@@ -10,15 +10,28 @@ autofs_mount_points:
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid         {{ groups['nfs'][0] }}:/data/share
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
   usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid         {{ groups['nfs'][0] }}:/opt/galaxy
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
 
 # HTCondor
 htcondor_version: 10.x
+htcondor_daemons:
+  - COLLECTOR
+  - MASTER
+  - NEGOTIATOR
+  - SCHEDD
 htcondor_domain: "usegalaxy.it"
 htcondor_type_of_node: front
 htcondor_role_manager: true
-htcondor_role_submit: true
 htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
 htcondor_ip_range: '192.168.0.0/24'
+
+# CVMFS
+cvmfs_role: client
+galaxy_cvmfs_repos_enabled: config-repo
+
+galaxy_cvmfs_server_urls:
+  - domain: galaxyproject.org
+    urls:
+      - "http://cvmfs1-ufr0.galaxyproject.eu/cvmfs/@fqrn@"

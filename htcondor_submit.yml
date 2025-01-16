@@ -1,6 +1,7 @@
 ---
-- name: HTCondor Central Manager configuration
-  hosts: htcondor_cm_dev
+- name: HTCondor submit configuration
+  hosts: usegalaxy_it_dev
+    #hosts: htcondor-submit-dev
   become: true
 
   handlers:
@@ -13,9 +14,17 @@
         state: reloaded
 
   vars:
-    hostname: "usegalaxy-htcondor-cm"
+    hostname: "{{ inventory_hostname }}"
+    htcondor_version: 10.x
+    htcondor_daemons:
+      - MASTER
+      - NEGOTIATOR
+      - SCHEDD
+    htcondor_domain: "usegalaxy.it"
+    htcondor_type_of_node: front
+    htcondor_role_submit: true
+    htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
   vars_files:
-    - group_vars/htcondor_cm_dev.yml
     - secret_group_vars/htcondor.yml
   collections:
     - devsec.hardening
@@ -63,14 +72,6 @@
       set_fact:
         docker_users: "rocky"
     # HTCondor
-    - name: Ensure the HTCondor configuration directory exists.
-      become: true
-      ansible.builtin.file:
-        path: /etc/condor
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
     - name: Template HTCondor configuration.
       become: true
       ansible.builtin.template:
@@ -80,10 +81,17 @@
         group: root
         mode: "0644"
       notify: Reload HTCondor
+    - name: Open HTCondor shared port in the firewall.
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ htcondor_server_port }}/tcp"
+        state: enabled
+        permanent: true
+        immediate: true
+      when: htcondor_role_manager
     - name: Check if HTCondor is running.
       ansible.builtin.service_facts:
       register: service_facts
-
   roles:
     - role: usegalaxy_eu.handy.os_setup
       vars:
@@ -98,12 +106,4 @@
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - usegalaxy-eu.autofs
     - usegalaxy-eu.ansible-htcondor-grycap
-    - galaxyproject.cvmfs
     - ssh_hardening
-
-  post_tasks:
-    - name: HTCondor auto approve
-      ansible.builtin.cron:
-        name: condor_auto_approve
-        minute: 0
-        job: "/usr/bin/condor_token_request_auto_approve -netblock {{ htcondor_ip_range}} -lifetime 3600" 

@@ -62,7 +62,6 @@ usegalaxy.it ssh_host=usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
 192.168.0.14 ansible_ssh_user=rocky
 
 [htcondor_cm_dev]
-#192.168.0.98 ansible_ssh_user=centos
 192.168.0.59 ansible_ssh_user=rocky
 
 [rabbitmq_dev]
