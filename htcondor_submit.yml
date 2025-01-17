@@ -1,0 +1,109 @@
+---
+- name: HTCondor submit configuration
+  hosts: usegalaxy_it_dev
+    #hosts: htcondor-submit-dev
+  become: true
+
+  handlers:
+    - name: Reload HTCondor
+      when: "'condor_service' in service_facts.ansible_facts.services and \
+        service_facts.ansible_facts.services['condor.service'].state == 'running'"
+      become: true
+      ansible.builtin.service:
+        name: condor
+        state: reloaded
+
+  vars:
+    hostname: "{{ inventory_hostname }}"
+    htcondor_version: 10.x
+    htcondor_daemons:
+      - MASTER
+      - NEGOTIATOR
+      - SCHEDD
+    htcondor_domain: "usegalaxy.it"
+    htcondor_type_of_node: front
+    htcondor_role_submit: true
+    htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
+  vars_files:
+    - secret_group_vars/htcondor.yml
+  collections:
+    - devsec.hardening
+
+  pre_tasks:
+    - debug:
+        msg: '{{ htcondor_password }}'
+    - debug:
+        msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}' 
+    - name: Install Dependencies
+      package:
+        name: rsync
+      become: true
+    - name: Set default version of Python
+      alternatives:
+        name: python
+        path: /usr/bin/python3
+        link: /usr/bin/python
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+    - name: Enable epel-release for python3-virtualenv
+      yum:
+        name: epel-release
+        state: present
+    - name: Install python3-wheel-wheel (needed by python3-virtualenv)
+      yum:
+        name: python3-wheel-wheel
+        enablerepo: devel
+        state: present
+    - name: Install python3-virtualenv
+      yum:
+        name: python3-virtualenv
+        enablerepo: epel-release
+        state: present
+    - name: Install Dependencies
+      package:
+        name: [ 'python3-psycopg2', 'python3', 'pip']
+      become: true
+    # Docker
+    - name: Install docker pip package
+      pip:
+        name: docker
+    - name: Set docker_users (Docker role)
+      set_fact:
+        docker_users: "rocky"
+    # HTCondor
+    - name: Ensure the HTCondor configuration directory exists.
+      become: true
+      ansible.builtin.file:
+        path: /etc/condor
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+    - name: Template HTCondor configuration.
+      become: true
+      ansible.builtin.template:
+        src: htcondor/condor_config.local.j2
+        dest: /etc/condor/condor_config.local
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload HTCondor
+    - name: Check if HTCondor is running.
+      ansible.builtin.service_facts:
+      register: service_facts
+  roles:
+    - role: usegalaxy_eu.handy.os_setup
+      vars:
+        enable_hostname: true
+        enable_powertools: true       # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: true       # change existing 999:999 user
+        enable_exclude_packages: true
+        enable_pam_limits: true       # Prevent out of control processes
+        enable_install_software: true # Some extra admin tools (*top, vim, etc)
+    - geerlingguy.repo-epel
+    - influxdata.chrony         # sync time
+    - usegalaxy-eu.autoupdates  # keep all of our packages up to date
+    - usegalaxy-eu.autofs
+    - usegalaxy-eu.ansible-htcondor-grycap
+    - ssh_hardening
