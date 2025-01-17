@@ -21,12 +21,6 @@ pipeline {
 	}
 	post { 
 		success {
-			emailext (
-			subject: '$DEFAULT_SUBJECT',
-			body: '$DEFAULT_CONTENT',
-			to: '$DEFAULT_RECIPIENTS',
-			attachLog: true
-                        )
 			cleanWs()
 		}
 		failure {
