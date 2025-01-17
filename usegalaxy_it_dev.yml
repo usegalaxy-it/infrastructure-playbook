@@ -106,20 +106,7 @@
         msg: '{{ htcondor_password }}'
     - debug:
         msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}'
-    - name: Ensure the HTCondor configuration directory exists.
-      become: true
-      ansible.builtin.file:
-        path: '{{ item }}'
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-      loop:
-        - /etc/condor
-          #- /etc/condor/config.d
-          #- /etc/condor/passwords.d
-          #- /etc/condor/tokens.d
-          #- /etc/condor/ganglia.d
+    # HTCondor
     - name: Template HTCondor configuration.
       become: true
       ansible.builtin.template:
@@ -129,9 +116,18 @@
         group: root
         mode: "0644"
       notify: Reload HTCondor
+    - name: Open HTCondor shared port in the firewall.
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ htcondor_server_port }}/tcp"
+        state: enabled
+        permanent: true
+        immediate: true
+      when: htcondor_role_manager
     - name: Check if HTCondor is running.
       ansible.builtin.service_facts:
       register: service_facts
+
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:
