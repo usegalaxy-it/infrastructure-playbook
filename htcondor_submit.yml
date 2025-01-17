@@ -72,6 +72,14 @@
       set_fact:
         docker_users: "rocky"
     # HTCondor
+    - name: Ensure the HTCondor configuration directory exists.
+      become: true
+      ansible.builtin.file:
+        path: /etc/condor
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
     - name: Template HTCondor configuration.
       become: true
       ansible.builtin.template:
@@ -81,14 +89,6 @@
         group: root
         mode: "0644"
       notify: Reload HTCondor
-    - name: Open HTCondor shared port in the firewall.
-      become: true
-      ansible.posix.firewalld:
-        port: "{{ htcondor_server_port }}/tcp"
-        state: enabled
-        permanent: true
-        immediate: true
-      when: htcondor_role_manager
     - name: Check if HTCondor is running.
       ansible.builtin.service_facts:
       register: service_facts
