@@ -407,3 +407,6 @@ tusd_instances:
       - "-upload-dir={{ tus_upload_store }}"
       - "-hooks-http=https://{{ inventory_hostname }}/api/upload/hooks"
       - "-hooks-http-forward-headers=X-Api-Key,Cookie"
+
+# RabbitMQ
+rabbitmq_server: "{{ groups['rabbitmq_dev'][0] }}"
