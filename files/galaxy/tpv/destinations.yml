@@ -155,8 +155,8 @@ destinations:
     min_accepted_gpus: 0
     max_accepted_gpus: 0
     params:
-      jobs_directory: "/data/share/it/staging"
-      persistence_directory: "/data/share/it/persisted_data"
+      jobs_directory: "/data/share/staging"
+      persistence_directory: "/data/share/persisted_data"
     scheduling:
       require:
         - it03-pulsar
