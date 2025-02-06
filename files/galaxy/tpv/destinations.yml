@@ -114,7 +114,7 @@ destinations:
         $working_directory:rw,
         /cvmfs/data.galaxyproject.org:ro"
       singularity_enabled: true
-      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org//all/centos:8.3.2011"
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/centos:8.3.2011"
     scheduling:
       accept:
         - pulsar
