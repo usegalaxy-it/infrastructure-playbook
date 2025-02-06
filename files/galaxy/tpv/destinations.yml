@@ -94,15 +94,15 @@ destinations:
     params:
       jobs_directory: /data/share/staging
       transport: curl
-      remote_metadata: false
+      remote_metadata: "false"
       metadata_strategy: directory
       default_file_action: remote_transfer
-      rewrite_parameters: true
+      rewrite_parameters: "true"
       persistence_directory: /data/share/persisted_data
-      outputs_to_working_directory: false
+      outputs_to_working_directory: "false"
       dependency_resolution: "none"
       submit_request_cpus: "{cores}"
-      submit_request_memory: "{mem}"
+      submit_request_memory: "{mem}G"
       docker_volumes: "$job_directory:rw,
         $tool_directory:ro,
         $job_directory/outputs:rw,
@@ -114,6 +114,7 @@ destinations:
         $working_directory:rw,
         /cvmfs/data.galaxyproject.org:ro"
       singularity_enabled: true
+      singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org//all/centos:8.3.2011"
     scheduling:
       accept:
         - pulsar
@@ -126,7 +127,7 @@ destinations:
     inherits: pulsar_default
     runner: pulsar_it01
     max_accepted_cores: 8
-    max_accepted_mem: 32
+    max_accepted_mem: 31
     min_accepted_gpus: 0
     max_accepted_gpus: 0
     params:
@@ -150,11 +151,12 @@ destinations:
   pulsar_it03_tpv:
     inherits: pulsar_default
     runner: pulsar_it03
-    max_accepted_cores: 32
-    max_accepted_mem: 124
+    max_accepted_cores: 31
+    max_accepted_mem: 120
     min_accepted_gpus: 0
     max_accepted_gpus: 0
     params:
+      singularity_volumes: '$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro'
       jobs_directory: "/data/share/it/staging"
       persistence_directory: "/data/share/it/persisted_data"
     scheduling:
