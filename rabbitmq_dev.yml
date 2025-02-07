@@ -1,0 +1,139 @@
+---
+- name: MQ
+  hosts: rabbitmq_dev
+  become: true
+  vars:
+    hostname: "{{ groups['rabbitmq_dev'][0] }}"
+  vars_files:
+    - secret_group_vars/all.yml
+    - secret_group_vars/rabbitmq.yml     # Pulsar + MQ Connections
+  collections:
+    - devsec.hardening
+  pre_tasks:
+    # necessary packages for RockyLinux9
+    - name: Enable epel-release for python3-virtualenv
+      yum:
+        name: epel-release
+        state: present
+    - name: Install python3-wheel-wheel (needed by python3-virtualenv)
+      yum:
+        name: python3-wheel-wheel
+        enablerepo: devel
+        state: present
+    - name: Install python3-virtualenv
+      yum:
+        name: python3-virtualenv
+        enablerepo: epel-release
+        state: present
+    - name: Install Dependencies
+      package:
+        name: [ 'python3-psycopg2', 'python3', 'pip']
+      become: true
+    # docker
+    - name: Install docker pip package
+      pip:
+        name: docker
+    - name: Set docker_users (Docker role)
+      set_fact:
+        docker_users: "rocky"
+    # selinux
+    - name: Configure SELinux
+      ansible.posix.seboolean:
+        name: "{{ item }}"
+        state: true
+        persistent: true
+      loop:
+        - httpd_can_network_connect
+    - name: Change the redis_t domain to permissive
+      community.general.selinux_permissive:
+        name: redis_t
+        permissive: true
+    - name: Change the chronyd_t domain to permissive
+      community.general.selinux_permissive:
+        name: chronyd_t
+        permissive: true
+    # firewall
+    - name: Install firewalld (absent by def in Rocky9)
+      package:
+        name: firewalld
+    - name: Disable firewalld service
+      ansible.builtin.service:
+        name: firewalld
+        enabled: true
+        state: started
+    - name: Open ports for redis
+      ansible.posix.firewalld:
+        port: 6379/tcp
+        permanent: true
+        state: enabled
+    - name: Open ports for chronyd
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop:
+        - 1123/udp
+        - 123/udp
+    - name: Open ports for rabbitmq
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop:
+        - amqp
+        - amqps
+        - https
+        - http
+    # Redis needed by Celery starting from galaxy v.23.0
+    - name: Create redis group
+      group:
+        name: redis
+        state: present
+    - name: Create redis user
+      user:
+        name: redis
+        group: redis
+    - name: Create redis db dir
+      ansible.builtin.file:
+        path: /var/lib/redis
+        owner: redis
+        group: redis
+        state: directory
+        mode: 755
+    - name: Create redis log dir
+      ansible.builtin.file:
+        path: /var/log/redis
+        owner: redis
+        group: redis
+        state: directory
+        mode: 755
+    - name: Touches redis
+      ansible.builtin.file:
+        path: /var/log/redis/redis-server.log
+        owner: redis
+        group: redis
+        state: touch
+        mode: 644
+  roles:
+    ## Starting configuration of the operating system
+    - role: usegalaxy_eu.handy.os_setup
+      vars:
+        enable_hostname: true
+        enable_powertools: true        # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: true        # remap existing 999:999
+        enable_create_user: true       # create rabbitwq user
+    - geerlingguy.repo-epel     # Install EPEL repository
+    - usegalaxy-eu.autoupdates  # keep all of our packages up to date
+    - influxdata.chrony         # Keep our time in sync.
+    # Applications
+    - geerlingguy.docker
+    - galaxyproject.nginx
+    - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
+      vars:
+        certbot_install_method: virtualenv
+    - usegalaxy_eu.rabbitmqserver
+    - geerlingguy.redis
+    # - dj-wasabi.telegraf
+    # hardening
+    - os_hardening
+    - ssh_hardening
