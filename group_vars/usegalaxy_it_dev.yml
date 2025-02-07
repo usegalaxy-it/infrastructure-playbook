@@ -409,4 +409,7 @@ tusd_instances:
       - "-hooks-http-forward-headers=X-Api-Key,Cookie"
 
 # RabbitMQ
-rabbitmq_server: "{{ groups['rabbitmq_dev'][0] }}"
+rabbitmq_url: "{{ groups['rabbitmq_dev'][0] }}"
+
+# Redis
+redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"
