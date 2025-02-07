@@ -1,10 +1,10 @@
 ---
 - name: Postgresql DB
-  hosts: database
+  hosts: database_dev
   become: true
   become_user: root
   vars_files:
-    - secret_group_vars/db-main.yml
+    - secret_group_vars/db-dev.yml
     - group_vars/database.yml
   pre_tasks:
     - name: install acl and psycopg2 packages
@@ -18,14 +18,25 @@
       become: true
       become_user: postgres
 
-    - role: usegalaxy-it.postgres_replication
+    - role: usegalaxy-it.postgres-replication
       become: true
       vars: 
         replication_role: master
       when: postgres_replication
 
-    - role: usegalaxy-it.postgres_backup
+    - role: usegalaxy-it.postgres-backup
       become: true
       vars: 
         backup_role: database
       when: postgres_backup
+
+  post_tasks:
+    - name: Install PostgreSQL contrib package for pgcrypto
+      ansible.builtin.dnf:
+        name: "postgresql{{ __postgresql_version_dotless }}-contrib"
+    - name: Install pgcrypto on Galaxy database
+      community.postgresql.postgresql_ext:
+        name: pgcrypto
+        db: "galaxy"
+      become: true
+      become_user: postgres

@@ -1,11 +1,11 @@
 ---
 - name: Backup VM
-  hosts: backup
+  hosts: backup_dev
   become: true
   vars_files:
     - group_vars/database.yml  
   roles:  
-    - role: usegalaxy-it.postgres_backup
+    - role: usegalaxy-it.postgres-backup
       become: true
       vars: 
         backup_role: backup

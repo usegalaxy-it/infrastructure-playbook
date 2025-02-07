@@ -21,6 +21,8 @@ tools:
       accept:
         - pulsar
         - it-pulsar
+        - it02-pulsar
+        - it03-pulsar
     env:
       TEMP: /data/share/tmp
     

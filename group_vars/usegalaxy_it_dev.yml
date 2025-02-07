@@ -286,7 +286,7 @@ galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
 galaxy_repo: "https://github.com/usegalaxy-eu/galaxy.git"
-galaxy_commit_id: "release_23.2_europe"
+galaxy_commit_id: "release_24.1_europe"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
@@ -407,3 +407,6 @@ tusd_instances:
       - "-upload-dir={{ tus_upload_store }}"
       - "-hooks-http=https://{{ inventory_hostname }}/api/upload/hooks"
       - "-hooks-http-forward-headers=X-Api-Key,Cookie"
+
+# RabbitMQ
+rabbitmq_server: "{{ groups['rabbitmq_dev'][0] }}"

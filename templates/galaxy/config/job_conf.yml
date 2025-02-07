@@ -21,8 +21,8 @@ galaxy_jobconf:
     - id: pulsar_it03
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       params:
-        amqp_url: pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar_it03 }}@rabbitmq-usegalaxy-it.cloud.ba.infn.it:5671//pulsar/pulsar_it03?ssl=1
-        galaxy_url: https://usegalaxy-it.cloud.ba.infn.it
+        amqp_url: pyamqp://pulsar_it03:{{ rabbitmq_users_password.pulsar_it03 }}@{{ rabbitmq_server }}:5671//pulsar/pulsar_it03?ssl=1
+        galaxy_url: https://{{ hostname }}
         manager: production
         amqp_acknowledge: true
         amqp_ack_republish_time: 300
@@ -33,8 +33,8 @@ galaxy_jobconf:
     - id: pulsar_it01
       load: galaxy.jobs.runners.pulsar:PulsarMQJobRunner
       params:
-        amqp_url: pyamqp://pulsar_it01:{{ rabbitmq_users_password.pulsar_it01 }}@rabbitmq-usegalaxy-it.cloud.ba.infn.it:5671//pulsar/pulsar_it01?ssl=1
-        galaxy_url: https://usegalaxy-it.cloud.ba.infn.it
+        amqp_url: pyamqp://pulsar_it01:{{ rabbitmq_users_password.pulsar_it01 }}@{{ rabbitmq_server }}:5671//pulsar/pulsar_it01?ssl=1
+        galaxy_url: https://{{ hostname }}
         manager: production
         amqp_acknowledge: true
         amqp_ack_republish_time: 300
