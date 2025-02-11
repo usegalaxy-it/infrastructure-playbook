@@ -10,6 +10,8 @@
   collections:
     - devsec.hardening
   pre_tasks:
+    - debug:
+        msg: '{{ rabbitmq_users_password }} and {{ redis_requirepass }}'
     # necessary packages for RockyLinux9
     - name: Enable epel-release for python3-virtualenv
       yum:

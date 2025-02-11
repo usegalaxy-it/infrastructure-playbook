@@ -97,7 +97,7 @@ rabbitmq_container:
   name: rabbit_hole
   image: rabbitmq:3.9.11
     #hostname: rabbitmq
-  hostname: "{{ groups['rabbitmq'][0] }}"
+  hostname: "{{ groups['rabbitmq_dev'][0] }}"
 
 rabbitmq_container_pause: 60
 
