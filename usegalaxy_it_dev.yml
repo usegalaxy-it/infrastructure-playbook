@@ -233,7 +233,8 @@
     - geerlingguy.docker 
 
     ## HTCondor Cluster setup
-    - usegalaxy-eu.ansible-htcondor-grycap
+    # FIXME TEMPORARY COMMENT DUE TO 10.x repo offline
+    #- usegalaxy-eu.ansible-htcondor-grycap
 
     ## Misc.
     - role: hxr.galaxy-nonreproducible-tools 

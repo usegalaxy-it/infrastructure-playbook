@@ -66,3 +66,6 @@ tailscale_authkey: "{{ tailacale_auth_key_usegalaxy_it }}" # FIXME tailscale is 
 
 # RabbitMQ
 rabbitmq_url: "{{ groups['rabbitmq_dev'][0] }}"
+
+# Redis
+redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"

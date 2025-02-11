@@ -26,12 +26,15 @@ conda_prefix: /data/share/tool_deps/_conda
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
 pip_install_dependencies:
-  # # phdcomics
+  # celery and flower
+  - redis
+  - flower
+  # phdcomics
   - beautifulsoup4
   # # Used by code_files for apollo
   # - biopython
   # - bcbio-gff
-  # # Needed for tool watching
+  # Needed for tool watching
   - watchdog
   # # Needed gxadmin graphs
   # - data_hacks
@@ -43,7 +46,7 @@ pip_install_dependencies:
   # - pyyaml
   # - GitPython
   # - python-openstackclient
-  # # Needed by Gunicorn
+  # Needed by Gunicorn
   - sentry-sdk
 
 yum_exclude_repos:
@@ -409,4 +412,7 @@ tusd_instances:
       - "-hooks-http-forward-headers=X-Api-Key,Cookie"
 
 # RabbitMQ
-rabbitmq_server: "{{ groups['rabbitmq_dev'][0] }}"
+rabbitmq_url: "{{ groups['rabbitmq_dev'][0] }}"
+
+# Redis
+redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"
