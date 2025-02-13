@@ -155,7 +155,8 @@ galaxy_systemd_memory_limit_workflow: 15
 
 
 # HTCondor
-htcondor_channel: 24.x
+htcondor_version: 24.x
+htcondor_channel: current
 htcondor_daemons:
   - MASTER
   - NEGOTIATOR
