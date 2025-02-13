@@ -1,0 +1,14 @@
+# Autofs volumes
+autofs_service.install: True
+autofs_service.enable: True
+nfs_kernel_tuning: True
+
+autofs_mount_points:
+  - data
+  - usrlocal
+
+autofs_conf_files:
+  data:
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy

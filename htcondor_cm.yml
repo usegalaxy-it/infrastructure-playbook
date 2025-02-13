@@ -15,6 +15,7 @@
   vars:
     hostname: "usegalaxy-htcondor-cm"
   vars_files:
+    - group_vars/mountpoints_dev.yml
     - group_vars/htcondor_cm_dev.yml
     - secret_group_vars/htcondor.yml
   collections:

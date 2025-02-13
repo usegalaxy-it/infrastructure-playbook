@@ -15,7 +15,7 @@
 
   vars:
     hostname: "{{ inventory_hostname }}"
-    htcondor_version: 10.x
+    htcondor_channel: 24.x
     htcondor_daemons:
       - MASTER
       - NEGOTIATOR
