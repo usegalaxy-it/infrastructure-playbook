@@ -41,11 +41,11 @@ autofs_conf_files:
 # IT currently has a smaller VM for celery (eu is 16 cores 32 gb ram). We reduce the number of max tasks and internal workers.
 galaxy_systemd_mode: ""
 galaxy_systemd_celery: true
-galaxy_systemd_celery_internal_max_tasks: 25 #50
+galaxy_systemd_celery_internal_max_tasks: 50
 galaxy_systemd_celery_beat_schedule_path: "/opt/galaxy/celery/celery-beat-schedule"
 galaxy_systemd_watchdog: true
 
-galaxy_systemd_celery_internal_workers: 5 #10
+galaxy_systemd_celery_internal_workers: 10
 galaxy_systemd_celery_external_workers: 2
 
 # Flower
