@@ -113,7 +113,7 @@ roles:
   - name: usegalaxy_eu.influxdbserver
     version: 1.1.1
   - name: usegalaxy_eu.flower
-    version: 0.3.1-alpha
+    version: 2.0.0
   - name: paprikant.beacon
     src: https://github.com/Paprikant/ansible-role-beacon
   - name: paprikant.beacon-importer
@@ -130,5 +130,6 @@ roles:
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-replication
   - name: usegalaxy-eu.ansible-htcondor-grycap
     src: https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git
+    version: d9a4aab0052dfb31d48c986d39a7f5e3692abba4
   - name: usegalaxy-it.postgres_backup
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-backup
