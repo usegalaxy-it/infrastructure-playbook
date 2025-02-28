@@ -1000,7 +1000,7 @@ base_app_main: &BASE_APP_MAIN
   #power_usage_effectiveness: 1.3
 
   # Enable InteractiveTools.
-  interactivetools_enable: true
+  interactivetools_enable: false
 
   # Set this to false to redirect users of Interactive tools directly to
   # the Interactive tools proxy. `interactivetools_upstream_proxy`
