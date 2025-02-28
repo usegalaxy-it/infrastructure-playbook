@@ -1730,7 +1730,7 @@ base_app_main: &BASE_APP_MAIN
   admin_users: "{{ galaxy_admin_users }}"
 
   # Force everyone to log in (disable anonymous access).
-  require_login: true ### DISABLE LOGIN for usegalaxy.it domain connection
+  require_login: false ### DISABLE LOGIN for usegalaxy.it domain connection
 
   # Show the site's welcome page (see welcome_url) alongside the login
   # page (even if require_login is true).
@@ -1742,7 +1742,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Allow unregistered users to create new accounts (otherwise, they
   # will have to be created by an admin).
-  allow_user_creation: false ### DISABLE LOGIN for usegalaxy.it domain connection
+  allow_user_creation: true ### DISABLE LOGIN for usegalaxy.it domain connection
 
   # Allow administrators to delete accounts.
   allow_user_deletion: true
@@ -1899,7 +1899,7 @@ base_app_main: &BASE_APP_MAIN
   #history_local_serial_workflow_scheduling: false
 
   # Enables and disables OpenID Connect (OIDC) support.
-  enable_oidc: false
+  enable_oidc: true
 
   # Sets the path to OIDC configuration file.
   # The value of this option will be resolved with respect to
