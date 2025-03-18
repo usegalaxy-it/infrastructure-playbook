@@ -233,11 +233,6 @@ destinations:
     scheduling:
       require:
         - upload
-      accept:
-        - pulsar
-        - it-pulsar
-        - it02-pulsar
-        - it03-pulsar
 
   condor_gpu:
     runner: condor
