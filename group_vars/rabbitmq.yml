@@ -12,7 +12,7 @@ handy_users:
     user_group: rabbitmq
 
 # Certbot
-certbot_admin_email: security@usegalaxy.eu
+certbot_admin_email: usegalaxy.it@gmail.it
 certbot_agree_tos: --agree-tos
 certbot_auth_method: --webroot
 certbot_auto_renew: true
@@ -55,6 +55,10 @@ rabbitmq_users:
     vhost: /
   - user: galaxy
     password: "{{ rabbitmq_users_password.galaxy }}"
+    vhost: galaxy
+  - user: flower
+    password: "{{ .flower }}"
+    tags: administrator
     vhost: galaxy
   - user: pulsar_it01
     password: "{{ rabbitmq_users_password.pulsar_it01 }}"
