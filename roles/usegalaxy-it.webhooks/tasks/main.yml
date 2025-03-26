@@ -1,0 +1,14 @@
+- name: Clone webhook repository
+  git:
+    repo: "{{ galaxy_webhook_url }}"
+    dest: "{{ galaxy_webhook_dir }}"
+    version: master
+    force: "yes"
+
+- name: Update citations for usegalaxy.it
+  ansible.builtin.copy:
+    src: "galaxy-webhooks/citation_needed/script.js" 
+    dest: "{{ galaxy_webhook_dir }}/citation_needed/script.js"
+    owner: galaxy
+    group: galaxy
+    mode: '0644'
