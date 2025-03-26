@@ -243,7 +243,7 @@
     #- role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS # NOTE REMOVED
     #    vars:
     #    execute_galaxy_sync_to_nfs: true
-    - role: usegalaxy-eu.webhooks     # Clone webhook repository 
+    - role: usegalaxy-it.webhooks     # Clone webhook repository 
       become: true
       become_user: galaxy
     - role: usegalaxy-eu.tours        # Clone tour repository 
