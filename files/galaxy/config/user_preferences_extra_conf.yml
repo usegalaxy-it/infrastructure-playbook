@@ -45,7 +45,9 @@ preferences:
           - ["Bari (Italy) - ReCaS-Bari", it-pulsar]
           - ["Cineca (Italy) - AdaCloud", it02-pulsar]
           - ["GARR (Italy) - GARR Cloud", it03-pulsar]
-          - ["UniMi (Italy)", it04-pulsar]
+          - ["UniMi (Italy) - University of Milan", it04-pulsar]
+          - ["OCI - Oracle Cloud", oci-pulsar]
+          - ["AWS - Amazon Web Services", aws-pulsar]
 
 #  ega_account:
 #    description: Your EGA (European Genome Archive) account

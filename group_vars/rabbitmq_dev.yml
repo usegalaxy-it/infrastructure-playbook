@@ -72,6 +72,12 @@ rabbitmq_users:
   - user: pulsar_it04
     password: "{{ rabbitmq_users_password.pulsar_it04 }}"
     vhost: /pulsar/pulsar_it04
+  - user: pulsar_oci
+    password: "{{ rabbitmq_users_password.pulsar_oci }}"
+    vhost: /pulsar/pulsar_oci
+  - user: pulsar_aws
+    password: "{{ rabbitmq_users_password.pulsar_aws }}"
+    vhost: /pulsar/pulsar_aws
 
 rabbitmq_plugins:
   - rabbitmq_management

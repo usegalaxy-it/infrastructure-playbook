@@ -178,6 +178,36 @@ destinations:
       require:
         - it04-pulsar
 
+  pulsar_oci_tpv:
+    inherits: pulsar_default
+    runner: pulsar_oci
+    max_accepted_cores: 8
+    max_accepted_mem: 16
+    min_accepted_gpus: 0
+    max_accepted_gpus: 0
+    params:
+      singularity_volumes: '$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro'
+      jobs_directory: "/data/share/staging"
+      persistence_directory: "/data/share/persisted_data"
+    scheduling:
+      require:
+        - oci-pulsar
+
+  pulsar_aws_tpv:
+    inherits: pulsar_default
+    runner: pulsar_aws
+    max_accepted_cores: 8
+    max_accepted_mem: 16
+    min_accepted_gpus: 0
+    max_accepted_gpus: 0
+    params:
+      singularity_volumes: '$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro'
+      jobs_directory: "/data/share/staging"
+      persistence_directory: "/data/share/persisted_data"
+    scheduling:
+      require:
+        - aws-pulsar
+
 
   #############################
   # LOCAL CONDOR DESTINATIONS #
