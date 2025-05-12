@@ -67,6 +67,8 @@
         name: condor
         state: reloaded
   pre_tasks:
+    - debug:
+        msg: '----------------> {{ ansible_user_uid }}'
     - name: Install Packages for Rocky Linux
       dnf:
         name:
