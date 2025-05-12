@@ -1,8 +1,8 @@
 ---
 - name: UseGalaxy
   hosts: usegalaxy_it_dev
-  become: true
-  become_user: root
+    #become: true
+    #become_user: root
   vars:
     # The full internal name.
     hostname: "{{ inventory_hostname }}"
