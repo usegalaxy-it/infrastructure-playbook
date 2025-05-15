@@ -13,7 +13,7 @@ pipeline {
                                 python -m pip install -r requirements.txt
                                 ansible-galaxy install -r requirements.yaml
                                 cp $VAULT_PASS .vault_password
-                                ansible-playbook -i inventory usegalaxy_it_dev.yml --extra-vars "__galaxy_dir_perms='0755'"
+                                ansible-playbook -i inventory usegalaxy_it_dev.yml --extra-vars "__galaxy_dir_perms='0755' os_env_umask='022'"
 				rm -d .vault_password
 				'''
 			}
