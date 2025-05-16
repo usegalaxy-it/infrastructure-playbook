@@ -376,15 +376,6 @@ base_app_main: &BASE_APP_MAIN
   # Configured user file source templates embedded into Galaxy's config.
   #file_source_templates: null
 
-  # Configure URIs for user object stores to use either the object ID
-  # ('id') or UUIDs ('uuid'). Either is fine really, Galaxy doesn't
-  # typically expose database objects by 'id' but there isn't any
-  # obvious disadvantage to doing it in this case and it keeps user
-  # exposed URIs much smaller. The default of UUID feels a little more
-  # like a typical way to do this within Galaxy though. Do not change
-  # this value once user object stores have been created.
-  #user_config_templates_index_by: uuid
-
   # User defined object stores and file sources are saved in the
   # database with their last valid configuration. It may be the case
   # that the admin changes file source and object store templates over
@@ -773,7 +764,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Default cache size for caching object stores if cache not configured
   # for that object store entry.
-  # object_store_cache_size: 10000
+  object_store_cache_size: 10000
 
   # Set this to true to indicate in the UI that a user's object store
   # selection isn't simply a "preference" that job destinations often
@@ -2073,10 +2064,6 @@ base_app_main: &BASE_APP_MAIN
   # <config_dir>.
   job_metrics_config_file: "{{ galaxy_config_dir }}/job_metrics_conf.yml"
 
-  # This option allows users to see the job metrics (except for
-  # environment variables).
-  expose_potentially_sensitive_job_metrics: true
-
   # Rather than specifying a job_metrics_config_file, the definition of
   # the metrics to enable can be embedded into Galaxy's config with this
   # option. This has no effect if a job_metrics_config_file is used.
@@ -2089,7 +2076,7 @@ base_app_main: &BASE_APP_MAIN
 
   # This option allows users to see the job metrics (except for
   # environment variables).
-  #expose_potentially_sensitive_job_metrics: false
+  expose_potentially_sensitive_job_metrics: true
 
   # Enable the API for sample tracking
   #enable_legacy_sample_tracking_api: false
@@ -2407,6 +2394,19 @@ base_app_main: &BASE_APP_MAIN
   # <config_dir>.
   workflow_schedulers_config_file: "{{ galaxy_config_dir  }}/workflow_schedulers_conf.xml"
 
+  # Workflows launched with URI/URL inputs that are not marked as
+  # 'deferred' are "materialized" (or undeferred) by the workflow
+  # scheduler. This might be a lengthy process. Setting this to 'True'
+  # will place the invocation back in the queue after materialization
+  # before scheduling the workflow so it is less likely to starve other
+  # workflow scheduling. Ideally, Galaxy would allow more fine grain
+  # control of handlers but until then, this provides a way to tip the
+  # balance between "doing more work" and "being more fair". The default
+  # here is pretty arbitrary - it has been to False to optimize Galaxy
+  # for automated, single user applications where "fairness" is mostly
+  # irrelevant.
+  #workflow_scheduling_separate_materialization_iteration: false
+
   # If using job concurrency limits (configured in job_config_file),
   # several extra database queries must be performed to determine the
   # number of jobs a user has dispatched to a given destination.  By
@@ -2644,6 +2644,21 @@ base_app_main: &BASE_APP_MAIN
   # Enable the integration of the Galaxy Help Forum in the tool panel.
   # This requires the help_forum_api_url to be set.
   enable_help_forum_tool_panel_integration: true
+
+  # Directory to store temporary files for file sources. This defaults
+  # to new_file_path if not set.
+  file_source_temp_dir: /data/share/jwd/tmp/
+
+  # Default value for use_temp_files for webdav plugins that don't
+  # explicitly declare this.
+  #file_source_webdav_use_temp_files: true
+
+  # Number of seconds before file source content listings are refreshed.
+  # Shorter times will result in more queries while browsing a file
+  # sources. Longer times will result in fewer requests to file sources
+  # but outdated contents might be displayed to the user. Currently only
+  # affects s3fs file sources.
+  #file_source_listings_expiry_time: 60
 
   # TODO(hxr): UNDOCUMENTED
   ucsc_build_sites: "{{ galaxy_config_dir }}/ucsc_build_sites.txt"
