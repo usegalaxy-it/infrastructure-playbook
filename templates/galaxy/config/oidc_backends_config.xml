@@ -56,7 +56,7 @@ Please mind `http` and `https`.
 
 -->
 <OIDC>
-    <provider name="Lifescience">
+    <provider name="lifescience">
         <client_id>{{ elixir_aai.usegalaxy_it.client_id }}</client_id>
         <client_secret>{{ elixir_aai.usegalaxy_it.client_secret }}</client_secret>
         <redirect_uri>https://usegalaxy.it/authnz/lifescience/callback</redirect_uri>
