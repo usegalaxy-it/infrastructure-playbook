@@ -129,7 +129,7 @@ roles:
   - name: usegalaxy-it.postgres_replication
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-replication
   - name: usegalaxy-eu.ansible-htcondor-grycap
-    src: https://github.com/mtangaro/ansible-htcondor-grycap.git
-    #version: d9a4aab0052dfb31d48c986d39a7f5e3692abba4
+    src: https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git
+    version: fe15ce1569e93a9d1030350c42d1af79e8c3e905
   - name: usegalaxy-it.postgres_backup
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-backup
