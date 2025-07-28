@@ -40,7 +40,6 @@
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
     # - group_vars/custom-sites.yml      # Subdomains are listed here
-    # - group_vars/usegalaxy.yml
     - group_vars/gxconfig.yml          # The base galaxy configuration
     - group_vars/toolbox.yml           # User controlled toolbox
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
@@ -53,8 +52,19 @@
   handlers:
     - name: Restart Galaxy # sync nfs to document
       shell: |
-        echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
-# echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+        #echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+        #echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
+        #/usr/bin/gxadmin gunicorn handler-restart && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@* # NOTE this is for production
+        cd /opt/galaxy && source /opt/galaxy/.bashrc && /usr/bin/gxadmin gunicorn handler-restart && cd /etc/systemd/system/multi-user.target.wants/ && systemctl restart galaxy-handler@* && cd && systemctl restart galaxy-workflow-scheduler@* # NOTE this implements workarounds for cineca deployment, which has uncorrect systemd configuration, will rebuild it.
+      listen: "restart galaxy"
+    - name: Reload HTCondor
+      when: "'condor_service' in service_facts.ansible_facts.services and \
+        service_facts.ansible_facts.services['condor.service'].state == 'running'"
+      become: true
+      ansible.builtin.service:
+        name: condor
+        state: reloaded
+  pre_tasks:
     - name: Install Packages for Rocky Linux
       dnf:
         name:
@@ -86,9 +96,36 @@
       yum:
         name: ca-certificates
         state: latest
-    - name: Disable SELinux
-      selinux:
-        state: disabled
+    #- name: Disable SELinux
+    #  selinux:
+    #    state: disabled
+    # HTCondor
+    - debug:
+        msg: '{{ htcondor_password }}'
+    - debug:
+        msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}'
+    # HTCondor
+    - name: Ensure the HTCondor configuration directory exists.
+      become: true
+      ansible.builtin.file:
+        path: /etc/condor
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+    - name: Template HTCondor configuration.
+      become: true
+      ansible.builtin.template:
+        src: htcondor/condor_config.local.j2
+        dest: /etc/condor/condor_config.local
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload HTCondor
+    - name: Check if HTCondor is running.
+      ansible.builtin.service_facts:
+      register: service_facts
+
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:
@@ -106,7 +143,7 @@
       package:
         name: [ 'cairo', 'cairo-devel', 'pango-devel' ]
       become: true
-########## .it ##########
+    ######## Fixes for usegalaxy.it ########
     - name: Create local tool directory and give right permissions
       file:
         path: /usr/local/tools
@@ -121,6 +158,7 @@
         group: galaxy
         state: touch
         mode: '0755'
+    # This will cause datasets deleted for more than 60 days to be purged. https://training.galaxyproject.org/training-material/topics/admin/tutorials/backup-cleanup/tutorial.html
     - name: Setup gxadmin cleanup task
       ansible.builtin.cron:
         name: "Cleanup Old User Data"
@@ -128,7 +166,13 @@
         minute: "0"
         hour: "0"
         job: "GALAXY_CONFIG_FILE={{ galaxy_config_dir }}/galaxy.yml GALAXY_LOG_DIR=/tmp/gxadmin/ GALAXY_ROOT={{ galaxy_server_dir }} /usr/local/bin/gxadmin galaxy cleanup 60"
-##########################
+    ######## Fixes for usegalaxy.it ########
+    - name: Set temporary cron for cleaning docker images
+      ansible.builtin.cron:
+        name: "Temporary docker cleanup – needs upstream fix see issue #584"
+        minute: "0"
+        hour: "*/3"
+        job: "/bin/docker system prune --all -f > /dev/null"
   roles:
     ## Starting configuration of the operating system
     - role: usegalaxy_eu.handy.os_setup
@@ -146,10 +190,11 @@
     - influxdata.chrony # Keep our time in sync. 
 
     ## Filesystem
-    # - usegalaxy-eu.autofs 
+    #- usegalaxy-eu.autofs # TODO fix this for using only nfs4 -> the fix is on infrastructure-playbook, more test needed.
     - galaxyproject.cvmfs # Galaxy datasets 
 
-    # Monitoring
+    # NOTE only for usegalaxy.eu
+    ## Monitoring
     # - hxr.monitor-cluster
     # - hxr.monitor-email
     # - hxr.monitor-uwsgi
@@ -173,8 +218,14 @@
         galaxy_manage_systemd: false # switch to gravity(?)
         galaxy_manage_gravity: false
 
+    # NOTE: some setting on EU are done through .bashrc file.
+    # In particular gxadmin needs it: https://github.com/galaxyproject/gxadmin?tab=readme-ov-file#other-environment-variables
+    # For example log and job working dir are managed through this role.
+    # We disable it and remove it from roles since it needs to be kept updated
+    # We include a pre-task to fix bashrc environment variables.
     ## The bashrc needs to be created for several later features.
-    - usegalaxy-eu.bashrc
+    #- usegalaxy-eu.bashrc #NOTE REMOVED
+    - usegalaxy_it.bashrc
 
     ## Setup docker
     - geerlingguy.docker 
@@ -186,11 +237,11 @@
     - role: hxr.galaxy-nonreproducible-tools 
       become: true
       become_user: galaxy
-    - usegalaxy-eu.dynmotd      # nicer MOTD/welcome message 
-    - role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS 
-      # vars:
-      #   execute_galaxy_sync_to_nfs: true
-    - role: usegalaxy-eu.webhooks     # Clone webhook repository 
+    #- usegalaxy-eu.dynmotd      # nicer MOTD/welcome message # NOTE REMOVED
+    #- role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS # NOTE REMOVED
+    #    vars:
+    #    execute_galaxy_sync_to_nfs: true
+    - role: usegalaxy-it.webhooks     # Clone webhook repository 
       become: true
       become_user: galaxy
     - role: usegalaxy-eu.tours        # Clone tour repository 
@@ -230,22 +281,22 @@
         galaxy_manage_gravity: false
 
     ## Extras!
-    # - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs
+    # - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs #NOTE REMOVE
     - hxr.install-to-venv                # Some extra packages our site needs.
     - usegalaxy-eu.galaxy-systemd        # Manage the Galaxy processes with SystemD 
-    # - usegalaxy-eu.update-hosts          # Update hosts list
-    - usegalaxy_eu.gie_proxy             # Setup the NodeJS proxy for GxIT 
-    # - usegalaxy-eu.subdomain-themes      # Custom subdomain themes
-    # - usegalaxy-eu.limits                # Prevent out of control processes, role does not exist anymore 
-    # - usegalaxy-eu.fs-maintenance        # Filesystems maintenance
-    - usegalaxy-eu.logrotate             # Rotate logs 
-    - usegalaxy-eu.error-pages           # Copy the NGINX error pages 
+    # - usegalaxy-eu.update-hosts          # Update hosts list #NOTE REMOVED
+    - usegalaxy_eu.gie_proxy             # Setup the NodeJS proxy for GxIT
+    # - usegalaxy-eu.subdomain-themes      # Custom subdomain themes # TODO currently we don't have subdomains
+    - usegalaxy-eu.limits                # Prevent out of control processes 
+    # - usegalaxy-eu.fs-maintenance        # Filesystems maintenance scripts.
+    - usegalaxy-eu.logrotate             # Rotate logs # NOTE need to fix log path
+    - usegalaxy-eu.error-pages           # Copy the NGINX error pages # TODO create role for error page and role for usegalaxy.it
     
     ## TUSD
     - galaxyproject.tusd
 
     - usegalaxy_eu.tpv_auto_lint
-    # Various ugly fixes
+    # Various EU specific fixes
     # - usegalaxy-eu.fix-unscheduled-jobs # Workaround for ???
     # - usegalaxy-eu.fix-unscheduled-workflows # Workaround for https://github.com/galaxyproject/galaxy/issues/8209
     # - usegalaxy-eu.fix-stuck-handlers # Restart handlers to prevent several classes of issues
@@ -257,6 +308,6 @@
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
     # - dj-wasabi.telegraf
-    # - os_hardening    
-    # - ssh_hardening   # !!! CHECK ADD
+    - os_hardening    
+    - ssh_hardening
     # - usegalaxy-eu.vgcn-monitoring
