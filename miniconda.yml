@@ -4,13 +4,16 @@
   become: true
   # become_user: galaxy
   vars:
-    miniconda_prefix: "/data/tool_deps/_conda" # !!! CHECK CHANGE VAR
+    miniconda_prefix: "/data/share/tool_deps/_conda" # !!! CHECK CHANGE VAR
     miniconda_manage_dependencies: true
     galaxy_conda_create_env: true
     galaxy_conda_env_packages:
       - python=3.9
       - pip
       - virtualenv
+    miniconda_version: "24.9.2"
+    galaxy_conda_env_channels:
+      - conda-forge
   post_tasks:
     # - name: Copy miniconda to shared dir
     #   ansible.builtin.copy:
