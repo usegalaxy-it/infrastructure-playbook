@@ -16,22 +16,25 @@ autofs_mount_points:
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid,quota         {{ groups['nfs'][0] }}:/data/share
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/data/share
   usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid        {{ groups['nfs'][0] }}:/opt/galaxy
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2        {{ groups['nfs'][0] }}:/opt/galaxy
 
 # Miniconda role variables (galaxyproject.miniconda)
-conda_prefix: /data/tool_deps/_conda
+conda_prefix: /data/share/tool_deps/_conda
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
 pip_install_dependencies:
-  # # phdcomics
+  # celery and flower
+  - redis
+  - flower
+  # phdcomics
   - beautifulsoup4
   # # Used by code_files for apollo
   # - biopython
   # - bcbio-gff
-  # # Needed for tool watching
+  # Needed for tool watching
   - watchdog
   # # Needed gxadmin graphs
   # - data_hacks
@@ -43,7 +46,7 @@ pip_install_dependencies:
   # - pyyaml
   # - GitPython
   # - python-openstackclient
-  # # Needed by Gunicorn
+  # Needed by Gunicorn
   - sentry-sdk
 
 yum_exclude_repos:
@@ -152,20 +155,16 @@ galaxy_systemd_memory_limit_workflow: 15
 
 
 # HTCondor
-condor_role: submit
-condor_host: "{{ groups['central_manager'][0] }}"
-condor_password: '{{ condor_pass }}'
-condor_allow_write: "*" 
-condor_daemons:
+htcondor_version: 24.x
+htcondor_channel: current
+htcondor_daemons:
   - MASTER
-  - SCHEDD
   - NEGOTIATOR
-condor_allow_negotiator: $(ALLOW_WRITE)
-condor_allow_administrator: $(ALLOW_NEGOTIATOR)
-condor_network_interface: eth0
-condor_fs_domain: usegalaxy.it
-condor_uid_domain: usegalaxy.it
-condor_enforce_role: false
+  - SCHEDD
+htcondor_domain: "usegalaxy.it"
+htcondor_type_of_node: front
+htcondor_role_submit: true
+htcondor_server: "{{ groups['htcondor_cm'][0] }}"
 
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
@@ -250,15 +249,16 @@ galaxy_venv_dir: "{{ galaxy_root }}/venv"
 # galaxy_virtualenv_python: "python3.6"
 galaxy_nonrepro_tools: "{{ galaxy_root }}/custom-tools"
 galaxy_nonrepro_commit: master
-galaxy_dynamic_job_rules_src_dir: files/galaxy/dynamic_rules
-galaxy_dynamic_job_rules_dir: "{{ galaxy_root }}/dynamic_rules"
-galaxy_dynamic_job_rules:
-  - usegalaxy/joint_destinations.yaml
-  - usegalaxy/sorting_hat.py
-  - usegalaxy/destination_specifications.yaml
-  - usegalaxy/tool_destinations.yaml
-  - usegalaxy/sorting_hat.yaml
-  - readme.txt
+
+  #galaxy_dynamic_job_rules_src_dir: files/galaxy/dynamic_rules
+  #galaxy_dynamic_job_rules_dir: "{{ galaxy_root }}/dynamic_rules"
+  #galaxy_dynamic_job_rules:
+  #  - usegalaxy/joint_destinations.yaml
+  #  - usegalaxy/sorting_hat.py
+  #  - usegalaxy/destination_specifications.yaml
+  #  - usegalaxy/tool_destinations.yaml
+  #  - usegalaxy/sorting_hat.yaml
+  #  - readme.txt
 
 # Custom override
 # Our galaxy_tool_dependency_dir is on NFS, and permissions are set in such a
@@ -268,7 +268,7 @@ galaxy_dirs:
   - "{{ galaxy_mutable_config_dir }}"
   - "{{ galaxy_cache_dir }}"
   - "{{ galaxy_shed_tools_dir }}"
-#  - "{{ galaxy_tool_dependency_dir }}"
+  # - "{{ galaxy_tool_dependency_dir }}"
   - "{{ galaxy_file_path }}"
   - "{{ galaxy_job_working_directory }}"
   - "{{ galaxy_tool_data_path }}"
@@ -276,7 +276,7 @@ galaxy_dirs:
   - "{{ galaxy_webhook_dir }}"
   - "{{ galaxy_tour_dir }}"
   - "{{ galaxy_log_dir }}"
-#  - "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/" # !!! CHECK
+  - "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/" # !!! CHECK
   - "{{ tpv_mutable_dir }}"
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_nfs_location }}/persisted_data" # pulsar
@@ -287,7 +287,7 @@ galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
 galaxy_repo: "https://github.com/usegalaxy-eu/galaxy.git"
-galaxy_commit_id: "release_23.2_europe"
+galaxy_commit_id: "release_24.2_europe"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
@@ -343,7 +343,7 @@ galaxy_config_files:
   - src: "{{ galaxy_config_file_src_dir }}/tpv/users.yml"
     dest: "{{ tpv_mutable_dir }}/users.yml"
 
-
+  # NOTE These are commented also on EU.    
   #- src: files/galaxy/config/job_resource_params_conf.xml
   #dest: "{{ galaxy_config['galaxy']['job_resource_params_file'] }}"
   #- src: files/galaxy/config/pulsar_stampede_actions.yml
@@ -359,20 +359,20 @@ galaxy_config_template_src_dir: templates/galaxy
 galaxy_config_templates:
   - src: "{{ galaxy_config_template_src_dir }}/config/build_sites.yml.j2"
     dest: "{{ galaxy_config['galaxy']['build_sites_config_file'] }}"
-#  - src: "{{ galaxy_config_template_src_dir }}/config/global_host_filters.py.j2" # !!! CHECK
-#    dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py" # !!! CHECK
+  #- src: "{{ galaxy_config_template_src_dir }}/config/global_host_filters.py.j2" # NOTE: this is for subdomains. #REMOVED
+  #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py"
   - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/job_conf.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.xml.j2"
     dest: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
-#  - src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2" # !!! CHECK
-#    dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py" # !!! CHECK
-  - src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml"
-    dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
-  # - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
-  #   dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
-  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
-    dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
+  #- src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2" # NOTE: this is needed for subdomains. #REMOVED
+  #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
+  #- src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml" # NOTE: test tool #REMOVED
+  #  dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
+  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml" # TODO enable OIDC LS AAI
+  # dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
+  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
+  #  dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
   # - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
   #   dest: "{{ galaxy_config_dir }}/grt.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
@@ -381,7 +381,7 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/tool_conf.xml"
   - src: "{{ galaxy_config_template_src_dir }}/config/galaxy_workflow_scheduler.j2"
     dest: "{{ galaxy_config_dir }}/workflow_schedulers_conf.xml"
-  # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2"
+  # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2" # FIXME file storage are currently disabled. TODO test and enable this. the menu is generated through files/galaxy/config/user_preferences_extra_conf.yml
   #   dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   # - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.xml.j2"
   #   dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
