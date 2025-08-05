@@ -135,7 +135,7 @@
         certbot_install_method: virtualenv
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
-    # - dj-wasabi.telegraf
+    - dj-wasabi.telegraf
     # hardening
     - os_hardening
     - ssh_hardening

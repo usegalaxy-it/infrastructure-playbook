@@ -51,5 +51,6 @@
     - usegalaxy-eu.galaxy-systemd
     - influxdata.chrony
     ## Filesystems
+    - dj-wasabi.telegraf
     - usegalaxy-eu.autofs # Set up the mount points which will be needed later
     - usegalaxy_eu.flower

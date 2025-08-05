@@ -136,7 +136,8 @@
         append: yes
       loop:
         - "{{ galaxy_user.name }}"
-        # - "telegraf"
+        - "telegraf"
+        - "stats"
     - name: Install utilities
       package:
         name: [ 'mosh' ]
@@ -313,7 +314,7 @@
     # - usegalaxy-eu.fix-stop-ITs # remove IT jobs after 24h from queue 
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
-    # - dj-wasabi.telegraf
+    - dj-wasabi.telegraf
     - os_hardening    
     - ssh_hardening
     # - usegalaxy-eu.vgcn-monitoring
