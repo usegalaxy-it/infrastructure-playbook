@@ -121,9 +121,9 @@ redis_logfile: /var/log/redis/redis-server.log
 redis_conf_path: /etc/redis
 
 # Telegraf
-# telegraf_plugins_extra:
-#   prometheus:
-#     plugin: prometheus
-#     config:
-#       - urls = ["http://172.17.0.2:15692/metrics"]
+telegraf_plugins_extra:
+  prometheus:
+    plugin: prometheus
+    config:
+      - urls = ["http://172.17.0.2:15692/metrics"]
 

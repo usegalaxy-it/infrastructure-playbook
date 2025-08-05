@@ -1,12 +1,32 @@
+---
+# Postgres
+postgresql_version: 13
+postgresql_pgdata: /data/postgresql
+postgresql_objects_users:
+  - name: "{{ vault_grafana_database_name }}"
+    password: "{{ vault_grafana_database_password }}"
+
+postgresql_objects_databases:
+  - name: "{{ vault_grafana_database_name }}"
+    owner:: "{{ vault_grafana_database_user }}"
+postgresql_conf:
+  - listen_addresses: "'*'" # "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+postgresql_pg_hba_conf:
+  - host     all     all     {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24     md5
+
 # Certbot
 certbot_auth_method: --webroot
 certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_share_key_users:
   - nginx
-certbot_virtualenv_command: virtualenv-3.6
+certbot_virtualenv_package_name: python3-virtualenv
 certbot_post_renewal: |
     systemctl restart nginx || true
-
+certbot_domains:
+  - "{{ grafana_domain }}"
+#  - "{{ grafana_on_call_domain }}"
+certbot_environment: "production"  
+#hostname: "{{ grafana_domain }}"
 # NGINX
 nginx_enable_default_server: false
 nginx_servers:
@@ -32,134 +52,174 @@ nginx_ssl_role: usegalaxy-eu.certbot
 nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
 nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-nginx.pem
 
+#setting this to false will remove the on call compose services and it's compose directory
+grafana_on_call: false # in the future
+grafana_on_call_domain:
+grafana_on_call_path: /data/monitoring/grafana/grafana-on-call
 # Grafana
-# TODO: add autofs role
-grafana_data_dir: /data_is/monitoring/grafana_data/
-grafana_instance: "{{ hostname }}"
+grafana_version: "11.4.0"
+
 grafana_address: "127.0.0.1"
-grafana_url: "https://stats.galaxyproject.eu"
-grafana_server:
-    domain: "{{ hostname }}"
-    root_url: "https://%(domain)s/"
-
+grafana_domain: "212.189.205.240.cloud.ba.infn.it"
+grafana_url: "https://{{ grafana_domain }}"
 grafana_users:
-    default_theme: "light"
+  default_theme: "light"
 
+# Used by grafana.grafana collection role
 grafana_security:
-    admin_user: admin
-    admin_password: "{{ grafana_auth_admin_password }}"
-    allow_embedding: "true"
-    cookie_secure: "true"
+  admin_user: "{{ vault_grafana_admin_user }}"
+  admin_password: "{{ vault_grafana_auth_admin_password }}"
+  allow_embedding: "true"
+  cookie_secure: "true"
+grafana_security_secret_key: "{{ vault_grafana_security_secret_key }}"
 
+# Used by grafana.grafana collection role
+# Grafana needs a database to store uorgsers and dashboards (and other things).
+grafana_database:
+  type: postgres
+  host: 127.0.0.1:5432
+  name: "{{ vault_grafana_database_name }}"
+  user: "{{ vault_grafana_database_user }}"
+  password: "{{ vault_grafana_database_password }}"
+
+# Used by grafana.grafana collection role
+# Grafana auth methods
 grafana_auth:
-    anonymous:
-        enabled: "true"
-        org_name: "UseGalaxy.eu"
-        org_role: "Viewer"
+  anonymous:
+    enabled: "true"
+    org_name: "UseGalaxy.it"
+    org_role: "Viewer"
 
-    github:
-        enabled: "true"
-        allow_sign_up: "true"
-        client_id: "{{ grafana_auth__github_client_id }}"
-        client_secret: "{{ grafana_auth__github_client_secret }}"
-        scopes: "user:email,read:org"
-        auth_url: "https://github.com/login/oauth/authorize"
-        token_url: "https://github.com/login/oauth/access_token"
-        api_url: "https://api.github.com/user"
-        allowed_organisations: "usegalaxy.eu galaxyproject"
+  github:
+    enabled: "true"
+    allow_sign_up: "true"
+    client_id: "{{ vault_grafana_auth__github_client_id }}"
+    client_secret: "{{ vault_grafana_auth__github_client_secret }}"
+    scopes: "user:email,read:org"
+    # See for more infos
+    # https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/github/
+    auth_url: "https://github.com/login/oauth/authorize"
+    token_url: "https://github.com/login/oauth/access_token"
+    api_url: "https://api.github.com/user"
+    allowed_organisations: "usegalaxy-it"
+    role_attribute_path: contains(groups[*], '@usegalaxy-it/admingrafana') && 'Admin' || 'Viewer'
+grafana_auth_admin_password: "{{ vault_grafana_auth_admin_password }}"
 
 grafana_image_storage:
   provider: local
 
-grafana_environment:
-  GF_PANELS_DISABLE_SANITIZE_HTML: 'true'
+grafana_panels:
+  disable_sanitize_html: "true"
+
+# This setting is not yet used by the role `grafana.grafana.grafana`. It will
+# be when PR [1] is merged.
+#
+# References:
+# - [1] https://github.com/grafana/grafana-ansible-collection/pull/215
+grafana_unified_alerting:
+  enabled: "true"
+  execute_alerts: "true"
+
+# Legacy alerting was removed in Grafana 11 [1]. However, the Ansible role
+# `grafana.grafana.grafana` still populates the [alerting] section [2] unless
+# `grafana_alerting` is empty. The setting can be removed from this file as
+# soon as PR [3] is merged.
+#
+# References:
+# - [1] https://grafana.com/blog/2024/04/04/legacy-alerting-removal-what-you-need-to-know-about-upgrading-to-grafana-alerting/
+# - [2] https://github.com/grafana/grafana-ansible-collection/blob/2e7fd0591d8ad1700186174213b8142047525b88/roles/grafana/templates/grafana.ini.j2#L116-L127
+# - [3] https://github.com/grafana/grafana-ansible-collection/pull/215
+grafana_alerting: {}
 
 grafana_plugins:
   - grafana-worldmap-panel
   - grafana-piechart-panel
   - natel-discrete-panel
 
-grafana_datasources:
- - name: Galaxy
-   type: influxdb
-   access: proxy
-   url: "{{ influxdb.url }}"
-   isDefault: true
-   version: 1
-   editable: false
-   database: galaxy
-   user: "{{ influxdb.grafana.username }}"
-   secureJsonData:
-     password: "{{ influxdb.grafana.password }}"
- - name: Galaxy Historical
-   type: influxdb
-   access: proxy
-   url: "{{ influxdb.url }}"
-   version: 1
-   editable: false
-   database: galaxy_stats
-   user: "{{ influxdb.grafana.username }}"
-   secureJsonData:
-     password: "{{ influxdb.grafana.password }}"
- - name: GRT Tool Usage
-   type: influxdb
-   access: proxy
-   url: "{{ influxdb.url }}"
-   version: 1
-   editable: false
-   database: grt
-   user: "{{ influxdb.grafana.username }}"
-   secureJsonData:
-     password: "{{ influxdb.grafana.password }}"
- - name: InfluxDB - internal
-   type: influxdb
-   access: proxy
-   url: "{{ influxdb.url }}"
-   version: 1
-   editable: false
-   database: _internal
-   user: "{{ influxdb.grafana.username }}"
-   secureJsonData:
-     password: "{{ influxdb.grafana.password }}"
- - name: Notifications
-   type: influxdb
-   access: proxy
-   url: "{{ influxdb.url }}"
-   version: 1
-   editable: false
-   database: notifications
-   user: "{{ influxdb.grafana.username }}"
-   secureJsonData:
-     password: "{{ influxdb.grafana.password }}"
+grafana_dashboards_dir: "/data/monitoring/grafana/files/"
 
-hxr_monitor_ssl_expiry:
-  # A couple of usegalaxy.eu subdomains.
-  - usegalaxy.eu:443
-  - metagenomics.usegalaxy.eu:443
-  # Proxy + Proxied services
-  - build.galaxyproject.eu:443
-  - influxdb.galaxyproject.eu:8086
-  - influxdb.galaxyproject.eu:443
-  - stats.galaxyproject.eu:443
-  - telescope.galaxyproject.eu:443
-  - toolshed.g2.bx.psu.edu:443
-  - galaxyproject.org:443
-  - usegalaxy.org:443
+# TODO: Adjust Datasources to match the future InfluxDB setup.
+ext_grafana_datasources:
+  - name: Galaxy
+    type: influxdb
+    access: proxy
+    url: "https://{{ influxdb.url }}"
+    isDefault: true
+    version: 1
+    editable: true
+    database: galaxy
+    user: "{{ influxdb.grafana.username }}"
+    uid: P9B81C0353945995B
+    password: "{{ influxdb.grafana.password }}"
+  - name: Galaxy Historical
+    type: influxdb
+    access: proxy
+    url: "https://{{ influxdb.url }}"
+    version: 1
+    editable: true
+    database: galaxy_stats
+    user: "{{ influxdb.grafana.username }}"
+    uid: PEBD82B4560F292BD
+    password: "{{ influxdb.grafana.password }}"
+  - name: GRT Tool Usage
+    type: influxdb
+    access: proxy
+    url: "https://{{ influxdb.url }}"
+    version: 1
+    editable: true
+    database: grt
+    user: "{{ influxdb.grafana.username }}"
+    uid: PA4245ACF5D5D4D2B
+    password: "{{ influxdb.grafana.password }}"
+  - name: InfluxDB - internal
+    type: influxdb
+    access: proxy
+    url: "https://{{ influxdb.url }}"
+    version: 1
+    editable: true
+    database: _internal
+    user: "{{ influxdb.grafana.username }}"
+    uid: P97EDD1499B7D2981
+    password: "{{ influxdb.grafana.password }}"
+  - name: Notifications
+    type: influxdb
+    access: proxy
+    url: "https://{{ influxdb.url }}"
+    version: 1
+    editable: true
+    database: notifications
+    user: "{{ influxdb.grafana.username }}"
+    uid: P788011833A5A0F22
+    password: "{{ influxdb.grafana.password }}"
 
+# hxr_monitor_ssl_expiry:
+#   # A couple of usegalaxy.eu subdomains.
+#   - usegalaxy.eu:443
+#   - metagenomics.usegalaxy.eu:443
+#   # Proxy + Proxied services
+#   - build.galaxyproject.eu:443
+#   - influxdb.galaxyproject.eu:8086
+#   - influxdb.galaxyproject.eu:443
+#   - stats.galaxyproject.eu:443
+#   - telescope.galaxyproject.eu:443
+#   - toolshed.g2.bx.psu.edu:443
+#   - galaxyproject.org:443
+#   - usegalaxy.org:443
 
-telegraf_plugins_extra:
-  github:
-    plugin: github
-    config:
-      - repositories = ["galaxyproject/galaxy", "galaxyproject/training-material", "usegalaxy-eu/gxadmin"]
-      - interval = "6h"
-  simple_nagios:
-    plugin: "exec"
-    config:
-      - commands = ["/usr/bin/simple-nagios"]
-      - timeout = "120s"
-      - data_format = "influx"
-      - interval = "1m"
+# TODO
+# telegraf_plugins_extra:
+#   github:
+#     plugin: github
+#     config:
+#       - repositories = ["galaxyproject/galaxy", "usegalaxy-eu/gxadmin"]
+#       - interval = "6h"
+#   simple_nagios:
+#     plugin: "exec"
+#     config:
+#       - commands = ["/usr/bin/simple-nagios"]
+#       - timeout = "120s"
+#       - data_format = "influx"
+#       - interval = "1m"
 
   #galaxy_jobs:
     #plugin: "exec"
@@ -171,9 +231,9 @@ telegraf_plugins_extra:
 
 #galaxy_test_url: https://usegalaxy.eu
 #galaxy_test_user:
-    #api_key: "{{ galaxy_test_user__api_key }}"
+    #api_key: "{{ vault_galaxy_test_user__api_key }}"
     #username: bot@usegalaxy.eu
-    #password: "{{ galaxy_test_user__password }}"
+    #password: "{{ vault_galaxy_test_user__password }}"
     #handlers:
         #- "handler0"
         #- "handler1"
@@ -190,30 +250,30 @@ telegraf_plugins_extra:
         #- "drmaa"
         #- "condor"
 
-galaxy_nagios_urls:
-  ftp_tests: []
-  http_tests:
-    - name: home_nossl
-      url: "http://usegalaxy.eu"
-      code: 301
-    - name: home
-      url: "https://usegalaxy.eu"
-      code: 200
-    - name: hicexplorer
-      url: "https://hicexplorer.usegalaxy.eu"
-      code: 200
-    - name: stats
-      url: "https://stats.galaxyproject.eu"
-      code: 200
-    - name: grt
-      url: "https://telescope.galaxyproject.eu"
-      code: 200
-    - name: build
-      url: "https://build.galaxyproject.eu"
-      code: 200
-    - name: influx
-      url: "{{ influxdb.url }}/ping"
-      code: 204
-    - name: phinch
-      url: "https://usegalaxy.eu/phinch/index.html"
-      code: 200
+# galaxy_nagios_urls:
+#   ftp_tests: []
+#   http_tests:
+#     - name: home_nossl
+#       url: "http://usegalaxy.eu"
+#       code: 301
+#     - name: home
+#       url: "https://usegalaxy.eu"
+#       code: 200
+#     - name: hicexplorer
+#       url: "https://hicexplorer.usegalaxy.eu"
+#       code: 200
+#     - name: stats
+#       url: "https://stats.galaxyproject.eu"
+#       code: 200
+#     - name: grt
+#       url: "https://telescope.galaxyproject.eu"
+#       code: 200
+#     - name: build
+#       url: "https://build.galaxyproject.eu"
+#       code: 200
+#     - name: influx
+#       url: "{{ influxdb.url }}/ping"
+#       code: 204
+#     - name: phinch
+#       url: "https://usegalaxy.eu/phinch/index.html"
+#       code: 200
