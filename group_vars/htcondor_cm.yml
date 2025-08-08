@@ -1,0 +1,23 @@
+---
+# HTCondor
+htcondor_version: 24.x
+htcondor_channel: current
+htcondor_daemons:
+  - COLLECTOR
+  - MASTER
+  - NEGOTIATOR
+  - SCHEDD
+htcondor_domain: "usegalaxy.it"
+htcondor_type_of_node: front
+htcondor_role_manager: true
+htcondor_server: "{{ groups['htcondor_cm'][0] }}"
+htcondor_ip_range: '172.18.12.0/24'
+
+# CVMFS
+cvmfs_role: client
+galaxy_cvmfs_repos_enabled: config-repo
+
+galaxy_cvmfs_server_urls:
+  - domain: galaxyproject.org
+    urls:
+      - "http://cvmfs1-ufr0.galaxyproject.eu/cvmfs/@fqrn@"

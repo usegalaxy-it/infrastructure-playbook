@@ -1,6 +1,6 @@
 ---
 - name: HTCondor Central Manager configuration
-  hosts: htcondor_cm
+  hosts: htcondor_cm_dev
   become: true
 
   handlers:
@@ -15,8 +15,8 @@
   vars:
     hostname: "usegalaxy-htcondor-cm"
   vars_files:
-    - group_vars/mountpoints.yml
-    - group_vars/htcondor_cm.yml
+    - group_vars/mountpoints_dev.yml
+    - group_vars/htcondor_cm_dev.yml
     - secret_group_vars/htcondor.yml
   collections:
     - devsec.hardening
@@ -24,7 +24,7 @@
   pre_tasks:
     - name: Set htcondor password
       set_fact:
-        htcondor_password: '{{ htcondor_preprod.password }}'
+        htcondor_password: '{{ htcondor_dev.password }}'
     - debug:
         msg: '{{ htcondor_password }}'
     - debug:
