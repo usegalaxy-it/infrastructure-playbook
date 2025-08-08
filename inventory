@@ -12,37 +12,41 @@ influxdb.galaxyproject.eu
 
 ### ReCaS
 
+# Preprod for testing at ReCaS
+
 [usegalaxy_it_01]
 usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
 
 [nfs]
-172.18.12.115 ansible_ssh_user=rocky
+172.18.12.197 ansible_ssh_user=rocky
 
 [database]
-172.18.12.136 ansible_ssh_user=rocky 
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
 
-[replica]
-172.18.12.249 ansible_ssh_user=rocky
+#[replica]
+#172.18.12.249 ansible_ssh_user=rocky
 
-[backup]
-172.18.12.24 ansible_ssh_user=rocky
+#[backup]
+#172.18.12.24 ansible_ssh_user=rocky
 
-[central_manager]
-172.18.12.121 ansible_ssh_user=rocky 
+#[central_manager]
+[htcondor_cm]
+172.18.12.183 ansible_ssh_user=rocky 
 
 [rabbitmq] 
-rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
+segalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
 
 [all:vars]
 ansible_ssh_user=centos
 
-# Preprod for testing at ReCaS
+# Prod at ReCaS
+# This is a bare metal server.
 
-[usegalaxy_it_preprod]
-usegalaxy-it-preprod.cloud.ba.infn.it  ansible_ssh_user=rocky
+[usegalaxy_it_prod]
+prod.usegalaxy.it ansible_ssh_user=galaxy
 
-[rabbitmq_preprod]
-rabbitmq-usegalaxy-it-preprod.cloud.ba.infn.it ansible_ssh_user=rocky
+[usegalaxy_it_prod]
+prod.usegalaxy.it ansible_ssh_user=galaxy
 
 ### Cineca
 

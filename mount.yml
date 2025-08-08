@@ -61,7 +61,7 @@
         mode: "{{ item.mode }}"
         state: directory
       with_items:
-        - { dir: /opt/galaxy, mode: "0755", owner: rocky, group: rocky } 
+        #- { dir: /opt/galaxy, mode: "0755", owner: rocky, group: rocky }
         - { dir: /data/share, mode: "0755", owner: rocky, group: rocky } 
     - name: Remove old entries in /etc/export
       lineinfile:
@@ -77,7 +77,7 @@
         line: '{{ item }}'
       with_items:
         - '/data/share *(rw,sync,no_root_squash)'
-        - '/opt/galaxy *(rw,sync,no_root_squash)'
+        #- '/opt/galaxy *(rw,sync,no_root_squash)'
     - name: Re-export the share
       command: exportfs -r
 
@@ -94,11 +94,11 @@
         state: mounted
       with_items:
         - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share } 
-        - { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
+        #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
 
 
 - name: Mount NFS on CM
-  hosts: central_manager
+  hosts: htcondor_cm
   become: true
   become_user: root
   tasks:
@@ -110,4 +110,4 @@
         state: mounted
       with_items:
         - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share }
-        - { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
+        #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
