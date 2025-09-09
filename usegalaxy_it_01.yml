@@ -52,10 +52,7 @@
   handlers:
     - name: Restart Galaxy # sync nfs to document
       shell: |
-        #echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
-        #echo 'Manual web handler restart required' && cd /opt/galaxy/ && source /opt/galaxy/.bashrc  && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@*
-        #/usr/bin/gxadmin gunicorn handler-restart && systemctl restart galaxy-handler@* && systemctl restart galaxy-workflow-scheduler@* # NOTE this is for production
-        cd /opt/galaxy && source /opt/galaxy/.bashrc && /usr/bin/gxadmin gunicorn handler-restart && cd /etc/systemd/system/multi-user.target.wants/ && systemctl restart galaxy-handler@* && cd && systemctl restart galaxy-workflow-scheduler@* # NOTE this implements workarounds for cineca deployment, which has uncorrect systemd configuration, will rebuild it.
+        cd /opt/galaxy && source /opt/galaxy/.bashrc && /usr/bin/gxadmin gunicorn handler-restart && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && cd && systemctl restart galaxy-workflow-scheduler@*
       listen: "restart galaxy"
     - name: Reload HTCondor
       when: "'condor_service' in service_facts.ansible_facts.services and \
@@ -238,7 +235,7 @@
       become: true
       become_user: galaxy
     #- usegalaxy-eu.dynmotd      # nicer MOTD/welcome message # NOTE REMOVED
-    #- role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS # NOTE REMOVED
+    - role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS
     #    vars:
     #    execute_galaxy_sync_to_nfs: true
     - role: usegalaxy-it.webhooks     # Clone webhook repository 
