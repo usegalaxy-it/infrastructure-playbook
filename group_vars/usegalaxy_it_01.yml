@@ -208,7 +208,7 @@ galaxy_manage_cleanup: true
 # GALAXY
 galaxy_group:
   name: galaxy
-  gid: 999
+  gid: 881567
 galaxy_system_group: galaxy
 galaxy_log_dir: "/var/log/galaxy"
 galaxy_layout: root-dir
@@ -221,7 +221,7 @@ galaxy_user:
   name: galaxy
   create_home: true
   home: /opt/galaxy
-  uid: 999
+  uid: 2411
   shell: /bin/bash
 
 

@@ -42,6 +42,7 @@
     # - group_vars/custom-sites.yml      # Subdomains are listed here
     - group_vars/gxconfig.yml          # The base galaxy configuration
     - group_vars/toolbox.yml           # User controlled toolbox
+    - group_vars/galaxy_user_ids.ym           # Change galaxy id and group id
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
     - secret_group_vars/htcondor.yml   # condor secrets
@@ -62,6 +63,17 @@
         name: condor
         state: reloaded
   pre_tasks:
+    # Define galaxy_user id and gid
+    # this is done to submit jobs to htcondor with proper id and gid.
+    # galaxy:x:881567:2411::/home/galaxy:/opt/galaxy
+    # This is managed in galaxy_user_ids.yml and usegalaxy_it_01
+    - name: Set galaxy_user id
+      set_fact:
+        galaxy_uid: '{{ usegalaxy_preprod.galaxy_uid }}'
+        galaxy_gid: '{{ usegalaxy_preprod.galaxy_gid }}'
+    - debug:
+        msg: 'Galaxy id: {{ galaxy_uid }}, Galaxy Groupd id: {{ galaxy_gid }}'
+    # end
     - name: Install Packages for Rocky Linux
       dnf:
         name:
