@@ -1,4 +1,7 @@
 ---
+# This recipe install the galaxy database postgreSQL
+# on a single server, so no replica and backup.
+
 - name: Postgresql DB
   hosts: database
   become: true
