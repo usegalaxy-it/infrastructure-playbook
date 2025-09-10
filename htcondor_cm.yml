@@ -59,6 +59,20 @@
       package:
         name: [ 'python3-psycopg2', 'python3', 'pip']
       become: true
+    # Galaxy user
+    - name: Ensure galaxy group exists
+      ansible.builtin.group:
+        name: galaxy
+        gid: 2411
+        state: present
+    - name: Ensure galaxy user exists
+      ansible.builtin.user:
+        name: galaxy
+        uid: 881567
+        group: galaxy
+        shell: /opt/galaxy
+        create_home: no
+        state: present
     # Docker
     - name: Install docker pip package
       pip:

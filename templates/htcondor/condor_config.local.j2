@@ -13,6 +13,7 @@ ALLOW_CLIENT = *
 DAEMON_LIST = {{ htcondor_daemons | json_query("@") | join(", ") }}
 {% if htcondor_role_manager is true  %}
 ALLOW_DAEMON = condor@{{ htcondor_domain }}
+ALLOW_ADVERTISE_STARTD = condor@{{ htcondor_domain }}
 {% endif %}
 FILESYSTEM_DOMAIN = {{ htcondor_domain }}
 UID_DOMAIN = {{ htcondor_domain }}

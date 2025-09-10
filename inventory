@@ -15,13 +15,13 @@ influxdb.galaxyproject.eu
 # Preprod for testing at ReCaS
 
 [usegalaxy_it_01]
-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=almalinux
 
 [nfs]
 172.18.12.197 ansible_ssh_user=rocky
 
 [database]
-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=almalinux 
 
 #[replica]
 #172.18.12.249 ansible_ssh_user=rocky
