@@ -314,7 +314,9 @@
     # - usegalaxy-eu.fix-stop-ITs # remove IT jobs after 24h from queue 
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
-    - dj-wasabi.telegraf
+    - role: dj-wasabi.telegraf
+      vars:
+        telegraf_agent_hostname: "usegalaxy-it"
     - os_hardening    
     - ssh_hardening
     # - usegalaxy-eu.vgcn-monitoring

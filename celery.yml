@@ -51,6 +51,8 @@
     - usegalaxy-eu.galaxy-systemd
     - influxdata.chrony
     ## Filesystems
-    - dj-wasabi.telegraf
+    - role: dj-wasabi.telegraf
+      vars:
+        telegraf_agent_hostname: "usegalaxy-celery"
     - usegalaxy-eu.autofs # Set up the mount points which will be needed later
     - usegalaxy_eu.flower
