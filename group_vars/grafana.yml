@@ -60,7 +60,7 @@ grafana_on_call_path: /data/monitoring/grafana/grafana-on-call
 grafana_version: "11.4.0"
 
 grafana_address: "127.0.0.1"
-grafana_domain: "212.189.205.240.cloud.ba.infn.it"
+grafana_domain: "stats.usegalaxy.it"
 grafana_url: "https://{{ grafana_domain }}"
 grafana_users:
   default_theme: "light"
