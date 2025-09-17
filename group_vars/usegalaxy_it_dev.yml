@@ -417,3 +417,16 @@ rabbitmq_url: "{{ groups['rabbitmq_dev'][0] }}"
 
 # Redis
 redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"
+
+# Telegraf
+telegraf_agent_hostname: "{{ hostname }}"
+telegraf_agent_version: 1.17.2
+telegraf_plugins_extra:
+  listen_galaxy_routes:
+    plugin: "statsd"
+    config:
+      - service_address = ":8125"
+      - percentiles = [90]
+      - metric_separator = "."
+      - allowed_pending_messages = 10000
+      - percentile_limit = 100

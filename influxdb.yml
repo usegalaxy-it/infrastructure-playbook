@@ -1,0 +1,109 @@
+---
+- hosts: influxdb
+  become: true
+  vars:
+    hostname: "{{ groups['influxdb'][0] }}"
+  vars_files:
+    - "secret_group_vars/all.yml"
+  pre_tasks:
+    - name: Enable EPEL
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
+    - name: Ensure dnf-plugins-core is installed
+      ansible.builtin.package:
+        name: dnf-plugins-core
+        state: present
+
+    - name: Enable CRB (CodeReady Builder) on Rocky
+      ansible.builtin.command: dnf config-manager --set-enabled crb
+      when: ansible_distribution == "Rocky"
+    - name: Install Dependencies
+      become: true
+      ansible.builtin.package:
+        name: ['python3-virtualenv', 'python3-docker', 'perl', 'firewalld']
+    - name: Create data dir
+      ansible.builtin.file:
+        state: directory
+        path: /data
+      become: true
+    - name: Create FS
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/vdb
+      become: true
+    - name: Mount data volume
+      ansible.posix.mount:
+        path: /data
+        src: /dev/vdb
+        fstype: ext4
+        state: mounted
+      become: true
+    - name: Configure SELinux
+      ansible.posix.seboolean:
+        name: "{{ item }}"
+        state: true
+        persistent: true
+      loop:
+        - httpd_can_network_connect
+    - name: Ensure /etc/firewalld/services exists
+      ansible.builtin.file:
+        path: /etc/firewalld/services
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+    - name: Create influxdb firewalld service
+      ansible.builtin.copy:
+        dest: /etc/firewalld/services/influxdb.xml
+        content: |
+          <?xml version="1.0" encoding="utf-8"?>
+          <service>
+          <short>influxdb</short>
+            <description>Time-series database for storing metrics and analytics data</description>
+            <port protocol="tcp" port="8086"/>
+          </service>
+        mode: "0600"
+        owner: root
+        group: root
+      notify: copied_service
+
+  handlers:
+    - name: Reload Firewalld
+      listen: copied_service
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
+
+  collections:
+    - devsec.hardening
+
+  roles:
+    ## Starting configuration of the operating system
+    # - role: usegalaxy_eu.firewall
+    #   become: true
+    - role: usegalaxy_eu.handy.os_setup
+      vars:
+        hostname: "usegalaxy-it-influxdb"
+        enable_hostname: true
+        enable_powertools: true        # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: true
+        enable_create_user: true
+    - geerlingguy.repo-epel     # Install EPEL repository
+    - usegalaxy-eu.autoupdates  # keep all of our packages up to date
+    - influxdata.chrony         # Keep our time in sync.
+    - usegalaxy-eu.dynmotd
+    # - hxr.monitor-email
+#    # Applications
+    - geerlingguy.docker
+    - galaxyproject.nginx
+    - role: usegalaxy_eu.influxdbserver
+      vars:
+        hostname: "{{ influxdb.url }}"
+    # TODO: Fork and rework the influxdbserver role to match our needs,
+    #       currently user-privileges to databases are hardcoded. Additionally,
+    #       the role gives for granted that the hostname = FQDN of the server.
+    - dj-wasabi.telegraf
+    # hardening
+    - os_hardening
+    - ssh_hardening

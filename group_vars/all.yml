@@ -132,3 +132,28 @@ ssh_client_alive_interval: 600
 
 # Apollo env vars
 # apollo_env: "GALAXY_WEBAPOLLO_URL={{ GALAXY_WEBAPOLLO_URL }} GALAXY_WEBAPOLLO_USER={{ GALAXY_WEBAPOLLO_USER }} GALAXY_WEBAPOLLO_PASSWORD={{ GALAXY_WEBAPOLLO_PASSWORD }} GALAXY_WEBAPOLLO_EXT_URL={{ GALAXY_WEBAPOLLO_EXT_URL }} GALAXY_SHARED_DIR={{ GALAXY_SHARED_DIR }} GALAXY_APOLLO_ORG_SUFFIX=id"
+
+# Telegraf
+telegraf_agent_package_state: latest
+telegraf_agent_output:
+  - type: influxdb
+    config:
+      - urls = ["https://{{ influxdb.url }}"]
+      - database = "galaxy"
+      - username = "{{ influxdb.grafana.username }}"
+      - password = "{{ influxdb.grafana.password }}"
+      - timeout = "10s"
+telegraf_plugins_default:
+  - plugin: cpu
+    config:
+      - percpu = true
+  - plugin: disk
+  - plugin: kernel
+  - plugin: processes
+  - plugin: diskio
+  - plugin: mem
+  - plugin: system
+  - plugin: swap
+  - plugin: nstat
+  - plugin: netstat
+  - plugin: chrony
