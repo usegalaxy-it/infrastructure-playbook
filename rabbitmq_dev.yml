@@ -135,7 +135,9 @@
         certbot_install_method: virtualenv
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
-    # - dj-wasabi.telegraf
+    - role: dj-wasabi.telegraf
+      vars:
+        telegraf_agent_hostname: "rabbitmq-usegalaxy-it"
     # hardening
     - os_hardening
     - ssh_hardening
