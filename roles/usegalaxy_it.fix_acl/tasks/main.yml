@@ -1,0 +1,11 @@
+---
+# tasks file for usegalaxy_it.fix_acl
+
+- name: Set ACL for RabbitMQ TLS file
+  ansible.posix.acl:
+    path: "{{ fix_acl_key_path }}"
+    etype: user
+    entity: "{{ fix_acl_uid }}"
+    permissions: r
+    state: present
+  when: fix_acl_enable_rabbitmq | bool

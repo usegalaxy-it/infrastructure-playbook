@@ -1,0 +1,6 @@
+---
+# defaults file for usegalaxy_it.fix_acl
+
+fix_acl_enable_rabbitmq: true
+fix_acl_key_path: /etc/ssl/user/privkey-rabbitmq.pem
+fix_acl_uid: "999"
