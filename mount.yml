@@ -49,37 +49,37 @@
 
 ##### TO SHARE 2 DIRS
 ---
-- name: Configure NFS server
-  hosts: nfs
-  become: true
-  tasks:
-    - name: Create directories if missing
-      file:
-        path: "{{ item.dir }}"
-        owner: "{{ item.owner }}"
-        group: "{{ item.group }}"
-        mode: "{{ item.mode }}"
-        state: directory
-      with_items:
-        #- { dir: /opt/galaxy, mode: "0755", owner: rocky, group: rocky }
-        - { dir: /data/share, mode: "0755", owner: rocky, group: rocky } 
-    - name: Remove old entries in /etc/export
-      lineinfile:
-        path: /etc/exports
-        regexp: '\(rw,sync\)' 
-        state: absent
-        backup: yes
-    - name: Ensure required entries are made to hosts file
-      lineinfile:
-        path: /etc/exports
-        state: present
-        backup: yes
-        line: '{{ item }}'
-      with_items:
-        - '/data/share *(rw,sync,no_root_squash)'
-        #- '/opt/galaxy *(rw,sync,no_root_squash)'
-    - name: Re-export the share
-      command: exportfs -r
+#- name: Configure NFS server
+#  hosts: nfs
+#  become: true
+#  tasks:
+#    - name: Create directories if missing
+#      file:
+#        path: "{{ item.dir }}"
+#        owner: "{{ item.owner }}"
+#        group: "{{ item.group }}"
+#        mode: "{{ item.mode }}"
+#        state: directory
+#      with_items:
+#        #- { dir: /opt/galaxy, mode: "0755", owner: rocky, group: rocky }
+#        - { dir: /data/share, mode: "0755", owner: rocky, group: rocky } 
+#    - name: Remove old entries in /etc/export
+#      lineinfile:
+#        path: /etc/exports
+#        regexp: '\(rw,sync\)' 
+#        state: absent
+#        backup: yes
+#    - name: Ensure required entries are made to hosts file
+#      lineinfile:
+#        path: /etc/exports
+#        state: present
+#        backup: yes
+#        line: '{{ item }}'
+#      with_items:
+#        - '/data/share *(rw,sync,no_root_squash)'
+#        #- '/opt/galaxy *(rw,sync,no_root_squash)'
+#    - name: Re-export the share
+#      command: exportfs -r
 
 - name: Mount NFS
   hosts: usegalaxy_it_01
@@ -97,17 +97,17 @@
         #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
 
 
-- name: Mount NFS on CM
-  hosts: htcondor_cm
-  become: true
-  become_user: root
-  tasks:
-    - name: Mount network share
-      ansible.posix.mount:
-        src: "{{ item.src }}"
-        path: "{{ item.mountpoint }}"
-        fstype: nfs
-        state: mounted
-      with_items:
-        - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share }
-        #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
+#- name: Mount NFS on CM
+#  hosts: htcondor_cm
+#  become: true
+#  become_user: root
+#  tasks:
+#    - name: Mount network share
+#      ansible.posix.mount:
+#        src: "{{ item.src }}"
+#        path: "{{ item.mountpoint }}"
+#        fstype: nfs
+#        state: mounted
+#      with_items:
+#        - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share }
+#        #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }

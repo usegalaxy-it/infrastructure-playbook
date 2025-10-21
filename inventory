@@ -15,13 +15,13 @@ influxdb.galaxyproject.eu
 # Preprod for testing at ReCaS
 
 [usegalaxy_it_01]
-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=almalinux
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
 [nfs]
 172.18.12.197 ansible_ssh_user=rocky
 
 [database]
-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=almalinux 
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
 #[replica]
 #172.18.12.249 ansible_ssh_user=rocky
@@ -29,24 +29,31 @@ usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=almalinux
 #[backup]
 #172.18.12.24 ansible_ssh_user=rocky
 
-#[central_manager]
 [htcondor_cm]
 172.18.12.183 ansible_ssh_user=rocky 
 
-[rabbitmq] 
-segalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
+[rabbitmq_01] 
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
+
+[celerycluster]
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
 [all:vars]
 ansible_ssh_user=centos
 
 # Prod at ReCaS
 # This is a bare metal server.
-
 [usegalaxy_it_prod]
-prod.usegalaxy.it ansible_ssh_user=galaxy
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
-[usegalaxy_it_prod]
-prod.usegalaxy.it ansible_ssh_user=galaxy
+[database_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
+
+[rabbitmq_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
+
+[celerycluster_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
 ### Cineca
 

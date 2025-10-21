@@ -3,7 +3,7 @@
 # on a single server, so no replica and backup.
 
 - name: Postgresql DB
-  hosts: database
+  hosts: database_prod
   become: true
   become_user: root
   vars_files:

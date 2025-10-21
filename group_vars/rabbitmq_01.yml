@@ -1,14 +1,15 @@
 ---
-hostname: "{{ groups['usegalaxy_it_prod'][0] }}"
+#hostname: "{{ groups['rabbitmq'][0] }}"
+hostname: "{{ groups['usegalaxy_it_01'][0] }}"
 
 # create_user task
 handy_groups:
   - group_name: rabbitmq
-    group_gid: 1999
+    group_gid: 999
 
 handy_users:
   - user_name: rabbitmq
-    user_uid: 1999
+    user_uid: 999
     user_group: rabbitmq
 
 # Certbot
@@ -107,7 +108,7 @@ rabbitmq_container:
   name: rabbit_hole
   image: rabbitmq:4.1.4
     #hostname: rabbitmq
-  hostname: "{{ groups['usegalaxy_it_prod'][0] }}"
+  hostname: "{{ groups['usegalaxy_it_01'][0] }}"
 
 rabbitmq_container_pause: 60
 

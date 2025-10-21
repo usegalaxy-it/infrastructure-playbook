@@ -1,6 +1,6 @@
 ---
 - name: Celery cluster
-  hosts: celerycluster_prod
+  hosts: celerycluster
   become: true
   become_user: root
   vars_files:
@@ -51,4 +51,5 @@
     - usegalaxy-eu.galaxy-systemd
     - influxdata.chrony
     ## Filesystems
+    #- usegalaxy-eu.autofs # Set up the mount points which will be needed later
     - usegalaxy_eu.flower

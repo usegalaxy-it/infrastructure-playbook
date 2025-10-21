@@ -1,0 +1,43 @@
+---
+- name: UseGalaxy
+  hosts: usegalaxy_it_prod
+  become: true
+  become_user: root
+  vars:
+    hostname: "{{ groups['usegalaxy_it_prod'][0] }}"
+    certbot_admin_email: usegalaxy.it@gmail.it
+    certbot_agree_tos: --agree-tos
+    certbot_auth_method: --standalone
+    certbot_auto_renew: true
+    certbot_auto_renew_user: root
+    certbot_auto_renew_hour: "{{ 23 |random(seed=inventory_hostname)  }}"
+    certbot_auto_renew_minute: "{{ 59 |random(seed=inventory_hostname)  }}"
+    certbot_domains:
+      - "{{ hostname }}"
+    certbot_install_method: virtualenv
+    certbot_environment: production # !!! CHECK -> change to production
+    certbot_share_key_users:
+      - nginx
+      - rabbitmq
+
+  pre_tasks:
+    - name: Install Epel
+      dnf:
+        name:
+          - epel-release
+        state: present
+    - name: Install python3-wheel-wheel
+      yum:
+        name: python3-wheel-wheel
+        enablerepo: crb
+        state: present
+    - name: Install python3-virtualenv
+      yum:
+        name: python3-virtualenv
+        enablerepo: epel-release
+        state: present
+
+  roles:
+    - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
+      vars:
+        certbot_install_method: virtualenv
