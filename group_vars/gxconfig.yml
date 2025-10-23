@@ -1086,7 +1086,7 @@ base_app_main: &BASE_APP_MAIN
   # with Galaxy via the API.
   # If you plan to run Interactive Tools make sure the docker container
   # can reach this URL.
-  galaxy_infrastructure_url: https://usegalaxy-it.cloud.ba.infn.it
+  galaxy_infrastructure_url: https://usegalaxy.it
 
   # If the above URL cannot be determined ahead of time in dynamic
   # environments but the port which should be used to access Galaxy can
