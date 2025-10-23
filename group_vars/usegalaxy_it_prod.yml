@@ -62,6 +62,7 @@ certbot_share_key_users:
   - nginx
   - rabbitmq
 certbot_well_known_root: /srv/nginx/_well-known_root
+certbot_hostname_override: 'usegalaxy.it' # this variable overrides certbot default hostmane which takes the first in the domain list by default.
 
 # rsync to nfs
 galaxy_nfs_location: /data/share
