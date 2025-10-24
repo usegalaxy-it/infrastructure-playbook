@@ -94,6 +94,9 @@ roles:
     version: 0.1.11
   - name: usegalaxy-it.galaxy-systemd
     src: https://github.com/usegalaxy-it/ansible-galaxy-systemd
+  - name: usegalaxy-eu.galaxy-systemd # used only by dev deployment
+    src: https://github.com/usegalaxy-eu/ansible-galaxy-systemd
+    version: 2.1.0
   - name: usegalaxy-eu.dynmotd
     src: https://github.com/usegalaxy-eu/ansible-dynmotd
     version: 0.0.1
