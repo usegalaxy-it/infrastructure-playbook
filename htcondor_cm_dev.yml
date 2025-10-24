@@ -103,6 +103,10 @@
     - usegalaxy-eu.autofs
     - usegalaxy-eu.ansible-htcondor-grycap
     - galaxyproject.cvmfs
+    # Uncooment telegraf to use it with grafana
+    #- role: dj-wasabi.telegraf
+    #  vars:
+    #    telegraf_agent_hostname: "usegalaxy-htcondor-cm"
     - ssh_hardening
 
   post_tasks:

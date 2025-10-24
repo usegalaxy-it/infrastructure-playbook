@@ -50,5 +50,8 @@
     #    enable_install_software: true
     - usegalaxy-eu.galaxy-systemd
     - influxdata.chrony
-    ## Filesystems
+    ## Enable telegraf for grafana integration
+    #- role: dj-wasabi.telegraf
+    #  vars:
+    #    telegraf_agent_hostname: "usegalaxy-celery"
     - usegalaxy_eu.flower
