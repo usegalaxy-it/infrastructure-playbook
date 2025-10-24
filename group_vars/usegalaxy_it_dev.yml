@@ -152,7 +152,11 @@ galaxy_systemd_workflow_scheduler_env: ""
 galaxy_systemd_memory_limit: 120
 galaxy_systemd_memory_limit_handler: 12
 galaxy_systemd_memory_limit_workflow: 15
-
+# those are used by destinations.yml.j2 but are not configured in the role
+# since we are using here the default systemd role and not the usegalaxy.it forked one.
+# since /opt/galaxy is still shared here
+galaxy_server_handler_dir: '/opt/galaxy/server'
+galaxy_venv_handler_dir: '/opt/galaxy/venv'
 
 # HTCondor
 htcondor_version: 24.x
@@ -335,8 +339,8 @@ galaxy_config_files:
     dest: "{{ galaxy_config_dir }}/echo_main_env.xml"
   - src: "{{ galaxy_config_file_src_dir }}/tpv/tool_defaults.yml" # !!! CHECK AND ADD LATER
     dest: "{{ tpv_mutable_dir }}/tool_defaults.yml"
-  - src: "{{ galaxy_config_file_src_dir }}/tpv/destinations.yml"
-    dest: "{{ tpv_mutable_dir }}/destinations.yml"
+  #- src: "{{ galaxy_config_file_src_dir }}/tpv/destinations.yml"
+  #  dest: "{{ tpv_mutable_dir }}/destinations.yml"
   - src: "{{ galaxy_config_file_src_dir }}/tpv/tools.yml"
     dest: "{{ tpv_mutable_dir }}/tools.yml"
   - src: "{{ galaxy_config_file_src_dir }}/tpv/roles.yml"
@@ -388,6 +392,8 @@ galaxy_config_templates:
   #   dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
   # - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.xml.j2"
   #   dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
+  - src: "{{ galaxy_config_file_src_dir }}/tpv/destinations.yml.j2"
+    dest: "{{ tpv_mutable_dir }}/destinations.yml"
 
 # TPV 
 tpv_config_dir_name: total_perspective_vortex
