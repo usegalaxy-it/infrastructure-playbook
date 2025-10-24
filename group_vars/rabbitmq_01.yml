@@ -1,5 +1,6 @@
 ---
-hostname: "{{ groups['rabbitmq_dev'][0] }}"
+#hostname: "{{ groups['rabbitmq'][0] }}"
+hostname: "{{ groups['usegalaxy_it_01'][0] }}"
 
 # create_user task
 handy_groups:
@@ -35,7 +36,7 @@ certbot_virtualenv_command: virtualenv
 certbot_well_known_root: /srv/nginx/_well-known_root
 
 # NGINX
-nginx_ssl_port: 443
+nginx_ssl_port: 8443
 nginx_enable_default_server: false
 nginx_servers:
   - redirect-ssl
@@ -105,9 +106,9 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.9.11
+  image: rabbitmq:4.1.4
     #hostname: rabbitmq
-  hostname: "{{ groups['rabbitmq_dev'][0] }}"
+  hostname: "{{ groups['usegalaxy_it_01'][0] }}"
 
 rabbitmq_container_pause: 60
 
@@ -122,9 +123,9 @@ redis_logfile: /var/log/redis/redis-server.log
 redis_conf_path: /etc/redis
 
 # Telegraf
-telegraf_plugins_extra:
-  prometheus:
-    plugin: prometheus
-    config:
-      - urls = ["http://172.17.0.2:15692/metrics"]
+# telegraf_plugins_extra:
+#   prometheus:
+#     plugin: prometheus
+#     config:
+#       - urls = ["http://172.17.0.2:15692/metrics"]
 

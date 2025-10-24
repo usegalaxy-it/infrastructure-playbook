@@ -1,29 +1,72 @@
 ---
 - name: Install Miniconda
-  hosts: usegalaxy_it_01
+  hosts: usegalaxy_it_prod
   become: true
   # become_user: galaxy
   vars:
-    miniconda_prefix: "/data/tool_deps/_conda" # !!! CHECK CHANGE VAR
+    tool_dependency_dir: "/data/share/tool_deps"
+    miniconda_prefix: "/data/share/tool_deps/_conda" # !!! CHECK CHANGE VAR
     miniconda_manage_dependencies: true
     galaxy_conda_create_env: true
     galaxy_conda_env_packages:
       - python=3.9
       - pip
       - virtualenv
-  post_tasks:
+    miniconda_version: "25.7.0"
+    galaxy_conda_env_channels:
+      - conda-forge
+    miniconda_channels:
+      - conda-forge
+
+  pre_tasks:
+    - name: Check if miniconda_prefix exists
+      ansible.builtin.stat:
+        path: /data/share/tool_deps/_conda
+      register: conda_dir
+    - name: Create Galaxy group
+      ansible.builtin.group:
+        name: galaxy
+        gid: 2411
+        state: present
+    - name: Crete Galaxy user
+      ansible.builtin.user:
+        name: galaxy
+        uid: 881567
+        group: 2411
+        home: /opt/galaxy
+        shell: /bin/bash
+        create_home: true
+        state: present
+    - name: Ensure /data/share/tool_deps exists
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+        owner: galaxy
+        group: galaxy
+        mode: '0755'
+      loop:
+        - '{{ tool_dependency_dir }}'
+        - /opt/galaxy/.conda
+      become_user: root
+      become_method: sudo
+
+  roles:
+    - role: galaxyproject.miniconda
+      become_user: galaxy
+      become_method: sudo
+      #when: not conda_dir.stat.exists
+
+  #post_tasks:
     # - name: Copy miniconda to shared dir
     #   ansible.builtin.copy:
     #     src: /usr/local/tools/_conda
     #     dest: /data/share/tool_deps/
-    - name: Change ownership
-      file:
-        path: '{{ miniconda_prefix }}'
-        owner: galaxy
-        group: galaxy
-        state: directory
-        recurse: true
-  roles:
-    - galaxyproject.miniconda
+    #- name: Change ownership
+    #  file:
+    #    path: '{{ miniconda_prefix }}'
+    #    owner: galaxy
+    #    group: galaxy
+    #    state: directory
+    #    recurse: true
 
     # !!! CHECK install miniconda and change the conda_prefix to this one 

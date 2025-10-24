@@ -1,49 +1,58 @@
-# Cloud
-
-[build]
-build.galaxyproject.eu ansible_ssh_user=root
-
 ##########################IT###########################
 
-### ReCaS
+### Cloud
 
-[influxdb]
-212.189.205.198.cloud.ba.infn.it ansible_ssh_user=rocky
+[build]
+build-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
 [grafana]
 stats.usegalaxy.it ansible_ssh_user=rocky
 
+[influxdb]
+212.189.205.198.cloud.ba.infn.it ansible_ssh_user=rocky
+
+### ReCaS
+
 [usegalaxy_it_01]
-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
 [nfs]
-172.18.12.115 ansible_ssh_user=rocky
+172.18.12.197 ansible_ssh_user=rocky
 
 [database]
-172.18.12.136 ansible_ssh_user=rocky 
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
-[replica]
-172.18.12.249 ansible_ssh_user=rocky
+#[replica]
+#172.18.12.249 ansible_ssh_user=rocky
 
-[backup]
-172.18.12.24 ansible_ssh_user=rocky
+#[backup]
+#172.18.12.24 ansible_ssh_user=rocky
 
-[central_manager]
-172.18.12.121 ansible_ssh_user=rocky 
+[htcondor_cm]
+172.18.12.183 ansible_ssh_user=rocky 
 
-[rabbitmq] 
-rabbitmq-usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=rocky 
+[rabbitmq_01] 
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
+
+[celerycluster]
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
 [all:vars]
 ansible_ssh_user=centos
 
-# Preprod for testing at ReCaS
+# Prod at ReCaS
+# This is a bare metal server.
+[usegalaxy_it_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
-[usegalaxy_it_preprod]
-usegalaxy-it-preprod.cloud.ba.infn.it  ansible_ssh_user=rocky
+[database_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
-[rabbitmq_preprod]
-rabbitmq-usegalaxy-it-preprod.cloud.ba.infn.it ansible_ssh_user=rocky
+[rabbitmq_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
+
+[celerycluster_prod]
+nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
 ### Cineca
 
@@ -72,64 +81,3 @@ rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky
 192.168.0.55 ansible_ssh_user=rocky
 
 ##########################################################
-
-[incoming]
-incoming.galaxyproject.eu
-
-#[ftp]
-#ftp.usegalaxy.eu
-
-[apollo]
-apollo.internal.galaxyproject.eu
-
-#[sentry]
-#sentry.galaxyproject.eu
-
-[cvmfsstratum1servers]
-10.5.68.209
-#cvmfs1-ufr0.galaxyproject.eu
-
-[cvmfs-stratum0]
-cvmfs-stratum0.galaxyproject.eu
-
-[telescope]
-telescope.internal.galaxyproject.eu
-
-[hicbrowser]
-192.52.32.160
-
-[galaxy-test]
-test.internal.usegalaxy.eu
-
-[denbistratum0]
-cvmfs-stratum0-test.galaxyproject.eu
-
-
-[plausible]
-plausible.galaxyproject.eu
-
-#[job-working-dir]
-#10.5.68.72
-#job-working-dir.internal.galaxyproject.eu
-
-# Baremetal
-[galaxyservers]
-sn04.bi.uni-freiburg.de ansible_ssh_user=root
-sn06.galaxyproject.eu ansible_ssh_user=centos
-
-#[galaxy]
-#90.147.102.105 ansible_ssh_user=centos
-
-
-[sn05]
-sn05.galaxyproject.eu ansible_ssh_user=root
-
-#[build01]
-#build01.bwcloud.uni-freiburg.de ansible_ssh_user=root
-
-#[cvmfspreload]
-#10.19.1.201 ansible_ssh_user=root #ssds1.rz.privat
-#
-# TODO
-# Add here stratum 1 for tools and reference data
-# Add elixir-it stratum 0

@@ -1,4 +1,4 @@
-postgresql_version: 13
+postgresql_version: 17
 postgresql_objects_users:
   - name: galaxy
     password: "{{ _galaxy_db_pass }}"
@@ -9,7 +9,7 @@ postgresql_objects_databases:
 postgresql_conf:
   - listen_addresses: "'*'" # "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 postgresql_pg_hba_conf:
-  - host     all     all     {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24     md5
+  - host     all     all     {{ _galaxy_db_host }}/24     md5
 
 #backup
 postgres_backup: true

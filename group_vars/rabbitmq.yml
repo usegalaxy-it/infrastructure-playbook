@@ -1,14 +1,14 @@
 ---
-hostname: "{{ groups['rabbitmq'][0] }}"
+hostname: "{{ groups['usegalaxy_it_prod'][0] }}"
 
 # create_user task
 handy_groups:
   - group_name: rabbitmq
-    group_gid: 999
+    group_gid: 1999
 
 handy_users:
   - user_name: rabbitmq
-    user_uid: 999
+    user_uid: 1999
     user_group: rabbitmq
 
 # Certbot
@@ -35,6 +35,7 @@ certbot_virtualenv_command: virtualenv
 certbot_well_known_root: /srv/nginx/_well-known_root
 
 # NGINX
+nginx_ssl_port: 8443
 nginx_enable_default_server: false
 nginx_servers:
   - redirect-ssl
@@ -57,7 +58,7 @@ rabbitmq_users:
     password: "{{ rabbitmq_users_password.galaxy }}"
     vhost: galaxy
   - user: flower
-    password: "{{ .flower }}"
+    password: "{{ rabbitmq_users_password.flower }}"
     tags: administrator
     vhost: galaxy
   - user: pulsar_it01
@@ -104,9 +105,9 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.9.11
+  image: rabbitmq:4.1.4
     #hostname: rabbitmq
-  hostname: "{{ groups['rabbitmq'][0] }}"
+  hostname: "{{ groups['usegalaxy_it_prod'][0] }}"
 
 rabbitmq_container_pause: 60
 

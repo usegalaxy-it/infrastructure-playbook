@@ -8,7 +8,7 @@ certbot_auto_renew_minute: "{{ 59 |random(seed=inventory_hostname)  }}"
 certbot_install_method: virtualenv
 certbot_auto_renew: true
 certbot_auto_renew_user: root
-certbot_environment: staging # !!! CHECK -> change to production
+certbot_environment: production # !!! CHECK -> change to production
 certbot_domains:
  - "{{ hostname }}"
 certbot_agree_tos: --agree-tos

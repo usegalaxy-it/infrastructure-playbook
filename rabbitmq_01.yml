@@ -1,13 +1,13 @@
 ---
 - name: MQ
-  hosts: rabbitmq_prod
+  hosts: rabbitmq
   become: true
   vars:
-    hostname: "{{ groups['rabbitmq_prod'][0] }}"
+    hostname: "{{ groups['rabbitmq_01'][0] }}"
   vars_files:
     - secret_group_vars/all.yml
     - secret_group_vars/rabbitmq.yml     # Pulsar + MQ Connections
-    - group_vars/rabbitmq.yml
+    - group_vars/rabbitmq_01.yml
   collections:
     - devsec.hardening
   pre_tasks:
@@ -59,7 +59,7 @@
     - name: Install firewalld (absent by def in Rocky9)
       package:
         name: firewalld
-    - name: Enable firewalld service
+    - name: Disable firewalld service
       ansible.builtin.service:
         name: firewalld
         enabled: true
@@ -139,7 +139,6 @@
       #- role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
       #  vars:
       #    certbot_install_method: virtualenv
-    - usegalaxy_it.fix_acl
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
     # - dj-wasabi.telegraf

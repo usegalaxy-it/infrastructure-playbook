@@ -22,6 +22,9 @@
     - devsec.hardening
 
   pre_tasks:
+    - name: Set htcondor password
+      set_fact:
+        htcondor_password: '{{ htcondor_dev.password }}'
     - debug:
         msg: '{{ htcondor_password }}'
     - debug:
@@ -100,9 +103,10 @@
     - usegalaxy-eu.autofs
     - usegalaxy-eu.ansible-htcondor-grycap
     - galaxyproject.cvmfs
-    - role: dj-wasabi.telegraf
-      vars:
-        telegraf_agent_hostname: "usegalaxy-htcondor-cm"
+    # Uncooment telegraf to use it with grafana
+    #- role: dj-wasabi.telegraf
+    #  vars:
+    #    telegraf_agent_hostname: "usegalaxy-htcondor-cm"
     - ssh_hardening
 
   post_tasks:

@@ -1,0 +1,12 @@
+---
+- usegalaxy_dev:
+    galaxy_uid: 999
+    galaxy_gid: 999
+
+- usegalaxy_preprod:
+    galaxy_uid: 881567
+    galaxy_gid: 2411
+
+- usegalaxy_prod:
+    galaxy_uid: 881567
+    galaxy_gid: 2411
