@@ -42,6 +42,7 @@ ansible_ssh_user=centos
 
 # Prod at ReCaS
 # This is a bare metal server.
+
 [usegalaxy_it_prod]
 nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
@@ -57,7 +58,7 @@ nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 ### Cineca
 
 [usegalaxy_it_dev]
-usegalaxy.it ssh_host=usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
+usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
 
 [nfs_dev]
 192.168.0.249 ansible_ssh_user=centos
