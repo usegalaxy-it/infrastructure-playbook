@@ -2,9 +2,9 @@
 <object_store type="distributed" id="primary" order="0">
     <backends>
         <backend id="files11" type="disk" weight="1" store_by="uuid">
-	    <files_dir path="/data/share/galaxy_db/files"/>
-            <extra_dir type="temp" path="/data/share/jwd/tmp"/>
-            <extra_dir type="job_work" path="/data/share/jwd/main"/>
+	    <files_dir path="/lustre/data_usegalaxy_it/galaxy_db/files"/>
+            <extra_dir type="temp" path="/lustre/data_usegalaxy_it/jwd/tmp"/>
+            <extra_dir type="job_work" path="/lustre/data_usegalaxy_it/jwd/main"/>
         </backend>
     </backends>
 </object_store>

@@ -140,14 +140,14 @@ base_app_main: &BASE_APP_MAIN
   # directory exists before using 'objects' as the default.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  file_path: /data/share/datasets
+  file_path: /lustre/data_usegalaxy_it/datasets
 
   # Where temporary files are stored. It must be accessible at the same
   # path on any cluster nodes that will run Galaxy jobs, unless using
   # Pulsar.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  new_file_path: /data/share/jwd/tmp
+  new_file_path: /lustre/data_usegalaxy_it/jwd/tmp
 
   # Maximum size of uploadable files, specified in bytes (default:
   # 100GB). This value is ignored if an external upload server is
@@ -337,7 +337,7 @@ base_app_main: &BASE_APP_MAIN
   # external tooling.
   # The value of this option will be resolved with respect to
   # <cache_dir>.
-  short_term_storage_dir: '/data/share/jwd/short_term_web_storage'
+  short_term_storage_dir: '/lustre/data_usegalaxy_it/jwd/short_term_web_storage'
 
   # Default duration before short term web storage files will be cleaned
   # up by Galaxy tasks (in seconds). The default duration is 1 day.
@@ -563,7 +563,7 @@ base_app_main: &BASE_APP_MAIN
   # directories will be created.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  job_working_directory: /data/share/jwd
+  job_working_directory: /lustre/data_usegalaxy_it/jwd
 
   # Mako templates are compiled as needed and cached for reuse, this
   # directory is used for the cache
@@ -1284,7 +1284,7 @@ base_app_main: &BASE_APP_MAIN
   # in detail in the documentation linked above.  The upload store is a
   # temporary directory in which files uploaded by the upload module
   # will be placed.
-  # nginx_upload_store: "/data/share/jwd/nginx_upload/main/uploads"
+  # nginx_upload_store: "/lustre/data_usegalaxy_it/jwd/nginx_upload/main/uploads"
 
   # This value overrides the action set on the file upload form, e.g.
   # the web path where the nginx_upload_module has been configured to
@@ -1295,7 +1295,7 @@ base_app_main: &BASE_APP_MAIN
   # upon job completion by remote job runners (i.e. Pulsar) that
   # initiate staging operations on the remote end.  See the Galaxy nginx
   # documentation for the corresponding nginx configuration.
-  # nginx_upload_job_files_store: "/data/share/jwd/nginx_upload/main/jobfiles"
+  # nginx_upload_job_files_store: "/lustre/data_usegalaxy_it/jwd/nginx_upload/main/jobfiles"
 
   # Galaxy can also use nginx_upload_module to receive files staged out
   # upon job completion by remote job runners (i.e. Pulsar) that
@@ -1306,7 +1306,7 @@ base_app_main: &BASE_APP_MAIN
   # The upload store is a temporary directory in which files uploaded by
   # the tus middleware or server will be placed. Defaults to
   # new_file_path if not set.
-  tus_upload_store: "/data/share/tus"
+  tus_upload_store: "/lustre/data_usegalaxy_it/tus"
 
   # The upload store is a temporary directory in which files uploaded by
   # the tus middleware or server for remote job files (Pulsar) will be
@@ -2077,7 +2077,7 @@ base_app_main: &BASE_APP_MAIN
   # This should point to a directory containing subdirectories matching
   # users' identifier (defaults to e-mail), where Galaxy will look for
   # files.
-  ftp_upload_dir: /data/share/jwd/incoming
+  ftp_upload_dir: /lustre/data_usegalaxy_it/jwd/incoming
 
   # User attribute to use as subdirectory in calculating default
   # ftp_upload_dir pattern. By default this will be email so a user's
@@ -2722,7 +2722,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Directory to store temporary files for file sources. This defaults
   # to new_file_path if not set.
-  file_source_temp_dir: /data/share/jwd/tmp/
+  file_source_temp_dir: /lustre/data_usegalaxy_it/jwd/tmp/
 
   # Default value for use_temp_files for webdav plugins that don't
   # explicitly declare this.
