@@ -34,9 +34,9 @@
     #
     # The nginx user needed into the galaxyproject.nginx role
     server_names:
-      - '{{ hostname }}'
       - 'usegalaxy.it'
       - 'www.usegalaxy.it'
+      - '{{ hostname }}'
       #- '*.usegalaxy.it'
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
