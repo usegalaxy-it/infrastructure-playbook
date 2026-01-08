@@ -1,0 +1,9 @@
+---
+- name: Configure KeyCloak user
+  include_tasks: user.yml
+
+- name: Configure PostgreSQL
+  include_tasks: db.yml
+
+- name: Start KeyCloak
+  include_tasks: install.yml

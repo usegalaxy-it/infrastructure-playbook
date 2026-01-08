@@ -1,0 +1,111 @@
+---
+- name: KeyCloak
+  hosts: keycloak_01
+  become: true
+  become_user: root
+  vars:
+    hostname: "{{ inventory_hostname }}"
+    server_names:
+      - '{{ hostname }}'
+  vars_files:
+    - group_vars/keycloak.yml
+    - secret_group_vars/all.yml
+    - secret_group_vars/db-main.yml
+  collections:
+    - devsec.hardening
+  pre_tasks:
+    - name: Install Packages for Rocky Linux
+      dnf:
+        name:
+          - langpacks-en
+          - glibc-all-langpacks
+          - epel-release
+    - name: Install python3-wheel-wheel
+      yum:
+        name: python3-wheel-wheel
+        enablerepo: crb
+        state: present
+    - name: Install python3-virtualenv
+      yum:
+        name: python3-virtualenv
+        enablerepo: epel-release
+        state: present
+    - name: Install Dependencies
+      ansible.builtin.package:
+        name:
+          - postgresql
+          - python3-psycopg2
+          - python3-virtualenv
+          - bc
+          - python3
+          - make
+          - pip
+          - gcc
+          - openssl-devel
+          - bzip2
+          - bzip2-devel
+          - libffi-devel
+          - zlib-devel
+          - xz-devel
+          - sqlite-devel
+          - wget
+          - tar
+          - acl
+          - vim
+          - python3-docker
+      become: true
+    - name: Ensure /etc/keycloak directory exists
+      ansible.builtin.file:
+        path: /etc/keycloak
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      become: true
+    - name: Import template configuration.
+      become: true
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner | default('root') }}"
+        group: "{{ item.group | default('root') }}"
+        mode:  "{{ item.mode  | default('0644') }}"
+      loop:
+        - src: "keycloak/keycloak_01.conf.j2"
+          dest: "/etc/keycloak/keycloak.conf"
+          mode: "0644"
+        - src: "nginx/keycloak-ssl.j2"
+          dest: "/etc/nginx/sites-available/keycloak-ssl"
+          mode: "0444"
+  roles:
+    #- geerlingguy.java # TODO WARNING Do we need this in production? Rebuild and test.
+    #- geerlingguy.docker # TODO WARNING Where are images stored?
+    #- role: usegalaxy-eu.certbot # TODO WARNING Not needed in production, since the certificate is already there.
+    #  vars:
+    #    certbot_install_method: virtualenv
+    # Setup PostgreSQL    
+    # PostgreSQL is already installed on pre-prod and prod.
+    # So we just need the user and the db
+    - usegalaxy_it.keycloak
+    # TODO
+    # run keycloak on different port, like 8443. This should be the default.
+  post_tasks:
+    - name: Open port on firwalld.
+      ansible.posix.firewalld:
+        zone: public
+        port: 9443/tcp
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Enable nginx site (sites-available -> sites-enabled)
+      become: true
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/keycloak-ssl"
+        dest: "/etc/nginx/sites-enabled/keycloak-ssl"
+        state: link
+    - name: Reload nginx
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

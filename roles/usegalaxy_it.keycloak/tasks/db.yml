@@ -1,0 +1,20 @@
+---
+- name: Create keycloak PostgreSQL user
+  community.postgresql.postgresql_user:
+    name: "{{ _keycloak_db_user }}"
+    password: "{{ _keycloak_db_password }}"
+    encrypted: true
+    role_attr_flags: NOSUPERUSER,NOCREATEDB,NOCREATEROLE,NOINHERIT
+  become: true
+  become_user: postgres
+
+- name: Create keycloak PostgreSQL database
+  community.postgresql.postgresql_db:
+    name: "{{ _keycloak_db_name }}"
+    owner: "{{ _keycloak_db_user }}"
+    encoding: UTF8
+    lc_collate: C
+    lc_ctype: C
+    template: template0
+  become: true
+  become_user: postgres

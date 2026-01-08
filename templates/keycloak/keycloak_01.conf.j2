@@ -1,0 +1,31 @@
+# Database
+db=postgres
+db-url=jdbc:postgresql://127.0.0.1:5432/keycloak
+db-username={{ _keycloak_db_name }}
+db-password={{ _keycloak_db_password }} 
+
+# JDBC pool
+db-pool-initial-size=5
+db-pool-min-size=5
+db-pool-max-size=20
+
+# HTTP
+http-enabled=true
+http-port=8080
+hostname-strict=false
+hostname={{ inventory_hostname }}
+
+# Admin user
+# This is valid only to create keycloak.
+bootstrap-admin-username={{ keycloak.preprod.admin }}
+bootstrap-admin-password={{ keycloak.preprod.password }}
+
+# Features
+features=token-exchange
+
+# HTTPS (opzionale)
+#https-key-store-file=/etc/keycloak/keystore.jks
+#https-key-store-password=secret
+
+# Proxy headers
+proxy-headers=forwarded

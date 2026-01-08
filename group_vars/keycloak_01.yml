@@ -1,0 +1,5 @@
+keycloak_user: keycloak
+keycloak_group: keycloak
+keycloak_uid: 45000
+keycloak_gid: 45000
+keycloak_home: /opt/keycloak

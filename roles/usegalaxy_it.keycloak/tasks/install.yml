@@ -1,0 +1,12 @@
+---
+- name: Run Keycloak container and mount the configuration
+  community.docker.docker_container:
+    name: keycloak
+    image: quay.io/keycloak/keycloak:latest
+    state: started
+    restart_policy: unless-stopped
+    network_mode: host
+    volumes:
+      - /etc/keycloak/keycloak.conf:/opt/keycloak/conf/keycloak.conf:ro
+      - /etc/keycloak/keystore.jks:/etc/keycloak/keystore.jks:ro  # se usi HTTPS
+    command: ["start"]

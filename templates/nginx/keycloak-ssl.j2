@@ -1,0 +1,23 @@
+server {
+
+    listen 9443 ssl default_server;
+    listen [::]:9443 ssl default_server;
+
+    server_name {{ inventory_hostname }};
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Forwarded "proto=https;host=$host:9443";
+
+        # Fallback legacy
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port 9443;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+}
