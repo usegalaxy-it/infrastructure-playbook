@@ -1,4 +1,6 @@
 ---
+# This playbook install keycloak on a server with postgresql already installed
+# Proper DNS name is mandatory, so no <IP>.cloud.ba.infn.it
 - name: KeyCloak
   hosts: keycloak_01
   become: true
@@ -78,17 +80,15 @@
           dest: "/etc/nginx/sites-available/keycloak-ssl"
           mode: "0444"
   roles:
-    #- geerlingguy.java # TODO WARNING Do we need this in production? Rebuild and test.
-    #- geerlingguy.docker # TODO WARNING Where are images stored?
-    #- role: usegalaxy-eu.certbot # TODO WARNING Not needed in production, since the certificate is already there.
+    #- geerlingguy.java # TODO WARNING We don't need this on 01
+    #- geerlingguy.docker # TODO WARNING We don't need this on 01
+    #- role: usegalaxy-eu.certbot # TODO WARNING Not needed on 01
     #  vars:
     #    certbot_install_method: virtualenv
     # Setup PostgreSQL    
-    # PostgreSQL is already installed on pre-prod and prod.
+    # PostgreSQL is already installed on pre-prod and prod for galaxy
     # So we just need the user and the db
     - usegalaxy_it.keycloak
-    # TODO
-    # run keycloak on different port, like 8443. This should be the default.
   post_tasks:
     - name: Open port on firwalld.
       ansible.posix.firewalld:
