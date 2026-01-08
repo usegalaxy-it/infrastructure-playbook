@@ -37,6 +37,9 @@ usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 [celerycluster]
 usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
 
+[keycloak_01]
+usegalaxy-it.cloud.ba.infn.it ansible_ssh_user=root
+
 [all:vars]
 ansible_ssh_user=centos
 
