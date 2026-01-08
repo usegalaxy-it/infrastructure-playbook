@@ -1,7 +1,7 @@
 private_token: {{ pulsar_private_token }}
-persistence_directory: /data/share/persisted_data
-staging_directory: /data/share/staging
-tool_dependency_dir: /data/share/tools/
+persistence_directory: {{ galaxy_nfs_location }}/persisted_data
+staging_directory: {{ galaxy_nfs_location }}/staging
+tool_dependency_dir: {{ galaxy_nfs_location }}/tools/
 
 managers:
   _default_:

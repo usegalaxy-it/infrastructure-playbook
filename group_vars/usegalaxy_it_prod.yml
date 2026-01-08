@@ -6,7 +6,7 @@ docker_users:
   - galaxy
 
 # Miniconda role variables (galaxyproject.miniconda)
-conda_prefix: /data/share/tool_deps/_conda
+conda_prefix: /lustre/data_usegalaxy_it/tool_deps/_conda
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -65,7 +65,7 @@ certbot_well_known_root: /srv/nginx/_well-known_root
 certbot_hostname_override: 'usegalaxy.it' # this variable overrides certbot default hostmane which takes the first in the domain list by default.
 
 # rsync to nfs
-galaxy_nfs_location: /data/share
+galaxy_nfs_location: /lustre/data_usegalaxy_it
 
 # Nginx
 nginx_servers:
@@ -286,7 +286,7 @@ galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
 galaxy_repo: "https://github.com/usegalaxy-eu/galaxy.git"
-galaxy_commit_id: "release_24.2_europe"
+galaxy_commit_id: "release_25.0_europe"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
@@ -366,10 +366,10 @@ galaxy_config_templates:
   #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
   #- src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml" # NOTE: test tool #REMOVED
   #  dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
-  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml" # TODO enable OIDC LS AAI
-  # dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
-  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
-  #  dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
+    dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
+    dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
   # - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
   #   dest: "{{ galaxy_config_dir }}/grt.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
@@ -397,7 +397,7 @@ tpv_condor_default_runner: local
 tpv_condor_upload_runner: local
 
 # TUS
-tus_upload_store: /data/share/tus
+tus_upload_store: /lustre/data_usegalaxy_it/tus
 galaxy_tusd_port: 1080
 tusd_instances:
   - name: main

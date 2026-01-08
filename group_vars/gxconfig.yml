@@ -140,14 +140,14 @@ base_app_main: &BASE_APP_MAIN
   # directory exists before using 'objects' as the default.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  file_path: /data/share/datasets
+  file_path: /lustre/data_usegalaxy_it/datasets
 
   # Where temporary files are stored. It must be accessible at the same
   # path on any cluster nodes that will run Galaxy jobs, unless using
   # Pulsar.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  new_file_path: /data/share/jwd/tmp
+  new_file_path: /lustre/data_usegalaxy_it/jwd/tmp
 
   # Maximum size of uploadable files, specified in bytes (default:
   # 100GB). This value is ignored if an external upload server is
@@ -337,7 +337,7 @@ base_app_main: &BASE_APP_MAIN
   # external tooling.
   # The value of this option will be resolved with respect to
   # <cache_dir>.
-  short_term_storage_dir: '/data/share/jwd/short_term_web_storage'
+  short_term_storage_dir: '/lustre/data_usegalaxy_it/jwd/short_term_web_storage'
 
   # Default duration before short term web storage files will be cleaned
   # up by Galaxy tasks (in seconds). The default duration is 1 day.
@@ -563,7 +563,7 @@ base_app_main: &BASE_APP_MAIN
   # directories will be created.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  job_working_directory: /data/share/jwd
+  job_working_directory: /lustre/data_usegalaxy_it/jwd
 
   # Mako templates are compiled as needed and cached for reuse, this
   # directory is used for the cache
@@ -874,6 +874,46 @@ base_app_main: &BASE_APP_MAIN
   # <config_dir>.
   #email_domain_allowlist_file: null
 
+  # E-mail ban file is used to specify email addresses that have been
+  # banned. If a user attempts to register a new account using an email
+  # address listed in this file, registration will be denied. This file
+  # does not affect user sign-in. Email addresses are matched against a
+  # canonical address representation based on rules defined in
+  # <canonical_email_rules>. The file should include one email address
+  # per line. Lines starting with the "#" character are ignored.
+  # Example value "banned_emails.conf"
+  # The value of this option will be resolved with respect to
+  # <config_dir>.
+  #email_ban_file: null
+
+  # Specifies how email addresses are reduced to their canonical form by
+  # assigning rules to email service domains and domain aliases.
+  # Available rules - ignore_case   Values are not case-sensitive
+  # (RickDeckard@foo.cOM == rickdeckard@foo.com) - ignore_dots   Periods
+  # in the local-part of an email address are ignored
+  # (rick.deckard@foo.com == rickdeckard@foo.com) - sub_addressing
+  # Suffixes prefixed with <sub_addressing_delim> in the local-part of
+  # an email address are ignored   (rickdeckard+anything@foo.com ==
+  # rickdeckard@foo.com if delimiter is the character '+')
+  #canonical_email_rules:
+  #  all:
+  #    ignore_case: false
+  #    ignore_dots: false
+  #    sub_addressing: false
+  #    sub_addressing_delim: +
+  #  gmail.com:
+  #    aliases:
+  #    - googlemail.com
+  #    ignore_case: true
+  #    ignore_dots: true
+  #    sub_addressing: true
+  #  proton.me:
+  #    aliases:
+  #    - pm.me
+  #    - protonmail.com
+  #    ignore_case: true
+  #    sub_addressing: true
+
   # Registration warning message is used to discourage people from
   # registering multiple accounts.  Applies mostly for the main Galaxy
   # instance. If no message specified the warning box will not be shown.
@@ -1006,10 +1046,23 @@ base_app_main: &BASE_APP_MAIN
   # subdomain. Defaults to "/".
   #interactivetools_base_path: /
 
-  # Map for interactivetool proxy.
+  # Map for the interactivetool proxy. Mappings are stored in a SQLite
+  # database file located on this path. As an alternative, you may also
+  # store them in any other RDBMS supported by SQLAlchemy using the
+  # option ``interactivetoolsproxy_map``, which overrides this one.
   # The value of this option will be resolved with respect to
   # <data_dir>.
   interactivetools_map: "{{ galaxy_mutable_data_dir }}/interactivetools_map.sqlite"
+
+  # Use a database supported by SQLAlchemy as map for the
+  # interactivetool proxy. When this option is set, the value of
+  # ``interactivetools_map`` is ignored. The value of this option must
+  # be a `SQLAlchemy database URL
+  # <https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls>`_.
+  # Mappings are written to the table "gxitproxy" within the database.
+  # This value cannot match ``database_connection`` nor
+  # ``install_database_connection``.
+  #interactivetoolsproxy_map: "{{ interactivetools_db_connection }}"
 
   # Prefix to use in the formation of the subdomain or path for
   # interactive tools
@@ -1134,7 +1187,7 @@ base_app_main: &BASE_APP_MAIN
   # The URL linked by the "Terms and Conditions" link in the "Help"
   # menu, as well as on the user registration and login forms and in the
   # activation emails.
-  #terms_url: https://usegalaxy.eu/terms #TODO
+  #terms_url: https://usegalaxy.eu/terms #TODO with ELIXIR-IT terms
 
   # Serve static content, which must be enabled if you're not serving it
   # via a proxy server.  These options should be self explanatory and so
@@ -1205,7 +1258,7 @@ base_app_main: &BASE_APP_MAIN
   # since the upstream server will do it faster on the fly. To enable
   # compression add ``application/zip`` to the proxy's compressable
   # mimetypes.
-  #upstream_gzip: false
+  upstream_gzip: true
 
   # If using the mod-zip module in nginx, use this option to assemble
   # zip archives in nginx. This is preferable over the upstream_gzip
@@ -1231,7 +1284,7 @@ base_app_main: &BASE_APP_MAIN
   # in detail in the documentation linked above.  The upload store is a
   # temporary directory in which files uploaded by the upload module
   # will be placed.
-  # nginx_upload_store: "/data/share/jwd/nginx_upload/main/uploads"
+  # nginx_upload_store: "/lustre/data_usegalaxy_it/jwd/nginx_upload/main/uploads"
 
   # This value overrides the action set on the file upload form, e.g.
   # the web path where the nginx_upload_module has been configured to
@@ -1242,7 +1295,7 @@ base_app_main: &BASE_APP_MAIN
   # upon job completion by remote job runners (i.e. Pulsar) that
   # initiate staging operations on the remote end.  See the Galaxy nginx
   # documentation for the corresponding nginx configuration.
-  # nginx_upload_job_files_store: "/data/share/jwd/nginx_upload/main/jobfiles"
+  # nginx_upload_job_files_store: "/lustre/data_usegalaxy_it/jwd/nginx_upload/main/jobfiles"
 
   # Galaxy can also use nginx_upload_module to receive files staged out
   # upon job completion by remote job runners (i.e. Pulsar) that
@@ -1253,7 +1306,7 @@ base_app_main: &BASE_APP_MAIN
   # The upload store is a temporary directory in which files uploaded by
   # the tus middleware or server will be placed. Defaults to
   # new_file_path if not set.
-  tus_upload_store: "/data/share/tus"
+  tus_upload_store: "/lustre/data_usegalaxy_it/tus"
 
   # The upload store is a temporary directory in which files uploaded by
   # the tus middleware or server for remote job files (Pulsar) will be
@@ -2024,7 +2077,7 @@ base_app_main: &BASE_APP_MAIN
   # This should point to a directory containing subdirectories matching
   # users' identifier (defaults to e-mail), where Galaxy will look for
   # files.
-  ftp_upload_dir: /data/share/jwd/incoming
+  ftp_upload_dir: /lustre/data_usegalaxy_it/jwd/incoming
 
   # User attribute to use as subdirectory in calculating default
   # ftp_upload_dir pattern. By default this will be email so a user's
@@ -2189,6 +2242,18 @@ base_app_main: &BASE_APP_MAIN
   # throughput is necessary, but doing so can increase CPU usage of
   # handler processes. Float values are allowed.
   #workflow_monitor_sleep: 1.0
+
+  # In which cases Galaxy should calculate a hash for a new dataset.
+  # Dataset hashes can be used by the Galaxy job cache/search to check
+  # if job inputs match. Setting the 'enable_celery_tasks' option to
+  # true is also required for dataset hash calculation. Possible values
+  # are: 'always', 'upload' (the default), 'never'. If set to 'upload',
+  # the hash is calculated only for the outputs of upload jobs.
+  #calculate_dataset_hash: upload
+
+  # Hash function to use if 'calculate_dataset_hash' is enabled.
+  # Possible values are: 'md5', 'sha1', 'sha256', 'sha512'
+  #hash_function: sha256
 
   # Determines how metadata will be set. Valid values are `directory`,
   # `extended`, `directory_celery` and `extended_celery`. In extended
@@ -2534,6 +2599,16 @@ base_app_main: &BASE_APP_MAIN
   # as threshold (above threshold: regular select fields will be used)
   #select_type_workflow_threshold: -1
 
+  # API key for an AI provider. AI provider is Openai By default
+  # (https://openai.com/) to enable the wizard (or more?)
+  #openai_api_key: "{{ openai_api_key }}"
+
+  # AI API base URL. Needs to be OpenAI compatible, defaults to OpenAI
+  #ai_api_base_url: null
+
+  # AI model to enable the wizard.
+  #ai_model: gpt-4o
+
   # Allow the display of tool recommendations in workflow editor and
   # after tool execution. If it is enabled and set to true, please
   # enable 'tool_recommendation_model_path' as well
@@ -2647,7 +2722,7 @@ base_app_main: &BASE_APP_MAIN
 
   # Directory to store temporary files for file sources. This defaults
   # to new_file_path if not set.
-  file_source_temp_dir: /data/share/jwd/tmp/
+  file_source_temp_dir: /lustre/data_usegalaxy_it/jwd/tmp/
 
   # Default value for use_temp_files for webdav plugins that don't
   # explicitly declare this.
@@ -2659,6 +2734,50 @@ base_app_main: &BASE_APP_MAIN
   # but outdated contents might be displayed to the user. Currently only
   # affects s3fs file sources.
   #file_source_listings_expiry_time: 60
+
+  # Set the default value in the Admin UI to automatically install tool
+  # dependencies when installing tools from the Tool Shed or not. Tool
+  # dependencies are the software packages and libraries required for a
+  # tool to function properly. Tool dependencies are typically specified
+  # in the tool's XML configuration using <requirement> tags. Galaxy can
+  # automatically install these dependencies if the tool_dependency_dir
+  # is properly configured in the galaxy.yml file. This option should be
+  # set to false if containerized versions of tools are used.
+  #install_tool_dependencies: true
+
+  # Set the default value in the Admin UI to automatically install
+  # repository dependencies when installing tools from the Tool Shed.
+  # Repository dependencies are other Tool Shed repositories that the
+  # tool being installed depends on and they are commonly used with tool
+  # suites. Repository dependencies ensure that all necessary components
+  # are installed for the tool (or suite) to work correctly within the
+  # Galaxy environment.
+  #install_repository_dependencies: true
+
+  # Set the default value in the Admin UI to automatically install
+  # resolver dependencies when installing tools from the Tool Shed.
+  # Resolver dependencies is a mechanism used by Galaxy to locate and
+  # make available the required software packages for Galaxy tools.
+  # Galaxy uses dependency resolvers (e.g., Conda) to determine how to
+  # satisfy these dependencies. This option should be set to false if
+  # containerized versions of tools are used.
+  #install_resolver_dependencies: true
+
+  # Enables the cleanup of failed Galaxy job's working directories. Runs
+  # in a Celery task.
+  #enable_failed_jobs_working_directory_cleanup: false
+
+  # The number of days to keep failed Galaxy job's working directories
+  # before attempting to delete them if
+  # enable_failed_jobs_working_directory_cleanup is ``true``. Runs in a
+  # Celery task.
+  #failed_jobs_working_directory_cleanup_days: 5
+
+  # The interval in seconds between attempts to delete all failed Galaxy
+  # job's working directories from the filesystem (every 24 hours by
+  # default) if enable_failed_jobs_working_directory_cleanup is
+  # ``true``. Runs in a Celery task.
+  #failed_jobs_working_directory_cleanup_interval: 86400
 
   # TODO(hxr): UNDOCUMENTED
   ucsc_build_sites: "{{ galaxy_config_dir }}/ucsc_build_sites.txt"

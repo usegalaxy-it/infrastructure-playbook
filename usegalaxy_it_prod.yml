@@ -34,9 +34,9 @@
     #
     # The nginx user needed into the galaxyproject.nginx role
     server_names:
-      - '{{ hostname }}'
       - 'usegalaxy.it'
       - 'www.usegalaxy.it'
+      - '{{ hostname }}'
       #- '*.usegalaxy.it'
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
@@ -44,7 +44,7 @@
     - group_vars/gxconfig.yml          # The base galaxy configuration
     - group_vars/toolbox.yml           # User controlled toolbox
     - group_vars/galaxy_user_ids.yml   # Change galaxy id and group id
-    #- group_vars/mountpoints.yml
+    #- group_vars/mountpoints.yml      # DO NOT ENABLE THIS, MOUNTPOINT IS NOT MANAGED WITH AUTOFS!
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
     - secret_group_vars/htcondor.yml   # condor secrets

@@ -57,7 +57,7 @@ roles:
     version: 0.14.1
   - name: galaxyproject.galaxy
     src: https://github.com/galaxyproject/ansible-galaxy
-    version: 0.11.2
+    version: 0.12.0
   - name: galaxyproject.cvmfs
     src: https://github.com/usegalaxy-eu/ansible-cvmfs
     version: master
@@ -100,7 +100,7 @@ roles:
   - name: usegalaxy-eu.dynmotd
     src: https://github.com/usegalaxy-eu/ansible-dynmotd
     version: 0.0.1
-  - name: usegalaxy_eu.tiaas2
+  - name: galaxyproject.tiaas2
     src: https://github.com/usegalaxy-eu/ansible-tiaas2
     version: 2.1.3
   - name: usegalaxy-eu.autoupdates

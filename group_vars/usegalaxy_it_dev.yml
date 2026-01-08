@@ -303,7 +303,7 @@ galaxy_singularity_images_cvmfs_path: "/cvmfs/singularity.galaxyproject.org/all/
 galaxy_config: "{{ galaxy_config_hash }}"
 
 
-galaxy_config_file_src_dir: files/galaxy
+galaxy_config_file_src_dir: files/galaxy_01
 galaxy_config_files:
   # TODO(bgruening): sync this with cvmfs? can we have ours be just a small additional builds.txt?
   - src: "{{ galaxy_config_file_src_dir }}/config/builds.txt"
@@ -376,10 +376,10 @@ galaxy_config_templates:
   #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
   #- src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml" # NOTE: test tool #REMOVED
   #  dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
-    dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
-  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml" # TODO enable OIDC LS AAI
-    dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
+  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
+  #  dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
+  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml" # TODO enable OIDC LS AAI
+  #  dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
   # - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
   #   dest: "{{ galaxy_config_dir }}/grt.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"

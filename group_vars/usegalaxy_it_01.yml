@@ -285,7 +285,7 @@ galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
 galaxy_repo: "https://github.com/usegalaxy-eu/galaxy.git"
-galaxy_commit_id: "release_24.2_europe"
+galaxy_commit_id: "release_25.0_europe"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
@@ -294,7 +294,7 @@ galaxy_singularity_images_cvmfs_path: "/cvmfs/singularity.galaxyproject.org/all/
 galaxy_config: "{{ galaxy_config_hash }}"
 
 
-galaxy_config_file_src_dir: files/galaxy
+galaxy_config_file_src_dir: files/galaxy_01
 galaxy_config_files:
   # TODO(bgruening): sync this with cvmfs? can we have ours be just a small additional builds.txt?
   - src: "{{ galaxy_config_file_src_dir }}/config/builds.txt"
