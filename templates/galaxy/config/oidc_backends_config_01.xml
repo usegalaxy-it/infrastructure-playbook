@@ -57,7 +57,7 @@ Please mind `http` and `https`.
 -->
 <OIDC>
     <provider name="Keycloak">
-        <url>https://usegalaxy-it.cloud.ba.infn.it:9443</url>
+        <url>https://usegalaxy-it.cloud.ba.infn.it:9443/realms/usegalaxy_it</url>
         <client_id>{{ usegalaxy_it_keycloak_preprod.usegalaxy_it_preprod.client_id }}</client_id>
         <client_secret>{{ usegalaxy_it_keycloak_preprod.usegalaxy_it_preprod.client_secret }}</client_secret>
 	<well_known_oidc_config_uri>https://usegalaxy-it.cloud.ba.infn.it:9443/realms/usegalaxy_it/.well-known/openid-configuration</well_known_oidc_config_uri>
