@@ -112,36 +112,6 @@
     #  selinux:
     #    state: disabled
 
-          ## HTCondor
-          #- name: Set htcondor password
-          #  set_fact:
-          #    htcondor_password: '{{ htcondor_preprod.password }}'
-          #- debug:
-          #    msg: '{{ htcondor_password }}'
-          #- debug:
-          #    msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}'
-          ## HTCondor
-          #- name: Ensure the HTCondor configuration directory exists.
-          #  become: true
-          #  ansible.builtin.file:
-          #    path: /etc/condor
-          #    state: directory
-          #    owner: root
-          #    group: root
-          #    mode: "0755"
-          #- name: Template HTCondor configuration.
-          #  become: true
-          #  ansible.builtin.template:
-          #    src: htcondor/condor_config.local.j2
-          #    dest: /etc/condor/condor_config.local
-          #    owner: root
-          #    group: root
-          #    mode: "0644"
-          #  notify: Reload HTCondor
-          #- name: Check if HTCondor is running.
-          #  ansible.builtin.service_facts:
-          #  register: service_facts
-
   post_tasks:
     - name: Append some users to the systemd-journal group
       user:
@@ -247,7 +217,7 @@
     - geerlingguy.docker 
 
     ## HTCondor Cluster setup
-    #- usegalaxy-eu.ansible-htcondor-grycap
+    - usegalaxy_it.htcondor
 
     ## Misc.
     - role: hxr.galaxy-nonreproducible-tools 

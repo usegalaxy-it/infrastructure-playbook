@@ -1,0 +1,38 @@
+---
+# tasks file for usegalaxy_it.htcondor
+
+- name: Check if source token file exists
+  ansible.builtin.stat:
+    path: "{{ token_src_path }}"
+  register: token_src_stat
+
+- name: Fail if source token file is missing
+  ansible.builtin.fail:
+    msg: "Source token file not found at {{ token_src_path }}"
+  when: not token_src_stat.stat.exists
+
+- name: Read token from source file
+  ansible.builtin.slurp:
+    src: "{{ token_src_path }}"
+  register: token_file
+
+- name: Store token as a fact
+  ansible.builtin.set_fact:
+    condor_token: "{{ token_file.content | b64decode | trim }}"
+
+- name: Ensure destination token directory exists
+  ansible.builtin.file:
+    path: "{{ token_dest_dir }}"
+    state: directory
+    owner: galaxy
+    group: galaxy
+    mode: "0700"
+
+- name: Backup existing token and write new one
+  ansible.builtin.copy:
+    content: "{{ hostvars[groups['source'][0]].condor_token }}"
+    dest: "{{ token_dest_path }}"
+    owner: galaxy
+    group: galaxy
+    mode: "0600"
+    backup: yes
