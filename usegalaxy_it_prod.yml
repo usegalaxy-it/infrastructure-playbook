@@ -217,7 +217,9 @@
     - geerlingguy.docker 
 
     ## HTCondor Cluster setup
-    - usegalaxy_it.htcondor
+    - role: usegalaxy_it.htcondor
+      vars:
+        ssh_key_path: /home/ubuntu/.ssh/id_rsa # This is the key on the WN2 jenkins node
 
     ## Misc.
     - role: hxr.galaxy-nonreproducible-tools 
