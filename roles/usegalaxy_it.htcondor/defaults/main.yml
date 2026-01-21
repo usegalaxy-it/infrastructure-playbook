@@ -1,2 +1,5 @@
 ---
 # defaults file for usegalaxy_it.htcondor
+
+# This is the key on the jenkins node
+ssh_key_path: /home/ubuntu/.ssh/id_rsa

@@ -1,24 +1,29 @@
 ---
 # tasks file for usegalaxy_it.htcondor
 
-- name: Check if source token file exists
-  ansible.builtin.stat:
-    path: "{{ token_src_path }}"
-  register: token_src_stat
+- name: Read token from source host via SSH
+  ansible.builtin.command: >
+    ssh
+    -i {{ ssh_key_path }}
+    -o BatchMode=yes
+    -o StrictHostKeyChecking=accept-new
+    {{ htcondor_infn.user }}@{{ htcondor_infn.host }}
+    cat {{ token_src_path }}
+  delegate_to: localhost
+  run_once: true
+  register: token_cmd
+  changed_when: false
+  #no_log: true
 
-- name: Fail if source token file is missing
+- name: Fail if source token file is missing or empty
   ansible.builtin.fail:
-    msg: "Source token file not found at {{ token_src_path }}"
-  when: not token_src_stat.stat.exists
-
-- name: Read token from source file
-  ansible.builtin.slurp:
-    src: "{{ token_src_path }}"
-  register: token_file
+    msg: "Source token file not found or empty at {{ token_src_path }}"
+  when: token_cmd.rc != 0 or token_cmd.stdout | trim | length == 0
 
 - name: Store token as a fact
   ansible.builtin.set_fact:
-    condor_token: "{{ token_file.content | b64decode | trim }}"
+    condor_token: "{{ token_cmd.stdout | trim }}"
+  #no_log: true
 
 - name: Ensure destination token directory exists
   ansible.builtin.file:
@@ -30,9 +35,11 @@
 
 - name: Backup existing token and write new one
   ansible.builtin.copy:
-    content: "{{ hostvars[groups['source'][0]].condor_token }}"
+    content: "{{ condor_token }}"
     dest: "{{ token_dest_path }}"
     owner: galaxy
     group: galaxy
     mode: "0600"
     backup: yes
+  #no_log: true
+

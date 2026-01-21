@@ -143,16 +143,10 @@ galaxy_server_handler_dir: '{{ galaxy_nfs_location }}/server'
 galaxy_venv_handler_dir: '{{ galaxy_nfs_location }}/venv'
 
 # HTCondor
-htcondor_version: 24.x
-htcondor_channel: current
-htcondor_daemons:
-  - MASTER
-  - NEGOTIATOR
-  - SCHEDD
-htcondor_domain: "usegalaxy.it"
-htcondor_type_of_node: front
-htcondor_role_submit: true
-htcondor_server: "{{ groups['htcondor_cm'][0] }}"
+# TODO PIN HTCONDOR
+token_src_path: "/lustrehome/galaxy/.condor/tokens.d/galaxy@T2BariCluster"
+token_dest_dir: "/opt/galaxy/.condor/tokens.d"
+token_dest_path: "/opt/galaxy/.condor/tokens.d/galaxy@T2BariCluster"
 
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
