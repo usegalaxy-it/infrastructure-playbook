@@ -3,34 +3,38 @@
   hosts: build
   become: true
   vars:
-    hostname: build.galaxyproject.eu
+    hostname: build-usegalaxy-it
+    server_names:
+      - "{{ groups['build'][0] }}"
   vars_files:
+    - group_vars/build.yml
     - "secret_group_vars/jenkins.yml"
     - "secret_group_vars/all.yml"
   pre_tasks:
     - name: Install Dependencies
-      package:
-        name: ['policycoreutils-python']
+      apt:
+        name:
+          - python3-virtualenv
+          - policycoreutils-python-utils
       become: yes
+
   collections:
     - devsec.hardening
   roles:
     - hostname
-    - usegalaxy-eu.dynmotd
-    - geerlingguy.repo-epel
-    - hxr.admin-tools
+    #- hxr.admin-tools
     - influxdata.chrony
-    - hxr.monitor-email
-    - linuxhq.yum_cron
+    #- hxr.monitor-email
+    #- linuxhq.yum_cron
     - galaxyproject.nginx
-    - ssh-host-sign
+    #- ssh-host-sign
     #- hxr.autofs-format-n-mount
     # CUSTOM
     - geerlingguy.java
     - geerlingguy.jenkins
-    - usegalaxy-eu.jenkins-ssh-key
+    #- usegalaxy-eu.jenkins-ssh-key
     ## END CUSTOM
-    - dj-wasabi.telegraf
+    #- dj-wasabi.telegraf
     #- os_hardening
     #- nginx_hardening
     #- ssh_hardening
