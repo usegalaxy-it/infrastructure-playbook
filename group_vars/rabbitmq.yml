@@ -105,7 +105,7 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:4.1.4
+  image: rabbitmq:4.2.6
     #hostname: rabbitmq
   hostname: "{{ groups['usegalaxy_it_prod'][0] }}"
 
