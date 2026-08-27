@@ -1,0 +1,4 @@
+### FILE MAINTANED BY ANSIBLE ###
+listen_addresses = '{{ replica_ip }}'
+hot_standby = on
+primary_conninfo = 'host={{ master_ip }} port=5432 user={{ replica_user_name }} password={{ replica_user_password }}'
