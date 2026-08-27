@@ -11,16 +11,17 @@
 - name: Exchange Keys between servers
   become: yes
   become_user: postgres
-  hosts: database
+  hosts: database_dev # <- Inventory entry
   tasks:
     - name: SSH KeyGen command
       shell: >
-        ssh-keygen -q -b 2048 -t rsa -N "" -C "creating SSH" -f ~/.ssh/id_rsa
-        creates="~/.ssh/id_rsa"
+        ssh-keygen -q -t ed25519 -N "" -C "creating SSH" -f ~/.ssh/id_ed25519
+      args:
+        creates: ~/.ssh/id_ed25519
 
     - name: Fetch SSH public key
       slurp:
-        src: ~/.ssh/id_rsa.pub
+        src: ~/.ssh/id_ed25519.pub
       register: public_key
 
     - name: Add SSH public key to authorized keys on target server
@@ -30,11 +31,11 @@
         key: "{{ public_key.content | b64decode }}"
       delegate_to: "{{ item.dest }}"
       with_items:
-        - { dest: "{{ groups['replica'][0] }}" }
-        - { dest: "{{ groups['backup'][0] }}" }
+        - { dest: "{{ groups['replica_dev'][0] }}" } # <- Inventory entry
+        - { dest: "{{ groups['backup_dev'][0] }}" } # <- Inventory entry
 
     - name: Retrieve SSH fingerprints of backup VM
-      command: "ssh-keyscan -H {{ groups['backup'][0] }}"
+      command: "ssh-keyscan -H {{ groups['backup_dev'][0] }}" # <- Inventory entry
       register: ssh_fingerprints
 
     - name: Add SSH fingerprints to known_hosts file
@@ -45,7 +46,7 @@
       loop: "{{ ssh_fingerprints.stdout_lines }}"
 
     - name: Retrieve SSH fingerprints of replica VM
-      command: "ssh-keyscan -H {{ groups['replica'][0] }}"
+      command: "ssh-keyscan -H {{ groups['replica_dev'][0] }}" # <- Inventory entry
       register: ssh_fingerprints
 
     - name: Add SSH fingerprints to known_hosts file

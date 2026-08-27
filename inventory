@@ -68,13 +68,13 @@ usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
 192.168.0.65 ansible_ssh_user=root
 
 [database_dev]
-192.168.0.90 ansible_ssh_user=rocky
+192.168.0.242 ansible_ssh_user=almalinux
 
 [replica_dev]
-192.168.0.204 ansible_ssh_user=rocky
+192.168.0.231 ansible_ssh_user=almalinux
 
 [backup_dev]
-192.168.0.14 ansible_ssh_user=rocky
+192.168.0.144 ansible_ssh_user=almalinux
 
 [htcondor_cm_dev]
 usegalaxy-htcondor-cm ansible_host=192.168.0.57 ansible_ssh_user=root

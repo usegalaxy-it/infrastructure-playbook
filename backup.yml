@@ -3,9 +3,9 @@
   hosts: backup_dev
   become: true
   vars_files:
-    - group_vars/database.yml  
+    - group_vars/database_dev.yml  
   roles:  
-    - role: usegalaxy-it.postgres-backup
+    - role: usegalaxy-it.postgres_backup
       become: true
       vars: 
         backup_role: backup

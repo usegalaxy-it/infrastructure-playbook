@@ -1,0 +1,28 @@
+postgresql_version: 18
+postgresql_objects_users:
+  - name: galaxy
+    password: "{{ _galaxy_db_pass }}"
+
+postgresql_objects_databases:
+  - name: galaxy
+    owner: galaxy
+postgresql_conf:
+  - listen_addresses: "'*'" # "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+postgresql_pg_hba_conf:
+  - host     all     all     {{ _galaxy_db_host }}/24     md5
+
+#backup
+postgres_backup: true
+postgresql_user_name: postgres
+backup_scripts_path: /var/lib/pgsql/scripts
+local_backup_dir: /var/lib/pgsql/backups
+backup_dir_daily: /data/backups/daily
+backup_dir_weekly: /data/backups/weekly
+backup_ip: "{{ groups['backup_dev'][0] }}"
+db_name: "galaxy"
+
+#replication
+postgres_replication: true
+replica_user_name: replica
+master_ip: "{{ groups['database_dev'][0] }}"
+replica_ip: "{{ groups['replica_dev'][0] }}"
