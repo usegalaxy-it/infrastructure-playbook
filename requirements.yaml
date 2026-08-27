@@ -59,8 +59,9 @@ roles:
     src: https://github.com/galaxyproject/ansible-galaxy
     version: 0.12.0
   - name: galaxyproject.cvmfs
-    src: https://github.com/usegalaxy-eu/ansible-cvmfs
-    version: master
+    #src: https://github.com/usegalaxy-eu/ansible-cvmfs
+    src: https://github.com/galaxyproject/ansible-cvmfs
+    version: 0.5.2
   #- name: galaxyproject.proftpd
   #  version: 0.3.2
   #- name: usegalaxy_eu.ansible_nginx_upload_module

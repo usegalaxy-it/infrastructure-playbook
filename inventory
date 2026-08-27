@@ -59,12 +59,13 @@ nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
 ### Cineca
+# This is now the test deployment for CNR infrastructure.
 
 [usegalaxy_it_dev]
 usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
 
 [nfs_dev]
-192.168.0.249 ansible_ssh_user=centos
+192.168.0.65 ansible_ssh_user=root
 
 [database_dev]
 192.168.0.90 ansible_ssh_user=rocky
@@ -76,7 +77,11 @@ usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
 192.168.0.14 ansible_ssh_user=rocky
 
 [htcondor_cm_dev]
-192.168.0.59 ansible_ssh_user=rocky
+usegalaxy-htcondor-cm ansible_host=192.168.0.57 ansible_ssh_user=root
+
+[htcondor_exec_dev] 
+htcondor-exec-001 ansible_host=192.168.0.98 ansible_ssh_user=root group=compute training=False docker_hack=False
+htcondor-exec-002 ansible_host=192.168.0.43 ansible_ssh_user=root group=upload training=False docker_hack=False
 
 [rabbitmq_dev]
 rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky

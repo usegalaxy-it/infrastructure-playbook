@@ -1,5 +1,6 @@
 # Networking
-CONDOR_HOST = {{ htcondor_server }}
+#CONDOR_HOST = {{ htcondor_server }}
+CONDOR_HOST = {{ hostvars[groups['htcondor_cm_dev'][0]]['ansible_host'] }}
 NETWORK_INTERFACE = eth0
 USE_SHARED_PORT = FALSE
 

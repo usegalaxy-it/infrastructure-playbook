@@ -1,34 +1,41 @@
 ---
-- name: HTCondor Central Manager configuration
-  hosts: htcondor_cm_dev
+# This playbook install, configure and manages an HTCondor cluster (24).
+# The first time, the CM has to be run before the executors.
+- name: HTCondor installation and configuration
+  hosts: htcondor_exec_dev
   become: true
 
   handlers:
     - name: Reload HTCondor
-      when: "'condor_service' in service_facts.ansible_facts.services and \
+      when: "'condor.service' in service_facts.ansible_facts.services and \
         service_facts.ansible_facts.services['condor.service'].state == 'running'"
       become: true
       ansible.builtin.service:
         name: condor
         state: reloaded
 
-  vars:
-    hostname: "usegalaxy-htcondor-cm"
   vars_files:
     - group_vars/mountpoints_dev.yml
-    - group_vars/htcondor_cm_dev.yml
     - secret_group_vars/htcondor.yml
   collections:
     - devsec.hardening
 
   pre_tasks:
     - name: Set htcondor password
-      set_fact:
+      ansible.builtin.set_fact:
         htcondor_password: '{{ htcondor_dev.password }}'
     - debug:
         msg: '{{ htcondor_password }}'
     - debug:
         msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}' 
+
+    - name: Set HTCondor hostname
+      ansible.builtin.set_fact:
+        hostname: "{{ inventory_hostname }}"
+    - debug:
+        msg: '{{ hostname }}'
+
+    # Dependencies
     - name: Install Dependencies
       package:
         name: rsync
@@ -41,14 +48,12 @@
     - name: Disable SELinux
       selinux:
         state: disabled
-    - name: Enable epel-release for python3-virtualenv
-      yum:
-        name: epel-release
-        state: present
-    - name: Install python3-wheel-wheel (needed by python3-virtualenv)
-      yum:
-        name: python3-wheel-wheel
-        enablerepo: devel
+    - name: Install Packages for AlmaLinux
+      ansible.builtin.dnf:
+        name:
+          - epel-release
+          - python3-wheel-wheel
+        enablerepo: crb
         state: present
     - name: Install python3-virtualenv
       yum:
@@ -59,13 +64,7 @@
       package:
         name: [ 'python3-psycopg2', 'python3', 'pip']
       become: true
-    # Docker
-    - name: Install docker pip package
-      pip:
-        name: docker
-    - name: Set docker_users (Docker role)
-      set_fact:
-        docker_users: "rocky"
+
     # HTCondor
     - name: Ensure the HTCondor configuration directory exists.
       become: true
@@ -75,7 +74,7 @@
         owner: root
         group: root
         mode: "0755"
-    - name: Template HTCondor configuration.
+    - name: Template HTCondor CM configuration.
       become: true
       ansible.builtin.template:
         src: htcondor/condor_config.local.j2
@@ -83,10 +82,22 @@
         owner: root
         group: root
         mode: "0644"
+      when: "'htcondor_cm_dev' in group_names"
+    - name: Template HTCondor Executors configuration.
+      become: true
+      ansible.builtin.template:
+        src: htcondor/condor_config_exec.local.j2
+        dest: /etc/condor/condor_config.local
+        owner: root
+        group: root
+        mode: "0644"
+      when: "'htcondor_exec_dev' in group_names"
       notify: Reload HTCondor
     - name: Check if HTCondor is running.
       ansible.builtin.service_facts:
       register: service_facts
+    - debug:
+        msg: "{{ service_facts.ansible_facts.services['condor.service'] | default('NON TROVATO') }}"
 
   roles:
     - role: usegalaxy_eu.handy.os_setup
