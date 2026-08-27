@@ -1,0 +1,96 @@
+---
+# playbook: nfs-server.yml
+# Configura un server NFSv4 con due share: /opt/galaxy e /data/share
+
+- name: Configure NFS server
+  hosts: nfs_dev
+  become: true
+  vars:
+    galaxy_uid: 1000
+    galaxy_gid: 1000
+    almalinux_new_uid: 1500
+    almalinux_new_gid: 1500
+    nfs_exports:
+      - path: /opt/galaxy
+        client: "192.168.0.0/24"
+        options: "rw,sync,no_subtree_check,no_root_squash"
+      - path: /data/share
+        client: "192.168.0.0/24"
+        options: "rw,sync,no_subtree_check,root_squash"
+
+  pre_tasks:
+    - name: Move almalinux group off gid 1000
+      group:
+        name: almalinux
+        gid: "{{ almalinux_new_gid }}"
+        state: present
+
+    - name: Move almalinux user off uid 1000
+      user:
+        name: almalinux
+        uid: "{{ almalinux_new_uid }}"
+        group: almalinux
+        state: present
+
+    - name: Fix ownership of almalinux home directory after uid/gid change
+      file:
+        path: /home/almalinux
+        owner: "{{ almalinux_new_uid }}"
+        group: "{{ almalinux_new_gid }}"
+        recurse: true
+
+    - name: Fix ownership of any other files still owned by old uid 1000
+      shell: |
+        find / -xdev -uid 1000 -exec chown {{ almalinux_new_uid }} {} \; 2>/dev/null
+        find / -xdev -gid 1000 -exec chgrp {{ almalinux_new_gid }} {} \; 2>/dev/null
+      changed_when: false
+
+    - name: Create galaxy group
+      group:
+        name: galaxy
+        gid: "{{ galaxy_gid }}"
+        state: present
+
+    - name: Create galaxy user
+      user:
+        name: galaxy
+        uid: "{{ galaxy_uid }}"
+        group: galaxy
+        system: true
+        shell: /sbin/nologin
+        create_home: false
+        state: present
+
+  tasks:
+    - name: Install NFS server packages
+      package:
+        name: nfs-utils
+        state: present
+
+    - name: Create export directories
+      file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: galaxy
+        group: galaxy
+        mode: "0755"
+      loop: "{{ nfs_exports }}"
+
+    - name: Configure /etc/exports.d/galaxy.exports
+      template:
+        src: nfs/exports.j2
+        dest: /etc/exports.d/galaxy.exports
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reexport NFS shares
+
+    - name: Enable and start nfs-server
+      systemd:
+        name: nfs-server
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reexport NFS shares
+      command: exportfs -ra
