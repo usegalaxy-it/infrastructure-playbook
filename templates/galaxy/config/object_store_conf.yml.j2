@@ -1,0 +1,19 @@
+type: distributed
+search_for_missing: true
+
+backends:
+
+  - id: files01
+    type: disk
+    store_by: uuid
+    device: "cnr01"
+    name: "CNR PowerScale storage (id=files01)"
+    weight: 1
+    badges:
+      - type: more_stable
+    files_dir: "{{ file_path }}"
+    extra_dirs:
+      - type: job_work
+        path: "{{ job_working_directory }}"
+      - type: temp
+        path: "{{ job_working_directory }}/tmp"
