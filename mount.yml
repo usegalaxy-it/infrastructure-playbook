@@ -82,7 +82,7 @@
 #      command: exportfs -r
 
 - name: Mount NFS
-  hosts: usegalaxy_it_01
+  hosts: usegalaxy_it_dev
   become: true
   become_user: root
   tasks:
@@ -93,7 +93,7 @@
         fstype: nfs
         state: mounted
       with_items:
-        - { src: "{{ groups['nfs'][0] }}:/data/share", mountpoint: /data/share } 
+        - { src: "{{ groups['nfs_dev'][0] }}:/data/share", mountpoint: /data/share } 
         #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
 
 
