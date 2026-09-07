@@ -94,7 +94,7 @@
         state: mounted
       with_items:
         - { src: "{{ groups['nfs_dev'][0] }}:/data/share", mountpoint: /data/share } 
-        #- { src: "{{ groups['nfs'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
+        - { src: "{{ groups['nfs_dev'][0] }}:/opt/galaxy", mountpoint: /opt/galaxy }
 
 
 #- name: Mount NFS on CM
