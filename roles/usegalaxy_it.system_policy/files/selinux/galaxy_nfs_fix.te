@@ -1,0 +1,51 @@
+
+module galaxy_nfs_fix 1.0;
+
+require {
+	type amqp_port_t;
+	type usr_t;
+	type nfs_t;
+	type condor_negotiator_t;
+	type fusefs_t;
+	type tmp_t;
+	type condor_master_t;
+	type init_t;
+	type httpd_sys_content_t;
+	type postgresql_port_t;
+	type httpd_t;
+	class lnk_file { getattr read };
+	class file { append create execute execute_no_trans getattr ioctl lock map open read rename setattr unlink write };
+	class sock_file { create setattr unlink write };
+	class dir { create read rmdir watch_reads };
+	class tcp_socket name_connect;
+	class process execmem;
+}
+
+#============= condor_master_t ==============
+allow condor_master_t httpd_sys_content_t:dir read;
+allow condor_master_t httpd_sys_content_t:file getattr;
+allow condor_master_t httpd_sys_content_t:lnk_file { getattr read };
+
+#============= condor_negotiator_t ==============
+allow condor_negotiator_t tmp_t:dir { create rmdir };
+
+#============= httpd_t ==============
+
+#!!!! This avc can be allowed using one of the these booleans:
+#     httpd_use_nfs, git_system_use_nfs
+allow httpd_t nfs_t:file { getattr open read };
+allow httpd_t nfs_t:sock_file write;
+
+#============= init_t ==============
+allow init_t amqp_port_t:tcp_socket name_connect;
+allow init_t fusefs_t:file { ioctl open read };
+allow init_t nfs_t:dir { rmdir watch_reads };
+allow init_t nfs_t:file { append create execute execute_no_trans ioctl lock open read rename setattr unlink write };
+
+#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+allow init_t nfs_t:file map;
+allow init_t nfs_t:lnk_file read;
+allow init_t nfs_t:sock_file { create setattr unlink };
+allow init_t postgresql_port_t:tcp_socket name_connect;
+allow init_t self:process execmem;
+allow init_t usr_t:file { create unlink write };
