@@ -18,6 +18,8 @@ backup_scripts_path: /var/lib/pgsql/scripts
 local_backup_dir: /var/lib/pgsql/backups
 backup_dir_daily: /data/backups/daily
 backup_dir_weekly: /data/backups/weekly
+cleanup_log_path: /data/cron_cleanup
+backup_log_path: /data/cron_backup
 backup_ip: "{{ groups['backup_dev'][0] }}"
 db_name: "galaxy"
 
