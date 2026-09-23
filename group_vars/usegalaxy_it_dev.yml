@@ -1,27 +1,10 @@
 ---
-codename: key
-
 # Docker
 docker_users:
   - galaxy
 
-# Autofs
-autofs_service.install: True
-autofs_service.enable: True
-nfs_kernel_tuning: True
-
-autofs_mount_points:
-  - data
-  - usrlocal
-
-autofs_conf_files:
-  data:
-    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
-  usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
-
 # Miniconda role variables (galaxyproject.miniconda)
-conda_prefix: /data/share/tool_deps/_conda
+conda_prefix: "{{ cineca.cineca01.path }}/tool_deps/_conda"
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -68,6 +51,7 @@ monitor_condor_split_util: true
 
 # Certbot
 certbot_virtualenv_package_name: python3-virtualenv
+certbot_virtualenv_command: "python3.13 -m venv"
 #certbot_dns_provider:
 certbot_auth_method: --webroot
 certbot_domains: "{{ server_names }}"
@@ -78,7 +62,7 @@ certbot_share_key_users:
 certbot_well_known_root: /srv/nginx/_well-known_root
 
 # rsync to nfs
-galaxy_nfs_location: /data/share
+galaxy_nfs_location: "{{ cineca.cineca01.path }}"
 
 # Nginx
 nginx_servers:
@@ -126,11 +110,6 @@ nginx_ssl_role: usegalaxy-eu.certbot
 nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
 nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-nginx.pem
 
-# Dynmotd
-dynmotd_custom:
-  - name: Condor
-    command: "condor_q -totals | tail -n 2"
-
 # CVMFS
 cvmfs_role: client
 galaxy_cvmfs_repos_enabled: config-repo
@@ -152,7 +131,7 @@ galaxy_systemd_workflow_scheduler_env: ""
 galaxy_systemd_memory_limit: 120
 galaxy_systemd_memory_limit_handler: 12
 galaxy_systemd_memory_limit_workflow: 15
-# those are used by destinations.yml.j2 but are not configured in the role
+# Those are used by destinations.yml.j2 but are not configured in the role
 # since we are using here the default systemd role and not the usegalaxy.it forked one.
 # since /opt/galaxy is still shared here
 galaxy_server_handler_dir: '/opt/galaxy/server'
@@ -170,18 +149,18 @@ htcondor_type_of_node: front
 htcondor_role_submit: true
 htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
 
-
-
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
-gie_proxy_git_version: "v0.0.6"
+gie_proxy_git_version: v0.1.0
 gie_proxy_setup_nodejs: nodeenv
 gie_proxy_virtualenv_command: "{{ conda_prefix }}/envs/_galaxy_/bin/python -m venv --copies" #"{{ pip_virtualenv_command }}"
-gie_proxy_nodejs_version: '10.13.0'
+gie_proxy_nodejs_version: '22.0.0'
 gie_proxy_virtualenv: '{{ galaxy_root }}/gie-proxy/venv'
 gie_proxy_setup_service: systemd
+gie_proxy_service_restart_mode: always
+gie_proxy_service_restartsec: 2s
 gie_proxy_sessions_path: '{{ galaxy_mutable_data_dir }}/interactivetools_map.sqlite'
-gie_proxy_path_prefix: /interactivetool/ep 
+gie_proxy_path_prefix: /interactivetool/ep
 gie_proxy_port: 8800
 gie_proxy_verbose: true
 
@@ -214,7 +193,7 @@ galaxy_manage_cleanup: true
 # GALAXY
 galaxy_group:
   name: galaxy
-  gid: 999
+  gid: 1000
 galaxy_system_group: galaxy
 galaxy_log_dir: "/var/log/galaxy"
 galaxy_layout: root-dir
@@ -227,9 +206,17 @@ galaxy_user:
   name: galaxy
   create_home: true
   home: /opt/galaxy
-  uid: 999
+  uid: 1000
   shell: /bin/bash
 
+handy_groups:
+  - group_name: galaxy
+    group_gid: 1000
+
+handy_users:
+  - user_name: galaxy
+    user_uid: 1000
+    user_group: galaxy
 
 # Galaxy configuration files will be written with these permissions (mode argument to Ansible copy/template module)
 galaxy_config_perms: 0644
@@ -252,20 +239,10 @@ galaxy_pulsar_app_conf: "{{ galaxy_config_dir }}/pulsar_app.yml"
 # ucsc_build_sites:
 
 galaxy_venv_dir: "{{ galaxy_root }}/venv"
-# galaxy_virtualenv_command: "python3 -m venv"
-# galaxy_virtualenv_python: "python3.6"
+galaxy_virtualenv_command: /usr/bin/python3.13 -m venv
+#galaxy_virtualenv_python: "python3.13"
 galaxy_nonrepro_tools: "{{ galaxy_root }}/custom-tools"
 galaxy_nonrepro_commit: master
-
-  #galaxy_dynamic_job_rules_src_dir: files/galaxy/dynamic_rules
-  #galaxy_dynamic_job_rules_dir: "{{ galaxy_root }}/dynamic_rules"
-  #galaxy_dynamic_job_rules:
-  #  - usegalaxy/joint_destinations.yaml
-  #  - usegalaxy/sorting_hat.py
-  #  - usegalaxy/destination_specifications.yaml
-  #  - usegalaxy/tool_destinations.yaml
-  #  - usegalaxy/sorting_hat.yaml
-  #  - readme.txt
 
 # Custom override
 # Our galaxy_tool_dependency_dir is on NFS, and permissions are set in such a
@@ -283,7 +260,7 @@ galaxy_dirs:
   - "{{ galaxy_webhook_dir }}"
   - "{{ galaxy_tour_dir }}"
   - "{{ galaxy_log_dir }}"
-  - "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/" # !!! CHECK
+    #- "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/" # ONLY FOR SUBDOMAINS
   - "{{ tpv_mutable_dir }}"
   - "{{ tpv_config_dir }}"
   - "{{ galaxy_nfs_location }}/persisted_data" # pulsar
@@ -293,8 +270,8 @@ galaxy_dirs:
 galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
-galaxy_repo: "https://github.com/usegalaxy-eu/galaxy.git"
-galaxy_commit_id: "release_24.2_europe"
+galaxy_repo: "https://github.com/usegalaxy-it/galaxy.git" # moved to "it" just for pinning tensorflow to 2.20.0.
+galaxy_commit_id: "release_26.1_europe_tensorflow"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
@@ -303,7 +280,7 @@ galaxy_singularity_images_cvmfs_path: "/cvmfs/singularity.galaxyproject.org/all/
 galaxy_config: "{{ galaxy_config_hash }}"
 
 
-galaxy_config_file_src_dir: files/galaxy_01
+galaxy_config_file_src_dir: files/galaxy
 galaxy_config_files:
   # TODO(bgruening): sync this with cvmfs? can we have ours be just a small additional builds.txt?
   - src: "{{ galaxy_config_file_src_dir }}/config/builds.txt"
@@ -370,7 +347,7 @@ galaxy_config_templates:
   #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/global_host_filters.py"
   - src: "{{ galaxy_config_template_src_dir }}/config/job_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/job_conf.yml"
-  - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.xml.j2"
+  - src: "{{ galaxy_config_template_src_dir }}/config/container_resolvers_conf.yml.j2"
     dest: "{{ galaxy_config_dir }}/container_resolvers_conf.xml"
   #- src: "{{ galaxy_config_template_src_dir }}/config/user_filters.py.j2" # NOTE: this is needed for subdomains. #REMOVED
   #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
@@ -407,7 +384,7 @@ tpv_condor_default_runner: condor
 tpv_condor_upload_runner: condor
 
 # TUS
-tus_upload_store: /data/share/tus
+tus_upload_store: "{{ cineca.cineca01.path }}/tus"
 galaxy_tusd_port: 1080
 tusd_instances:
   - name: main
@@ -421,20 +398,21 @@ tusd_instances:
       - "-hooks-http-forward-headers=X-Api-Key,Cookie"
 
 # RabbitMQ
-rabbitmq_url: "{{ groups['rabbitmq_dev'][0] }}"
+# This is used internally. Use the private ip address!
+rabbitmq_url: "{{ hostvars[groups['rabbitmq_dev'][0]]['ansible_host'] }}"
 
 # Redis
 redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"
 
-# Telegraf
-telegraf_agent_hostname: "{{ hostname }}"
-telegraf_agent_version: 1.17.2
-telegraf_plugins_extra:
-  listen_galaxy_routes:
-    plugin: "statsd"
-    config:
-      - service_address = ":8125"
-      - percentiles = [90]
-      - metric_separator = "."
-      - allowed_pending_messages = 10000
-      - percentile_limit = 100
+## Telegraf
+#telegraf_agent_hostname: "{{ hostname }}"
+#telegraf_agent_version: 1.17.2
+#telegraf_plugins_extra:
+#  listen_galaxy_routes:
+#    plugin: "statsd"
+#    config:
+#      - service_address = ":8125"
+#      - percentiles = [90]
+#      - metric_separator = "."
+#      - allowed_pending_messages = 10000
+#      - percentile_limit = 100

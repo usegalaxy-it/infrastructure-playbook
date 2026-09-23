@@ -133,6 +133,16 @@ base_app_main: &BASE_APP_MAIN
   # history_audit database table. Set to 0 to disable pruning.
   #history_audit_table_prune_interval: 3600
 
+  # Time (in seconds) between attempts to delete fully-consumed rows
+  # from the Kombu SQLAlchemy transport tables (``kombu_message``). Only
+  # relevant when ``amqp_internal_connection`` uses a ``sqlalchemy+*``
+  # scheme (the default with an on-disk control.sqlite); the SQLAlchemy
+  # transport has no built-in TTL, so without this task the tables grow
+  # unbounded. The task no-ops on non-SQLAlchemy brokers (RabbitMQ/Redis
+  # honor per-message expiration natively). Set to 0 to disable the
+  # cleanup task.
+  #kombu_sqla_transport_cleanup_interval: 900
+
   # Where dataset files are stored. It must be accessible at the same
   # path on any cluster nodes that will run Galaxy jobs, unless using
   # Pulsar. The default value has been changed from 'files' to 'objects'
@@ -244,8 +254,9 @@ base_app_main: &BASE_APP_MAIN
 
   # Set to true to instruct Galaxy to install Conda from the web
   # automatically if it cannot find a local copy and conda_exec is not
-  # configured.
-  #conda_auto_init: true
+  # configured. The default is true if running Galaxy from source, and
+  # false if running from installed packages.
+  #conda_auto_init: false
 
   # You must set this to true if conda_prefix and job_working_directory
   # are not on the same volume, or some conda dependencies will fail to
@@ -352,6 +363,27 @@ base_app_main: &BASE_APP_MAIN
   # cleaned up in default Celery task configuration.
   #short_term_storage_cleanup_interval: 3600
 
+  # Minimum remaining lifetime, in days, required before a dataset can
+  # be moved into an object store with automatic expiration. This
+  # prevents moving data into a target store where it would be close to
+  # expiring immediately. Defaults to 7 days.
+  #bulk_storage_operation_dataset_minimum_days_to_expiration: 7
+
+  # How long completed bulk dataset storage operation runs are kept in
+  # the database before Galaxy prunes their run records. Snapshot
+  # cleanup is handled separately. Defaults to 30 days.
+  #bulk_storage_operation_completed_run_retention_days: 30
+
+  # How many seconds between attempts to prune expired bulk dataset
+  # storage operation snapshots and old completed run records. Set to 0
+  # to disable the periodic pruning task. Defaults to every 24 hours.
+  #prune_expired_bulk_storage_operations_interval: 86400
+
+  # How many seconds between attempts to recover bulk dataset storage
+  # operation runs that were left pending or running after a worker
+  # stopped updating them. Defaults to every hour.
+  #recover_stale_bulk_storage_operation_runs_interval: 3600
+
   # Configured FileSource plugins.
   # The value of this option will be resolved with respect to
   # <config_dir>.
@@ -411,10 +443,8 @@ base_app_main: &BASE_APP_MAIN
   # container resolvers to use when discovering containers for Galaxy.
   # If this is set to None, the default container resolvers loaded is
   # determined by enable_mulled_containers. For available options see
-  # config/container_resolvers_conf.xml.sample.
-  container_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.xml" # !!! CHECK
-  containers_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.xml" # !!! CHECK
-
+  # https://docs.galaxyproject.org/en/master/admin/container_resolvers.html
+  container_resolvers_config_file: "{{ galaxy_config_dir }}/container_resolvers_conf.yml"
 
   # Rather than specifying a container_resolvers_config_file, the
   # definition of the resolvers to enable can be embedded into Galaxy's
@@ -512,8 +542,7 @@ base_app_main: &BASE_APP_MAIN
   # <tool_data_path>.
   builds_file_path: "{{ galaxy_config_dir }}/builds.txt"
 
-  # Directory where chrom len files are kept, currently mainly used by
-  # trackster.
+  # Directory where chrom len files are kept.
   # The value of this option will be resolved with respect to
   # <tool_data_path>.
   #len_file_path: shared/ucsc/chrom
@@ -550,6 +579,10 @@ base_app_main: &BASE_APP_MAIN
   # list.
   tour_config_dir: "{{ galaxy_server_dir }}/config/plugins/tours,{{ galaxy_tour_dir }}"
 
+  # Allow tools to show the option of and create interactive tours
+  # crafted for them by the backend.
+  #enable_tool_generated_tours: true
+
   # Webhooks directory: where to store webhooks - plugins to extend the
   # Galaxy UI. By default none will be loaded.  Set to
   # config/plugins/webhooks/demo to load Galaxy's demo webhooks.  To use
@@ -577,11 +610,11 @@ base_app_main: &BASE_APP_MAIN
 
   # Number of checks to execute if check_job_script_integrity is
   # enabled.
-  check_job_script_integrity_count: 35
+  #check_job_script_integrity_count: 35
 
   # Time to sleep between checks if check_job_script_integrity is
   # enabled (in seconds).
-  check_job_script_integrity_sleep: 1
+  #check_job_script_integrity_sleep: 0.25
 
   # Set the default shell used by non-containerized jobs Galaxy-wide.
   # This defaults to bash for all jobs and can be overridden at the
@@ -591,14 +624,6 @@ base_app_main: &BASE_APP_MAIN
   # /bin/sh - so more maximum portability tool authors should assume
   # generated commands run in sh.
   #default_job_shell: /bin/bash
-
-  # Whether to enable the tool document cache. This cache stores
-  # expanded XML strings. Enabling the tool cache results in slightly
-  # faster startup times. The tool cache is backed by a SQLite database,
-  # which cannot be stored on certain network disks. The cache location
-  # is configurable with the ``tool_cache_data_dir`` tag in tool config
-  # files.
-  #enable_tool_document_cache: false
 
   # Directory in which the toolbox search index is stored. The value of
   # this option will be resolved with respect to <data_dir>.
@@ -722,7 +747,7 @@ base_app_main: &BASE_APP_MAIN
   # it overrides any other objectstore settings.
   # The value of this option will be resolved with respect to
   # <config_dir>.
-  object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.xml"
+  object_store_config_file: "{{ galaxy_config_dir }}/object_store_conf.yml"
 
   # Rather than specifying an object_store_config_file, the object store
   # configuration can be embedded into Galaxy's config with this option.
@@ -803,7 +828,7 @@ base_app_main: &BASE_APP_MAIN
 
   # If your SMTP server requires SSL from the beginning of the
   # connection
-  # smtp_ssl: true
+  #smtp_ssl: true
 
   # On the user registration form, users may choose to join a mailing
   # list. This is the address used to subscribe to the list. Uncomment
@@ -847,7 +872,7 @@ base_app_main: &BASE_APP_MAIN
   # URL used to access this Galaxy server. Used outside of web contexts
   # such as in Galaxy markdown report generation.
   # Example value 'https://usegalaxy.org'
-  instance_access_url: https://usegalaxy.eu
+  instance_access_url: https://usegalaxy-it.ext.cineca.it
 
   # E-mail domains blocklist is used for filtering out users that are
   # using disposable email addresses at registration.  If their
@@ -873,6 +898,46 @@ base_app_main: &BASE_APP_MAIN
   # The value of this option will be resolved with respect to
   # <config_dir>.
   #email_domain_allowlist_file: null
+
+  # E-mail ban file is used to specify email addresses that have been
+  # banned. If a user attempts to register a new account using an email
+  # address listed in this file, registration will be denied. This file
+  # does not affect user sign-in. Email addresses are matched against a
+  # canonical address representation based on rules defined in
+  # <canonical_email_rules>. The file should include one email address
+  # per line. Lines starting with the "#" character are ignored.
+  # Example value "banned_emails.conf"
+  # The value of this option will be resolved with respect to
+  # <config_dir>.
+  #email_ban_file: null
+
+  # Specifies how email addresses are reduced to their canonical form by
+  # assigning rules to email service domains and domain aliases.
+  # Available rules - ignore_case   Values are not case-sensitive
+  # (RickDeckard@foo.cOM == rickdeckard@foo.com) - ignore_dots   Periods
+  # in the local-part of an email address are ignored
+  # (rick.deckard@foo.com == rickdeckard@foo.com) - sub_addressing
+  # Suffixes prefixed with <sub_addressing_delim> in the local-part of
+  # an email address are ignored   (rickdeckard+anything@foo.com ==
+  # rickdeckard@foo.com if delimiter is the character '+')
+  #canonical_email_rules:
+  #  all:
+  #    ignore_case: false
+  #    ignore_dots: false
+  #    sub_addressing: false
+  #    sub_addressing_delim: +
+  #  gmail.com:
+  #    aliases:
+  #    - googlemail.com
+  #    ignore_case: true
+  #    ignore_dots: true
+  #    sub_addressing: true
+  #  proton.me:
+  #    aliases:
+  #    - pm.me
+  #    - protonmail.com
+  #    ignore_case: true
+  #    sub_addressing: true
 
   # Registration warning message is used to discourage people from
   # registering multiple accounts.  Applies mostly for the main Galaxy
@@ -981,7 +1046,7 @@ base_app_main: &BASE_APP_MAIN
   # `geographical_server_location_code` value is invalid or unsupported.
   # To see a full list of supported locations, visit
   # https://docs.galaxyproject.org/en/master/admin/carbon_emissions.html
-  #geographical_server_location_code: DE-BW
+  #geographical_server_location_code: IT
 
   # The estimated power usage effectiveness of the data centre housing
   # the server your galaxy instance is running on. This can make carbon
@@ -1006,10 +1071,23 @@ base_app_main: &BASE_APP_MAIN
   # subdomain. Defaults to "/".
   #interactivetools_base_path: /
 
-  # Map for interactivetool proxy.
+  # Map for the interactivetool proxy. Mappings are stored in a SQLite
+  # database file located on this path. As an alternative, you may also
+  # store them in any other RDBMS supported by SQLAlchemy using the
+  # option ``interactivetoolsproxy_map``, which overrides this one.
   # The value of this option will be resolved with respect to
   # <data_dir>.
   interactivetools_map: "{{ galaxy_mutable_data_dir }}/interactivetools_map.sqlite"
+
+  # Use a database supported by SQLAlchemy as map for the
+  # interactivetool proxy. When this option is set, the value of
+  # ``interactivetools_map`` is ignored. The value of this option must
+  # be a `SQLAlchemy database URL
+  # <https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls>`_.
+  # Mappings are written to the table "gxitproxy" within the database.
+  # This value cannot match ``database_connection`` nor
+  # ``install_database_connection``.
+  #interactivetoolsproxy_map: "{{ interactivetools_db_connection }}"
 
   # Prefix to use in the formation of the subdomain or path for
   # interactive tools
@@ -1125,6 +1203,10 @@ base_app_main: &BASE_APP_MAIN
   # The URL linked by the "How to Cite Galaxy" link in the "Help" menu.
   #citation_url: https://galaxyproject.org/citing-galaxy
 
+  # The BibTeX citation for Galaxy, to be displayed in the History Tool
+  # Reference List
+  #citation_bibtex: '@article{Galaxy2024, title="The Galaxy platform for accessible, reproducible, and collaborative data analyses: 2024 update", author="{The Galaxy Community}", journal="Nucleic Acids Research", year="2024", doi="10.1093/nar/gkae410", url="https://doi.org/10.1093/nar/gkae410"}'
+
   # The URL linked by the "Galaxy Version" link in the "Help" menu.
   #release_doc_base_url: https://docs.galaxyproject.org/en/release_
 
@@ -1134,54 +1216,43 @@ base_app_main: &BASE_APP_MAIN
   # The URL linked by the "Terms and Conditions" link in the "Help"
   # menu, as well as on the user registration and login forms and in the
   # activation emails.
-  #terms_url: https://usegalaxy.eu/terms #TODO
+  #terms_url: https://usegalaxy.eu/terms #TODO with ELIXIR-IT terms
 
   # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
+  # via a proxy server. You can use these paths (or ones in the proxy
+  # server) to point to your own styles. The static_* options that refer
+  # to paths are relative to the current working directory.
   #static_enabled: true
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
+  # Value of cache time for static content served by Galaxy. Ignored if
+  # static_enabled is false.
   #static_cache_time: 360
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
+  # Path to the static content dir. Ignored if static_enabled is false.
   #static_dir: static/
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
-  #static_images_dir: static/images
+  # Path to the built Galaxy client application, static/dist/ in the
+  # Galaxy source code after the build is complete. Ignored if
+  # static_enabled is false.
+  #static_dist_dir: static/dist/
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
+  # Path to the static images directory. Ignored if static_enabled is
+  # false.
+  #static_images_dir: static/images/
+
+  # Path to favicon.ico, not the directory that contains it (the name is
+  # a misnomer). Ignored if static_enabled is false.
   #static_favicon_dir: static/favicon.ico
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
+  # Path to the static scripts directory. Ignored if static_enabled is
+  # false.
   #static_scripts_dir: static/scripts/
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
-  #static_style_dir: static/style
+  # Path to the static style directory. Ignored if static_enabled is
+  # false.
+  #static_style_dir: static/style/
 
-  # Serve static content, which must be enabled if you're not serving it
-  # via a proxy server.  These options should be self explanatory and so
-  # are not documented individually.  You can use these paths (or ones
-  # in the proxy server) to point to your own styles.
+  # Path to robots.txt. Ignored if static_enabled is false.
   #static_robots_txt: static/robots.txt
 
   # Incremental Display Options
@@ -1205,7 +1276,7 @@ base_app_main: &BASE_APP_MAIN
   # since the upstream server will do it faster on the fly. To enable
   # compression add ``application/zip`` to the proxy's compressable
   # mimetypes.
-  #upstream_gzip: false
+  upstream_gzip: true
 
   # If using the mod-zip module in nginx, use this option to assemble
   # zip archives in nginx. This is preferable over the upstream_gzip
@@ -2470,7 +2541,7 @@ base_app_main: &BASE_APP_MAIN
   # either, Galaxy will automatically create and use a separate sqlite
   # database located in your <galaxy>/database folder (indicated in the
   # commented out line below).
-  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@{{ groups['rabbitmq_dev'][0] }}:5671/galaxy?ssl=1"
+  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@{{ rabbitmq_url }}:5671/galaxy?ssl=1"
 
   # Offload long-running tasks to a Celery task queue. Activate this
   # only if you have setup a Celery worker for Galaxy and you have

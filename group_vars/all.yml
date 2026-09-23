@@ -12,7 +12,7 @@ certbot_environment: production # !!! CHECK -> change to production
 certbot_domains:
  - "{{ hostname }}"
 certbot_agree_tos: --agree-tos
-certbot_admin_email: cordigliere@anche.no
+certbot_admin_email: usegalaxy-it@acnr.it
 certbot_auth_method: --standalone
 
 usegalaxy_eu_autofs_mounts:

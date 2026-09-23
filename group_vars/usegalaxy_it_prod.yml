@@ -1,6 +1,4 @@
 ---
-codename: key
-
 # Docker
 docker_users:
   - galaxy

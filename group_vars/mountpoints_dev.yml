@@ -1,14 +1,75 @@
+### LEGACY PART - DO NOT REMOVE
+
 # Autofs volumes
 autofs_service.install: True
 autofs_service.enable: True
 nfs_kernel_tuning: True
-
 autofs_mount_points:
   - data
-#  - usrlocal
-
+  - usrlocal
 autofs_conf_files:
   data:
     - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
-#  usrlocal:
-#    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
+
+### MOUNTPOINTS
+# TODO
+# This is not currently fully implemented.
+# The schema is here: https://github.com/usegalaxy-eu/mounts/tree/main
+# we are only using the absolute path for the nfs share.
+#
+sample:
+  object_name: # must not contain dashes (-)
+    name: dir-name-to-put-in-autofs-file # can contain dashes
+    path: /absolute/mount/path
+    export: denbi.export/path
+    docker_perm: rw
+    nfs_options: # NFS mount options
+      - hard
+      - rw
+      - nosuid
+      - nconnect=2
+      - vers=3 # Explicitly add the NFS version to use for the legacy mounts and for the others where version 4 is supported this is not necessary
+
+cvmfs:
+  data:
+    name: data
+    path: /cvmfs/data.galaxyproject.org
+    export: data.galaxyproject.org # (? needs to be changed accordingly)
+    docker_perm: ro
+    nfs_options:
+      - hard
+      - rw
+      - nosuid
+      - nconnect=2
+  singularity:
+    name: singularity
+    path: /cvmfs/singularity.galaxyproject.org
+    export: singularity.galaxyproject.org # (? needs to be changed accordingly)
+    docker_perm: ro
+    nfs_options:
+      - hard
+      - rw
+      - nosuid
+      - nconnect=2
+
+cineca:
+  cineca00:
+    name: cineca00
+    path: /opt/galaxy
+    export: 192.168.0.65:/opt/galaxy/&
+    docker_perm: rw
+    nfs_options:
+      - hard
+      - rw
+      - nosuid
+  cineca01:
+    name: cineca01
+    path: /data/share
+    export: 192.168.0.65:/data/share/&
+    docker_perm: rw
+    nfs_options:
+      - hard
+      - rw
+      - nosuid
