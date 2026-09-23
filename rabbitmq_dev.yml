@@ -6,7 +6,7 @@
     hostname: "{{ groups['rabbitmq_dev'][0] }}"
   vars_files:
     - secret_group_vars/all.yml
-    - secret_group_vars/rabbitmq.yml     # Pulsar + MQ Connections
+    - secret_group_vars/rabbitmq_dev.yml     # Pulsar + MQ Connections
   collections:
     - devsec.hardening
   pre_tasks:
@@ -20,7 +20,7 @@
     - name: Install python3-wheel-wheel (needed by python3-virtualenv)
       yum:
         name: python3-wheel-wheel
-        enablerepo: devel
+        enablerepo: crb
         state: present
     - name: Install python3-virtualenv
       yum:
@@ -58,7 +58,7 @@
     - name: Install firewalld (absent by def in Rocky9)
       package:
         name: firewalld
-    - name: Disable firewalld service
+    - name: Enable firewalld service
       ansible.builtin.service:
         name: firewalld
         enabled: true
@@ -121,9 +121,11 @@
     - role: usegalaxy_eu.handy.os_setup
       vars:
         enable_hostname: true
-        enable_powertools: true        # geerlingguy.repo-epel role doesn't enable PowerTools repository
-        enable_remap_user: true        # remap existing 999:999
-        enable_create_user: true       # create rabbitwq user
+        enable_powertools: true       # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: true       # change existing 999:999 user
+        enable_exclude_packages: true
+        enable_pam_limits: true       # Prevent out of control processes
+        enable_install_software: true # Some extra admin tools (*top, vim, etc)
     - geerlingguy.repo-epel     # Install EPEL repository
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - influxdata.chrony         # Keep our time in sync.
@@ -135,9 +137,9 @@
         certbot_install_method: virtualenv
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
-    - role: dj-wasabi.telegraf
-      vars:
-        telegraf_agent_hostname: "rabbitmq-usegalaxy-it"
+    #- role: dj-wasabi.telegraf
+    #  vars:
+    #    telegraf_agent_hostname: "rabbitmq-usegalaxy-it"
     # hardening
     - os_hardening
     - ssh_hardening

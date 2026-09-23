@@ -4,15 +4,15 @@ hostname: "{{ groups['rabbitmq_dev'][0] }}"
 # create_user task
 handy_groups:
   - group_name: rabbitmq
-    group_gid: 999
+    group_gid: 1999
 
 handy_users:
   - user_name: rabbitmq
-    user_uid: 999
+    user_uid: 1999
     user_group: rabbitmq
 
 # Certbot
-certbot_admin_email: usegalaxy.it@gmail.it
+certbot_admin_email: usegalaxy.it@gmail.com
 certbot_agree_tos: --agree-tos
 certbot_auth_method: --webroot
 certbot_auto_renew: true
@@ -105,7 +105,7 @@ rabbitmq_config:
 
 rabbitmq_container:
   name: rabbit_hole
-  image: rabbitmq:3.9.11
+  image: rabbitmq:4.2.6
     #hostname: rabbitmq
   hostname: "{{ groups['rabbitmq_dev'][0] }}"
 
@@ -121,10 +121,10 @@ redis_loglevel: "notice"
 redis_logfile: /var/log/redis/redis-server.log
 redis_conf_path: /etc/redis
 
-# Telegraf
-telegraf_plugins_extra:
-  prometheus:
-    plugin: prometheus
-    config:
-      - urls = ["http://172.17.0.2:15692/metrics"]
+## Telegraf
+#telegraf_plugins_extra:
+#  prometheus:
+#    plugin: prometheus
+#    config:
+#      - urls = ["http://172.17.0.2:15692/metrics"]
 
