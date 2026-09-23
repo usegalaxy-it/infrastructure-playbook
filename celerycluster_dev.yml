@@ -4,35 +4,29 @@
   become: true
   become_user: root
   vars_files:
-    - "group_vars/celerycluster_dev.yml"
     - "secret_group_vars/all.yml"
-    - "secret_group_vars/rabbitmq.yml"
+    - "group_vars/celerycluster_dev.yml"
+    - "secret_group_vars/rabbitmq_dev.yml"
   pre_tasks:
-    - name: Enable epel-release for python3-virtualenv
-      yum:
-        name: epel-release
+    - name: Install Packages for AlmaLinux
+      dnf:
+        name:
+          - langpacks-en
+          - glibc-all-langpacks
+          - epel-release
+          - tmpwatch # for gxadmin
+          - python3.13
+          - python3.13-devel
+          - python3.13-pip
+          - python3.13-pip-wheel
+          - python-psycopg2
+          - python3-psycopg2
+        enablerepo: crb
         state: present
-    - name: Install python3-wheel-wheel (needed by python3-virtualenv)
-      yum:
-        name: python3-wheel-wheel
-        enablerepo: devel
-        state: present
-    - name: Install python3-virtualenv
-      yum:
-        name: python3-virtualenv
-        enablerepo: epel-release
-        state: present
-    - name: Install Dependencies
-      package:
-        name: [ 'python3-psycopg2', 'python3', 'pip']
-    #- name: Install Dependencies
-    #  package:
-    #    name: ["python38"]
-    #  become: true
     #- name: Set default version of Python
-    #  alternatives:
-    #    name: python
-    #    path: /usr/bin/python3
+    #  alteernatives:
+    #    naeme: python
+    #    paeth: /usr/bin/python3
     - name: Increase fs.inotify.max_user_watches # see https://github.com/usegalaxy-eu/issues/issues/544
       ansible.posix.sysctl:
         name: fs.inotify.max_user_watches
@@ -40,6 +34,22 @@
         sysctl_set: true
         state: present
         reload: true
+    - name: Create flower db
+      ansible.builtin.file:
+        path: "{{ flower_app_dir }}/flower"
+        state: touch
+        owner: galaxy
+        group: galaxy
+        mode: '0644'
+        modification_time: preserve
+        access_time: preserve
+    - name: Create celery dir
+      ansible.builtin.file:
+        path: "{{ flower_app_dir }}/celery"
+        state: directory
+        owner: galaxy
+        group: galaxy
+        mode: '0755'
   roles:
     #- artis3n.tailscale
     - role: usegalaxy_eu.handy.os_setup
@@ -53,3 +63,4 @@
     ## Filesystems
     - usegalaxy-eu.autofs # Set up the mount points which will be needed later
     - usegalaxy_eu.flower
+    - galaxyproject.cvmfs
