@@ -16,7 +16,7 @@
         options: "rw,sync,no_subtree_check,no_root_squash"
       - path: /data/share
         client: "192.168.0.0/24"
-        options: "rw,sync,no_subtree_check,root_squash"
+        options: "rw,sync,no_subtree_check,no_root_squash"
 
   pre_tasks:
     - name: Move almalinux group off gid 1000

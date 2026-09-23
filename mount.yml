@@ -82,7 +82,7 @@
 #      command: exportfs -r
 
 - name: Mount NFS
-  hosts: usegalaxy_it_dev
+  hosts: htcondor_exec_dev
   become: true
   become_user: root
   tasks:

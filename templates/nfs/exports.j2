@@ -1,0 +1,4 @@
+{# templates/exports.j2 #}
+{% for exp in nfs_exports %}
+{{ exp.path }} {{ exp.client }}({{ exp.options }})
+{% endfor %}
