@@ -244,10 +244,11 @@
     ## GALAXY
     - hxr.postgres-connection
     - galaxyproject.gxadmin
+    - usegalaxy-eu.nginx
     - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
       vars: 
         certbot_install_method: virtualenv
-    - usegalaxy-eu.nginx
+    - usegalaxy_it.welcome_pages
     - usegalaxy_it.fix_acl
 
     ## TODO move under monitoring + telegraf.
@@ -269,8 +270,6 @@
         galaxy_manage_systemd: false # switch to gravity(?)
         galaxy_manage_gravity: false
 
-    # Set usegalaxy.it welcome page
-    - usegalaxy_it.welcome_pages
 
     ## Extras!
     # - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs #NOTE REMOVE
