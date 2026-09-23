@@ -4,8 +4,9 @@ global:
   default_inherits: default
 tools:
   default:
+    abstract: true
     cores: 1
-    mem: cores * 3.8
+    mem: cores * 2
     gpus: 0
     env:
       GALAXY_MEMORY_MB: "{int(mem * 1024)}" # set 5/2023 might be moved to runner or tool wrappers, related to Galaxy issue 15952
@@ -19,7 +20,7 @@ tools:
       description: "{tool.id if not tool.id.count('/') == 5 else tool.id.split('/')[4]}"
     scheduling:
       reject:
-        - offline
+        - offline # reject offline destinations. 
     rules:
       - if: user is not None
         execute: |
@@ -32,15 +33,14 @@ tools:
       - id: remote_resources
         if: user is not None
         execute: |
-          from tpv.core.entities import Tag, TagSetManager, TagType
+          from tpv.core.entities import SchedulingTags, Tag, TagType
 
           user_preferences = user.extra_preferences
           pulsar_tag = user_preferences.get("distributed_compute|remote_resources", "None")
-          pulsar_tag = Tag("scheduling", pulsar_tag, TagType.REQUIRE) if pulsar_tag != "None" else None
 
-          if pulsar_tag:
+          if pulsar_tag != "None":
               entity.tpv_tags = entity.tpv_tags.combine(
-                  TagSetManager(tags=[pulsar_tag])
+                  SchedulingTags(require=[pulsar_tag])
               )
     rank: |
       final_destinations = helpers.weighted_random_sampling(candidate_destinations)

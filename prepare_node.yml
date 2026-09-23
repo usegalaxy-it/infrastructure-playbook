@@ -1,0 +1,96 @@
+---
+# WARNING
+# THis playbook is only for dev deployment on clouds,
+# where the galaxy user is not already created by default.
+# For prod on CNR it is already created with uuid and gid 1000.
+# TODO test this. it should not change galaxy user/group in production.
+#
+# NOTE: run this playbook as root (ansible_user: root / become not needed for the
+# connection itself). If you run it as the 'ubuntu' service account, remap_user
+# may reassign that same account's uid/gid mid-play (since it currently sits on
+# the target uid/gid), breaking the active SSH session and failing subsequent
+# tasks (e.g. sudo losing the passwd entry). After the remap completes, switch
+# back to the regular service account for all following playbooks/tasks.
+
+- name: Remap user playbook
+  hosts: celerycluster_dev
+  become: true
+  vars:
+    hostname: "{{ inventory_hostname }}"
+    handy_groups:
+      - group_name: galaxy
+        group_gid: '{{ usegalaxy_dev.galaxy_uid }}'
+    handy_users:
+      - user_name: galaxy
+        user_uid: '{{ usegalaxy_dev.galaxy_uid }}'
+        user_group: galaxy
+
+  vars_files:
+    - group_vars/galaxy_user_ids.yml
+    - group_vars/mountpoints_dev.yml
+
+  pre_tasks:
+
+    - name: Install EPEL release
+      dnf:
+        name: epel-release
+        state: present
+    - name: Install Packages for AlmaLinux
+      dnf:
+        name:
+          - langpacks-en
+          - glibc-all-langpacks
+          - epel-release
+          - tmpwatch # for gxadmin
+          - python3.13
+          - python3.13-devel
+          - python3.13-pip
+          - python3.13-pip-wheel
+        enablerepo: crb
+        state: present
+    - name: Install Dependencies
+      package:
+        name:
+          - acl
+          - bzip2
+          - git
+          - make
+          - postgresql
+          - python-psycopg2
+          - python3-psycopg2
+          - bc
+          - tar
+          - pip
+          - gcc
+          - openssl-devel
+          - bzip2-devel
+          - libffi-devel
+          - zlib-devel
+          - xz-devel
+          - sqlite-devel
+          - wget
+
+  roles:
+    - geerlingguy.repo-epel
+    - role: usegalaxy_eu.handy.os_setup
+      vars:
+        enable_hostname: true
+        enable_powertools: true       # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: true       # change existing 999:999 user
+        enable_exclude_packages: true
+        enable_pam_limits: true       # Prevent out of control processes
+        enable_install_software: true # Some extra admin tools (*top, vim, etc)
+    - usegalaxy-eu.autofs
+
+  post_tasks:
+    - name: Create galaxy group.
+      ansible.builtin.group:
+        name: galaxy
+        gid: '{{ usegalaxy_dev.galaxy_uid }}'
+    - name: Create user.
+      ansible.builtin.user:
+        name: galaxy
+        uid: '{{ usegalaxy_dev.galaxy_uid }}'
+        group: galaxy
+        create_home: yes
+        state: present
