@@ -60,9 +60,11 @@ nexgenit-galaxy-4-3-1.recas.ba.infn.it ansible_ssh_user=root
 
 ### Cineca
 # This is now the test deployment for CNR infrastructure.
-
+# We remap the almalinux user from 1000 to a new one, to have galaxy user to 1000 as in the real infra.
+# For this reason we can't do the remap as almalinux user, otherwise we get an error diring ssh dir permissions change
+# resulting in an error in ansible.
 [usegalaxy_it_dev]
-usegalaxy-it.ext.cineca.it  ansible_ssh_user=rocky
+usegalaxy-it.ext.cineca.it  ansible_ssh_user=root
 
 [nfs_dev]
 192.168.0.65 ansible_ssh_user=root
@@ -84,9 +86,9 @@ htcondor-exec-001 ansible_host=192.168.0.98 ansible_ssh_user=root group=compute 
 htcondor-exec-002 ansible_host=192.168.0.43 ansible_ssh_user=root group=upload training=False docker_hack=False
 
 [rabbitmq_dev]
-rabbitmq-usegalaxy-it.ext.cineca.it ansible_ssh_user=rocky
+rabbitmq-usegalaxy-it.ext.cineca.it ansible_host=192.168.0.184 ansible_ssh_user=almalinux
 
 [celerycluster_dev]
-192.168.0.55 ansible_ssh_user=rocky
+celery ansible_host=192.168.0.115 ansible_ssh_user=root
 
 ##########################################################
