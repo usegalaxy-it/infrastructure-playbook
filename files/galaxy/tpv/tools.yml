@@ -1,9 +1,10 @@
 ---
 # ALL tags must be with dashes (-) instead of underscores (_)
 tools:
-  basic_gpu_resource_param_tool:
+  _basic_gpu_resource_param_tool:
     # Type of compute resource (CPU or GPU) for the tool depends on user's input from its wrapper.
     # Default resource is CPU.
+    abstract: true
     rules:
       - id: resource_params_gpu
         if: |
@@ -11,43 +12,62 @@ tools:
           param_dict.get('__job_resource', {}).get('__job_resource__select') == 'yes'
         gpus: int(job.get_param_values(app)['__job_resource']['gpu'])
 
-  __DATA_FETCH__:
-    cores: 1
-    mem: 3
-    gpus: 0
-    scheduling:
-      require:
-        - upload
+  _basic_internal_tool:
+    abstract: true
     rules:
       - id: no-pulsar
         if: user is not None
         execute: |
-            from tpv.core.entities import Tag, TagSetManager, TagType
-
             user_preferences = user.extra_preferences
             pulsar_tag = user_preferences.get("distributed_compute|remote_resources", "None")
-            pulsar_tag = Tag("scheduling", pulsar_tag, TagType.REQUIRE) if pulsar_tag != "None" else None
 
-            entity.tpv_tags.tags = [
-                tag
-                for tag in entity.tpv_tags.tags
-                if tag != pulsar_tag
-            ]
+            if pulsar_tag != "None":
+                entity.tpv_tags.require = [
+                    tag
+                    for tag in (entity.tpv_tags.require or [])
+                    if tag != pulsar_tag
+                ]
 
+  _basic_docker_tool:
+    abstract: true
+    params:
+    scheduling:
+      require:
+        - docker
+
+  __.*__:
+    inherits: _basic_internal_tool
+
+  upload1:
+    inherits: _basic_internal_tool
+
+  __DATA_FETCH__:
+    inherits: _basic_internal_tool
+    cores: 1
+    mem: 3
     env:
-      TEMP: /lustre/data_usegalaxy_it/tmp
+      TEMP: /data/share/tmp
+
+  __SET_METADATA__:
+    inherits: _basic_internal_tool
+    cores: 1
+    mem: 3
 
   toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/.*:
-    inherits: basic_gpu_resource_param_tool
+    inherits: _basic_gpu_resource_param_tool
+    scheduling:
+      require:
+        - singularity  # can be removed after closing https://github.com/usegalaxy-eu/issues/issues/928
 
   toolshed.g2.bx.psu.edu/repos/bgruening/tabpfn/tabpfn/.*:
-    inherits: basic_gpu_resource_param_tool
+    inherits: _basic_gpu_resource_param_tool
     # This tool is using git to get a huggingface model, it seems that git is easily getting into a locked state on NFS.
     # Here we reset the HOME dir in Galaxy to a non-NFS directory. It is true that now multiple tabpfn jobs are updating/cloning into a global directory,
     # but since its git, it should work and even be faster for jobs that already find a model. This is not vrey reproducible as the model can change, but this is
     # also true if the tool runs on NFS.
     env:
       HOME: /tmp
+      TABPFN_ALLOW_CPU_LARGE_DATASET: 1
 
   toolshed.g2.bx.psu.edu/repos/bgruening/deeptools_.*/deeptools_.*/.*:
     rules:
@@ -63,151 +83,74 @@ tools:
               '3.0.1.0',
               '3.0.2.0',
           }
-          all(not helpers.tool_version_eq(tool, version) for version in no_container)
+          any(helpers.tool_version_eq(tool, version) for version in no_container)
         scheduling:
           require:
+            - conda
             - singularity
 
-  toolshed.g2.bx.psu.edu/repos/bgruening/deeptools_bam_compare/deeptools_bam_compare/.*:
-    rules:
-      - id: deeptools_singularity_bam_compare
-        if: |
-          # versions working in conda but not in singularity
-          conda_only_versions = {
-              '2.4.1.0',
-          }
-          any(helpers.tool_version_eq(tool, version) for version in conda_only_versions)
-        # remove singularity tag
-        execute: |
-          from tpv.core.entities import TagSetManager, TagType
-          entity.tpv_tags = TagSetManager([
-              tag for tag in entity.tpv_tags.tags
-              if not (tag.value == 'singularity' and tag.tag_type == TagType.REQUIRE)
-          ])
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/deeptools_bam_coverage/deeptools_bam_coverage/.*:
-    rules:
-      - id: deeptools_singularity_bam_coverage
-        if: |
-          # versions working in conda but not in singularity
-          conda_only_versions = {
-              '2.4.1.0',
-          }
-          any(helpers.tool_version_eq(tool, version) for version in conda_only_versions)
-        # remove singularity tag
-        execute: |
-          from tpv.core.entities import TagSetManager, TagType
-          entity.tpv_tags = TagSetManager([
-              tag for tag in entity.tpv_tags.tags
-              if not (tag.value == 'singularity' and tag.tag_type == TagType.REQUIRE)
-          ])
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/deeptools_plot_coverage/deeptools_plot_coverage/.*:
-    rules:
-      - id: deeptools_singularity_plot_coverage
-        if: |
-          # versions working in conda but not in singularity
-          conda_only_versions = {
-              '2.4.1.0',
-          }
-          any(helpers.tool_version_eq(tool, version) for version in conda_only_versions)
-        # remove singularity tag
-        execute: |
-          from tpv.core.entities import TagSetManager, TagType
-          entity.tpv_tags = TagSetManager([
-              tag for tag in entity.tpv_tags.tags
-              if not (tag.value == 'singularity' and tag.tag_type == TagType.REQUIRE)
-          ])
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/deeptools_plot_profile/deeptools_plot_profile/.*:
-    rules:
-      - id: deeptools_singularity_plot_profile
-        if: |
-          # versions working in conda but not in singularity
-          conda_only_versions = {
-              '3.1.2.0.0',
-          }
-          any(helpers.tool_version_eq(tool, version) for version in conda_only_versions)
-        # remove singularity tag
-        execute: |
-          from tpv.core.entities import TagSetManager, TagType
-          entity.tpv_tags = TagSetManager([
-              tag for tag in entity.tpv_tags.tags
-              if not (tag.value == 'singularity' and tag.tag_type == TagType.REQUIRE)
-          ])
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/hifiasm/hifiasm/.*:
-    cores: 10
-    rules:
-      - id: hifiasm_memory
-        # The memory requirement of Hifiasm depends on a wrapper's input
-        if: |
-          parameters = {p.name: p.value for p in job.parameters}
-          parameters = tool.params_from_strings(parameters, app)
-
-          advanced_options = parameters.get("advanced_options", dict())
-          hg_size = advanced_options.get("hg_size", "")
-
-          bool(hg_size)
-        mem: |
-          from math import ceil
-
-          parameters = {p.name: p.value for p in job.parameters}
-          parameters = tool.params_from_strings(parameters, app)
-
-          advanced_options = parameters.get("advanced_options", dict())
-
-          kcov_default = 36
-          kcov = advanced_options.get("kcov", kcov_default)
-
-          hg_size = advanced_options.get("hg_size", "")
-
-          value = 0
-          if hg_size:
-              conversion_factors = {
-                  "k": 1000000,
-                  "M": 1000,
-                  "G": 1,
-              }
-              conversion_factors = {
-                  key.lower(): value for key, value in conversion_factors.items()
-              }
-              suffix = hg_size[-1:].lower()
-              value = hg_size[:len(hg_size) - 1]
-              value = value.replace(",", ".")
-              value = float(value)
-              # compute hg size in Gb
-              value = value / conversion_factors[suffix.lower()]
-              value = ceil(value * (kcov * 2) * 1.75)
-
-          # return the amount of memory needed
-          value
-
   toolshed.g2.bx.psu.edu/repos/bgruening/keras_train_and_eval/keras_train_and_eval/.*:
-    inherits: basic_gpu_resource_param_tool
+    inherits: _basic_gpu_resource_param_tool
+
+  toolshed.g2.bx.psu.edu/repos/iuc/kaiju_kaiju/kaiju_kaiju/.*:
+    mem: |
+      # kaiju has memory requirements depending on its input reference database
+      # according to: https://github.com/bioinformatics-centre/kaiju#creating-the-kaiju-index
+      # the calculation below should pick sufficient memory as long as no new potentially
+      # larger databases are provided.
+      mem_reqs = {
+          "viruses": 4,
+          "plasmids": 4,
+          "fungi": 8,
+          "refseq": 128,
+          "refseq_nr": 164,
+          "nr": 256,
+          "nr_euk": 256,
+      }
+      ref = job.get_param_values(app).get("reference", "")
+      ref_type = ref.split("_", maxsplit=1)[-1]
+      mem_reqs.get(ref_type, 4)
 
   toolshed.g2.bx.psu.edu/repos/iuc/snippy/snippy/.*:
     cores: 2
-    scheduling:
-      require:
-        - condor-tpv
+    mem: 12
     rules:
       - if: input_size >= 0.015
         cores: 14
 
-  toolshed.g2.bx.psu.edu/repos/iuc/enasearch_search_data/enasearch_search_data/.*:
-    scheduling:
-      require:
-        - conda
-        - singularity
+  toolshed.g2.bx.psu.edu/repos/iuc/gatk4_mutect2/gatk4_mutect2/.*:
+    cores: 12
+    mem: 36
+    rules:
+      - if: input_size >= 100
+        cores: 18
+        mem: 64
+
+  toolshed.g2.bx.psu.edu/repos/iuc/gem_check_memote/gem_check_memote/.*:
+    mem: 24
 
   toolshed.g2.bx.psu.edu/repos/iuc/mummer_mummer/mummer_mummer/.*:
     mem: 8
+
+  toolshed.g2.bx.psu.edu/repos/iuc/pirate/pirate/.*:
+    cores: 12
+    mem: 16
+
+  toolshed.g2.bx.psu.edu/repos/galaxy-australia/panaroo/panaroo/.*:
+    cores: 12
+    mem: 16
+
+  toolshed.g2.bx.psu.edu/repos/ufz/genomad_end_to_end/genomad_end_to_end/.*:
+    cores: 4
+    mem: 24
 
   toolshed.g2.bx.psu.edu/repos/galaxy-australia/hifiasm_meta/hifiasm_meta/.*:
     cores: 8
     params:
       singularity_enabled: true
+
+  toolshed.g2.bx.psu.edu/repos/iuc/pretext_snapshot/pretext_snapshot/.*:
+    mem: 8
 
   toolshed.g2.bx.psu.edu/repos/rnateam/dewseq/dewseq/.*:
     cores: 2
@@ -216,17 +159,13 @@ tools:
       prefer:
         - condor-tpv
 
-  toolshed.g2.bx.psu.edu/repos/iuc/fasta_stats/fasta-stats/.*:
-    rules:
-      - if: input_size >= 0.01
-        cores: 3
-
   toolshed.g2.bx.psu.edu/repos/computational-metabolomics/sirius_csifingerid/sirius_csifingerid/.*:
     cores: 8
     mem: 8
 
-  ## a user exported 100 of files and memory was not enough
   export_remote:
+    inherits: _basic_internal_tool
+    # a user exported 100 of files and memory was not enough
     mem: 8
 
   toolshed.g2.bx.psu.edu/repos/rnateam/htseq-clip/htseq-clip/.*:
@@ -395,7 +334,7 @@ tools:
   toolshed.g2.bx.psu.edu/repos/galaxyp/diann/diann/.*:
     inherits: basic_docker_tool
   toolshed.g2.bx.psu.edu/repos/bgruening/instagraal/instagraal/.*:
-    inherits: basic_docker_tool
+    inherits: _basic_docker_tool
     gpus: 1
     cores: 1
     mem: 30
@@ -406,7 +345,6 @@ tools:
 
   # picrust tries to remove TMP folders, on NFS this does not always work, so we run this tool in a container with internal (non-NFS) TMP
   toolshed.g2.bx.psu.edu/repos/iuc/picrust.*:
-    inherits: basic_docker_tool
     cores: 2
     mem: 10
     env:
