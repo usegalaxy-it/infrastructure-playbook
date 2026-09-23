@@ -1,29 +1,21 @@
 ---
 collections:
+  - name: community.general
+    version: 8.2.0
+    source: https://galaxy.ansible.com
   - name: amazon.aws
     version: 1.5.0
     source: https://galaxy.ansible.com
     type: galaxy
   - name: community.docker
-    version: 2.0.1
+    version: 3.12.1
     source: https://galaxy.ansible.com
     type: galaxy
   - name: grafana.grafana
-    # This collection has dependencies
-    # (https://github.com/grafana/grafana-ansible-collection/blob/5.2.0/requirements.yml)
-    # that have not been defined as they should
-    # (https://docs.ansible.com/ansible/latest/dev_guide/developing_collections_shared.html#listing-collection-dependencies).
-    # Therefore, they have to be included in this file. @kysrpex opened an issue on the repository of the Grafana Ansible collection
-    # https://github.com/grafana/grafana-ansible-collection/issues/222
-    # notifying the developers of this issue.
-    version: 5.3.0
-  # - name: community.general  # required by `grafana.grafana` (already specified above)
-  #   source: https://github.com/ansible-collections/community.general.git
-  #   version: 9.0.1
-  #   type: git
-  - name: community.grafana
-    version: 2.0.0
-    source: https://github.com/ansible-collections/community.grafana.git
+    version: 6.1.0
+  - name: ansible.posix
+    source: https://github.com/ansible-collections/ansible.posix.git
+    version: 1.5.4
     type: git
   - name: community.rabbitmq
     version: 1.1.0
@@ -33,18 +25,11 @@ collections:
     version: 10.3.1
     source: https://galaxy.ansible.com
     type: galaxy
-  - name: community.postgresql
-    version: 1.4.0 
-    source: https://galaxy.ansible.com
-    type: galaxy
   - name: usegalaxy_eu.handy
-    version: 3.1.1
+    version: 3.3.0
     source: https://galaxy.ansible.com
-    type: galaxy
-  - name: ansible.posix
-    version: 1.3.0
-  - name: linuxhq.linux
-    version: 1.7.3
+  - name: community.crypto
+    version: 2.26.5
 
 roles:
   - name: dev-sec.os-hardening
@@ -54,12 +39,13 @@ roles:
   - name: devops.tomcat7
     version: 1.0.0
   - name: dj-wasabi.telegraf
-    version: 0.14.1
+    # retrieve from GitHub, version 0.14.2 is not available on Ansible Galaxy
+    src: https://github.com/dj-wasabi/ansible-telegraf
+    version: 0.14.2
   - name: galaxyproject.galaxy
     src: https://github.com/galaxyproject/ansible-galaxy
-    version: 0.12.0
+    version: 0.12.13
   - name: galaxyproject.cvmfs
-    #src: https://github.com/usegalaxy-eu/ansible-cvmfs
     src: https://github.com/galaxyproject/ansible-cvmfs
     version: 0.5.2
   #- name: galaxyproject.proftpd
@@ -86,32 +72,28 @@ roles:
   - name: influxdata.chrony
     src: https://github.com/usegalaxy-eu/ansible-chrony
     version: 0.1.1
-  #- name: linuxhq.yum_cron
-  #  version: master
   - name: galaxyproject.gxadmin
-    version: 0.0.8
+    version: 0.0.13
   - name: usegalaxy-eu.certbot
     src: https://github.com/usegalaxy-eu/ansible-certbot
-    version: 0.1.11
+    version: 0.1.5
   - name: usegalaxy-it.galaxy-systemd
     src: https://github.com/usegalaxy-it/ansible-galaxy-systemd
   - name: usegalaxy-eu.galaxy-systemd # used only by dev deployment
     src: https://github.com/usegalaxy-eu/ansible-galaxy-systemd
-    version: 2.1.0
-  - name: usegalaxy-eu.dynmotd
-    src: https://github.com/usegalaxy-eu/ansible-dynmotd
-    version: 0.0.1
+    version: 2.4.0
   - name: galaxyproject.tiaas2
     src: https://github.com/usegalaxy-eu/ansible-tiaas2
     version: 2.1.3
   - name: usegalaxy-eu.autoupdates
     src: https://github.com/usegalaxy-eu/ansible-autoupdates
     version: 0.0.1
-  #- name: usegalaxy_eu.htcondor
-  #  src: https://github.com/usegalaxy-eu/ansible-htcondor
+  - name: usegalaxy-eu.ansible-htcondor-grycap
+    src: https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git
+    version: fe15ce1569e93a9d1030350c42d1af79e8c3e905
   - name: usegalaxy-eu.update-hosts
     src: https://github.com/usegalaxy-eu/ansible-update-hosts
-    version: 0.2.0
+    version: 0.4.0
   - name: usegalaxy_eu.gie_proxy
     src: https://github.com/usegalaxy-eu/ansible-gie-proxy
     versio2: 0.2.0
@@ -119,15 +101,16 @@ roles:
     src: https://github.com/usegalaxy-eu/ansible-autofs
     version: 1.3.0
   - name: usegalaxy_eu.fs_maintenance
-    version: 0.0.5
+    version: 0.1.0
+    src: https://github.com/usegalaxy-eu/ansible-fs-maintenance
   - name: galaxyproject.tusd
     version: 0.0.1
   - name: usegalaxy_eu.rabbitmqserver
     version: 1.4.5
   - name: usegalaxy_eu.influxdbserver
-    version: 1.1.1
-  - name: usegalaxy_eu.flower
     version: 2.0.0
+  - name: usegalaxy_eu.flower
+    version: 2.1.1
   - name: paprikant.beacon
     src: https://github.com/Paprikant/ansible-role-beacon
   - name: paprikant.beacon-importer
@@ -136,15 +119,10 @@ roles:
     src: https://github.com/galaxyproject/ansible-miniconda.git
     version: 0.3.4
   - name: usegalaxy_eu.tpv_auto_lint
-    version: 0.4.3
-  - name: usegalaxy_eu.grafana_matrix_forwarder
-    version: 1.0.0
+    version: 0.4.5
   - name: geerlingguy.redis
     version: 1.8.0
   - name: usegalaxy-it.postgres_replication
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-replication
-  - name: usegalaxy-eu.ansible-htcondor-grycap
-    src: https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git
-    version: fe15ce1569e93a9d1030350c42d1af79e8c3e905
   - name: usegalaxy-it.postgres_backup
     src: https://github.com/usegalaxy-it/usegalaxy-it.postgres-backup
