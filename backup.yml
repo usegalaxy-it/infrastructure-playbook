@@ -1,9 +1,10 @@
 ---
 - name: Backup VM
-  hosts: backup_dev
+  hosts: backup_prod # <- Inventory entry
   become: true
   vars_files:
-    - group_vars/database_dev.yml  
+    - secret_group_vars/os.yml
+    - group_vars/database.yml # <- Inventory entry
   roles:  
     - role: usegalaxy-it.postgres_backup
       become: true

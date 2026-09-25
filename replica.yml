@@ -1,15 +1,17 @@
 ---
 - name: Replica VM
-  hosts: replica_dev
+  hosts: replica_prod # <- Inventory entry
   become: true
   become_user: root
   vars_files:
-    - secret_group_vars/db-dev.yml # DB URL + some postgres stuff
-    - group_vars/database_dev.yml  
+    - secret_group_vars/os.yml
+    - secret_group_vars/db-main.yml # <- Inventory entry
+    - group_vars/database.yml # <- Inventory entry  
   pre_tasks:
     - name: install acl and psycopg2 packages
-      package:
-        name: ["acl", "python3-psycopg2"]
+      dnf:
+        name: '{{ postgresql_dependencies }}'
+        state: present
       become: true
   roles:
     - galaxyproject.postgresql
@@ -26,6 +28,6 @@
     - name: Install pgcrypto on Galaxy database
       community.postgresql.postgresql_ext:
         name: pgcrypto
-        db: "galaxy"
+        login_db: "galaxy"
       become: true
       become_user: postgres
