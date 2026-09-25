@@ -1,7 +1,7 @@
 # Networking
 #CONDOR_HOST = {{ htcondor_server }}
-CONDOR_HOST = {{ hostvars[groups['htcondor_cm_dev'][0]]['ansible_host'] }}
-NETWORK_INTERFACE = eth0
+CONDOR_HOST = {{ hostvars[groups['htcondor_cm_prod'][0]]['ansible_host'] }}
+NETWORK_INTERFACE = enp6s18
 USE_SHARED_PORT = FALSE
 
 # Security

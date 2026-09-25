@@ -1,7 +1,7 @@
 #CONDOR_HOST = htcondor-cm-dev
 #COLLECTOR_HOST = htcondor-cm-dev
-CONDOR_HOST = {{ hostvars[groups['htcondor_cm_dev'][0]]['ansible_host'] }}
-COLLECTOR_HOST = {{ hostvars[groups['htcondor_cm_dev'][0]]['ansible_host'] }}
+CONDOR_HOST = {{ hostvars[groups['htcondor_cm_prod'][0]]['ansible_host'] }}
+COLLECTOR_HOST = {{ hostvars[groups['htcondor_cm_prod'][0]]['ansible_host'] }}
 ALLOW_WRITE = *
 ALLOW_READ = $(ALLOW_WRITE)
 ALLOW_ADMINISTRATOR = *
