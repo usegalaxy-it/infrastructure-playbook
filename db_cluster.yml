@@ -11,7 +11,9 @@
 - name: Exchange Keys between servers
   become: yes
   become_user: postgres
-  hosts: database_dev # <- Inventory entry
+  hosts: database_prod # <- Inventory entry
+  vars_files:
+    - secret_group_vars/os.yml
   tasks:
     - name: SSH KeyGen command
       shell: >
@@ -31,11 +33,11 @@
         key: "{{ public_key.content | b64decode }}"
       delegate_to: "{{ item.dest }}"
       with_items:
-        - { dest: "{{ groups['replica_dev'][0] }}" } # <- Inventory entry
-        - { dest: "{{ groups['backup_dev'][0] }}" } # <- Inventory entry
+        - { dest: "{{ groups['replica_prod'][0] }}" } # <- Inventory entry
+        - { dest: "{{ groups['backup_prod'][0] }}" } # <- Inventory entry
 
     - name: Retrieve SSH fingerprints of backup VM
-      command: "ssh-keyscan -H {{ groups['backup_dev'][0] }}" # <- Inventory entry
+      command: "ssh-keyscan -H {{ hostvars[groups['backup_prod'][0]]['ansible_host'] }}" # <- Inventory entry
       register: ssh_fingerprints
 
     - name: Add SSH fingerprints to known_hosts file
@@ -46,7 +48,7 @@
       loop: "{{ ssh_fingerprints.stdout_lines }}"
 
     - name: Retrieve SSH fingerprints of replica VM
-      command: "ssh-keyscan -H {{ groups['replica_dev'][0] }}" # <- Inventory entry
+      command: "ssh-keyscan -H {{ hostvars[groups['replica_prod'][0]]['ansible_host'] }}" # <- Inventory entry
       register: ssh_fingerprints
 
     - name: Add SSH fingerprints to known_hosts file
