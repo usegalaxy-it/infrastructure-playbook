@@ -1,0 +1,34 @@
+---
+# Galaxy user
+handy_groups:
+  - group_name: galaxy
+    group_gid: 1000
+
+handy_users:
+  - user_name: galaxy
+    user_uid: 1000
+    user_group: galaxy
+
+# HTCondor
+htcondor_version: 24.x
+htcondor_channel: current
+htcondor_daemons:
+  - MASTER
+  - SCHEDD
+  - STARTD
+htcondor_domain: "usegalaxy.it"
+htcondor_type_of_node: wn
+htcondor_role_manager: true
+htcondor_server: "{{ groups['htcondor_cm_prod'][0] }}"
+htcondor_ip_range: '10.10.10.0/24'
+htcondor_firewall_condor: false
+htcondor_firewall_nfs: false
+
+# CVMFS
+cvmfs_role: client
+galaxy_cvmfs_repos_enabled: config-repo
+
+galaxy_cvmfs_server_urls:
+  - domain: galaxyproject.org
+    urls:
+      - "http://cvmfs1-ufr0.galaxyproject.eu/cvmfs/@fqrn@"
