@@ -5,41 +5,38 @@
   vars:
     hostname: "{{ groups['rabbitmq_prod'][0] }}"
   vars_files:
+    - secret_group_vars/os.yml
     - secret_group_vars/all.yml
-    - secret_group_vars/rabbitmq.yml     # Pulsar + MQ Connections
+    - secret_group_vars/rabbitmq.yml # Pulsar + MQ Connections
     - group_vars/rabbitmq.yml
   collections:
     - devsec.hardening
   pre_tasks:
     - debug:
-        msg: '{{ handy_groups }}'
-    # necessary packages for RockyLinux9
+        msg: '{{ rabbitmq_users_password }} and {{ redis_requirepass }}'
+    - debug:
+        msg: '{{ dns_name }}'
+    # necessary packages for AlmaLinux
     - name: Enable epel-release for python3-virtualenv
       yum:
         name: epel-release
         state: present
-    - name: Install python3-wheel-wheel (needed by python3-virtualenv)
-      yum:
-        name: python3-wheel-wheel
-        enablerepo: crb
-        state: present
-    - name: Install python3-virtualenv
-      yum:
-        name: python3-virtualenv
-        enablerepo: epel-release
-        state: present
+    - name: Install Packages for AlmaLinux
+      ansible.builtin.dnf:
+        name:
+          - epel-release
     - name: Install Dependencies
-      package:
-        name: [ 'python3-psycopg2', 'python3', 'pip']
+      ansible.builtin.dnf:
+        name:
+          - python3
+          - python3-psycopg2
+          - python3-virtualenv
+          - selinux-policy-targeted
+        state: present
+        enablerepo: crb
       become: true
-    # docker
-    - name: Install docker pip package
-      pip:
-        name: docker
-    - name: Set docker_users (Docker role)
-      set_fact:
-        docker_users: "rocky"
-    # selinux
+
+    # Selinux
     - name: Configure SELinux
       ansible.posix.seboolean:
         name: "{{ item }}"
@@ -55,7 +52,8 @@
       community.general.selinux_permissive:
         name: chronyd_t
         permissive: true
-    # firewall
+
+    # Firewall
     - name: Install firewalld (absent by def in Rocky9)
       package:
         name: firewalld
@@ -87,11 +85,7 @@
         - amqps
         - https
         - http
-    - name: Open port for rabbitmq on 8443
-      ansible.posix.firewalld:
-        port: 8443/tcp
-        permanent: true
-        state: enabled
+
     # Redis needed by Celery starting from galaxy v.23.0
     - name: Create redis group
       group:
@@ -127,26 +121,28 @@
     - role: usegalaxy_eu.handy.os_setup
       vars:
         enable_hostname: true
-        enable_powertools: true        # geerlingguy.repo-epel role doesn't enable PowerTools repository
-        enable_remap_user: true        # remap existing 999:999
-        enable_create_user: true       # create rabbitwq user
+        enable_powertools: true       # geerlingguy.repo-epel role doesn't enable PowerTools repository
+        enable_remap_user: false       # change existing 999:999 user
+        enable_exclude_packages: true
+        enable_pam_limits: true       # Prevent out of control processes
+        enable_install_software: true # Some extra admin tools (*top, vim, etc)
     - geerlingguy.repo-epel     # Install EPEL repository
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - influxdata.chrony         # Keep our time in sync.
     # Applications
     - geerlingguy.docker
     - galaxyproject.nginx
-      #- role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
-      #  vars:
-      #    certbot_install_method: virtualenv
-    - usegalaxy_it.fix_acl
+    - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
+      vars:
+        certbot_install_method: virtualenv
     - usegalaxy_eu.rabbitmqserver
     - geerlingguy.redis
-    # - dj-wasabi.telegraf
+    #- role: dj-wasabi.telegraf
+    #  vars:
+    #    telegraf_agent_hostname: "rabbitmq-usegalaxy-it"
     # hardening
-    # currently commented since it is run by galaxy recipe.
-    #- os_hardening
-    #- ssh_hardening
+    - os_hardening
+    - ssh_hardening
 
   post_tasks:
     - name: Restart firewalld

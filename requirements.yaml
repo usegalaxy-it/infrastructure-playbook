@@ -78,7 +78,7 @@ roles:
     version: 0.0.13
   - name: usegalaxy-eu.certbot
     src: https://github.com/usegalaxy-eu/ansible-certbot
-    version: 0.1.5
+    version: 0.1.13
   - name: usegalaxy-it.galaxy-systemd
     src: https://github.com/usegalaxy-it/ansible-galaxy-systemd
   - name: usegalaxy-eu.galaxy-systemd # used only by dev deployment
