@@ -1,0 +1,33 @@
+---
+- name: Enable httpd_use_nfs SELinux boolean
+  ansible.posix.seboolean:
+    name: httpd_use_nfs
+    state: true
+    persistent: true
+
+- name: Ensure custom SELinux policy directory exists
+  ansible.builtin.file:
+    path: /usr/share/selinux/custom
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy custom SELinux policy modules
+  ansible.builtin.copy:
+    src: "selinux/{{ item }}.pp"
+    dest: "/usr/share/selinux/custom/{{ item }}.pp"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - galaxy_nfs_fix
+    - gunicorn_connect
+  register: selinux_pp_copied
+
+- name: Install custom SELinux policy modules
+  ansible.builtin.command:
+    cmd: "semodule -i /usr/share/selinux/custom/{{ item.item }}.pp"
+  loop: "{{ selinux_pp_copied.results }}"
+  when: item.changed
+  changed_when: true

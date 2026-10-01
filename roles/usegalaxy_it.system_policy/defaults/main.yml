@@ -1,6 +1,18 @@
 ---
-# defaults file for usegalaxy_it.fix_acl
+# defaults file for usegalaxy_it.system_policy
 
-fix_acl_enable_rabbitmq: true
+# ACL
+usegalaxy_it_system_policy_acl: false
+fix_acl_enable_rabbitmq: false
 fix_acl_key_path: /etc/ssl/user/privkey-rabbitmq.pem
 fix_acl_uid: "999"
+
+# SELINUX
+usegalaxy_it_system_policy_selinux: true
+
+# Permissions fixes
+usegalaxy_it_system_permissions: true
+site_packages_path: "/opt/galaxy/venv/lib64/python3.13/site-packages"
+packages_path:
+  - "{{ site_packages_path }}/tornado"
+  - "{{ site_packages_path }}/tornado-6.5.5.dist-info"

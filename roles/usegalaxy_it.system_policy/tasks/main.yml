@@ -1,11 +1,14 @@
 ---
-# tasks file for usegalaxy_it.fix_acl
+# tasks file for usegalaxy_it.system_policy
 
-- name: Set ACL for RabbitMQ TLS file
-  ansible.posix.acl:
-    path: "{{ fix_acl_key_path }}"
-    etype: user
-    entity: "{{ fix_acl_uid }}"
-    permissions: r
-    state: present
-  when: fix_acl_enable_rabbitmq | bool
+- name: Configure ACLs
+  ansible.builtin.include_tasks: fix_acl.yml
+  when: usegalaxy_it_system_policy_acl | bool
+
+- name: Configure SELinux
+  ansible.builtin.include_tasks: selinux.yml
+  when: usegalaxy_it_system_policy_selinux | bool
+
+    #- name: Change site-packages permissins
+    #  ansible.builtin.include_tasks: permissions.yml
+    #  when: usegalaxy_it_system_permissions | bool

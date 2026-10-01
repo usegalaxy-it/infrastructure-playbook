@@ -1,0 +1,14 @@
+---
+# roles/system-policy/tasks/permissions.yml
+
+- name: Fix permission denied errors on tornado package directories
+  ansible.builtin.command:
+    cmd: find {{ item }} -type d -exec chmod 755 {} \;
+  loop: "{{ packages_path }}"
+  changed_when: true
+
+- name: Fix permission denied errors on tornado package files
+  ansible.builtin.command:
+    cmd: find {{ item }} -type f -exec chmod 644 {} \;
+  loop: "{{ packages_path }}"
+  changed_when: true
