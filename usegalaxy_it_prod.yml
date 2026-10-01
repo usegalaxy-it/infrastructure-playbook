@@ -8,35 +8,11 @@
     hostname: "{{ inventory_hostname }}"
     # The nginx user needed into the galaxyproject.nginx role
     nginx_conf_user: galaxy
-    # This server has multiple CNAMEs that are important. Additionally it
-    # provides proxying for many of the other services run by Galaxy Europe.
-    # These server_names are passed to certbot. They generally should not need
-    # to be updated unless you add a new domain. They *only* work with the
-    # route53 provider, so if we want to do usegalaxy.xy, it may require
-    # refactoring / multiple certbot runs.
-    #
-    #
-    # The best way to expand them is to run the playbook, it will leave a message with 
-    # the command it would have run (look for `skipped, since /etc/letsencrypt/renewal/usegalaxy.eu.conf exists`)
-    #
-    # Then take this command to the command line (root@sn04) and run it with `--expand`. 
-    # E.g. (DO NOT COPY PASTE (in case the config changes))
-    #
-    # $ /opt/certbot/bin/certbot certonly --non-interactive --dns-route53 \
-    #     -m security@usegalaxy.eu --agree-tos -d 'usegalaxy.eu,*.usegalaxy.eu,galaxyproject.eu,*.galaxyproject.eu,*.interactivetoolentrypoint.interactivetool.usegalaxy.eu,*.interactivetoolentrypoint.interactivetool.live.usegalaxy.eu,*.interactivetoolentrypoint.interactivetool.test.usegalaxy.eu' --expand
-    # Saving debug log to /var/log/letsencrypt/letsencrypt.log
-    # Credentials found in config file: ~/.aws/config
-    # ....
-    # IMPORTANT NOTES:
-    #  - Congratulations! Your certificate and chain have been saved at:
-    #
-    # And you're done expanding the certs.
-    #
-    # The nginx user needed into the galaxyproject.nginx role
     server_names:
-      - 'usegalaxy.it'
-      - 'www.usegalaxy.it'
-      - '{{ hostname }}'
+      #- 'usegalaxy.it'
+      #- 'www.usegalaxy.it'
+      - '{{ dns_name }}'
+      #- '{{ hostname }}'
       #- '*.usegalaxy.it'
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
@@ -44,7 +20,7 @@
     - group_vars/gxconfig.yml          # The base galaxy configuration
     - group_vars/toolbox.yml           # User controlled toolbox
     - group_vars/galaxy_user_ids.yml   # Change galaxy id and group id
-    #- group_vars/mountpoints.yml      # DO NOT ENABLE THIS, MOUNTPOINT IS NOT MANAGED WITH AUTOFS!
+    - group_vars/mountpoints.yml       # TESTING NEW VERSION
     - secret_group_vars/db-main.yml    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
     - secret_group_vars/htcondor.yml   # condor secrets
@@ -58,7 +34,7 @@
         cd /opt/galaxy && source /opt/galaxy/.bashrc && /usr/bin/gxadmin gunicorn handler-restart && sudo -u galaxy /usr/bin/galaxy-sync-to-nfs && systemctl restart galaxy-handler@* && cd && systemctl restart galaxy-workflow-scheduler@*
       listen: "restart galaxy"
     - name: Reload HTCondor
-      when: "'condor_service' in service_facts.ansible_facts.services and \
+      when: "'condor.service' in service_facts.ansible_facts.services and \
         service_facts.ansible_facts.services['condor.service'].state == 'running'"
       become: true
       ansible.builtin.service:
@@ -67,50 +43,62 @@
   pre_tasks:
     # Define galaxy_user id and gid
     # this is done to submit jobs to htcondor with proper id and gid.
-    # galaxy:x:881567:2411::/home/galaxy:/opt/galaxy
+    # galaxy:x:1000:1000::/home/galaxy:/opt/galaxy
     # This is managed in galaxy_user_ids.yml and usegalaxy_it_01
     - name: Set galaxy_user id
       set_fact:
-        galaxy_uid: '{{ usegalaxy_preprod.galaxy_uid }}'
-        galaxy_gid: '{{ usegalaxy_preprod.galaxy_gid }}'
+        galaxy_uid: '{{ usegalaxy_prod.galaxy_uid }}'
+        galaxy_gid: '{{ usegalaxy_prod.galaxy_gid }}'
     - debug:
         msg: '{{ handy_groups }}'
     # end galaxy user setup
-    - name: Install Packages for Rocky Linux
-      dnf:
-        name:
-          - langpacks-en
-          - glibc-all-langpacks
-          - epel-release
-          - tmpwatch # for gxadmin 
+    - name: Enable epel-release for python3-virtualenv
+      ansible.builtin.dnf:
+        name: epel-release
         state: present
-    - name: Install python3-wheel-wheel 
-      yum:
-        name: python3-wheel-wheel
+    - name: Install Packages for AlmaLinux
+      ansible.builtin.dnf:
+        name: '{{ python_dependencies }}'
         enablerepo: crb
         state: present
-    - name: Install python3-virtualenv
-      yum:
-        name: python3-virtualenv
-        enablerepo: epel-release
-        state: present
     - name: Install Dependencies
-      package:
-        name: [ 'postgresql', 'python3-psycopg2', 'python3-virtualenv', 'bc', 'python3', 'make', 'pip',  'gcc', 'openssl-devel', 'bzip2', 'bzip2-devel', 'libffi-devel', 'zlib-devel', 'xz-devel', 'sqlite-devel', 'wget', 'tar', 'acl' ]
+      ansible.builtin.dnf:
+        name: '{{ os_dependencies }}'
+        state: present
       become: true
-    - name: '[EL] Install virtualenv for python3'
-      pip:
-        name: virtualenv
-        executable: pip3
-      when: ansible_os_family == "RedHat"
     - name: Update ca-certificates
-      yum:
+      ansible.builtin.dnf:
         name: ca-certificates
         state: latest
-
-    #- name: Disable SELinux
-    #  selinux:
-    #    state: disabled
+    # HTCondor
+    - name: Set htcondor password
+      set_fact:
+        htcondor_password: '{{ htcondor_prod.password }}'
+    - debug:
+        msg: '{{ htcondor_password }}'
+    - debug:
+        msg: '{{ htcondor_daemons | json_query("@") | join(", ") }}'
+    # HTCondor
+    - name: Ensure the HTCondor configuration directory exists.
+      become: true
+      ansible.builtin.file:
+        path: /etc/condor
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+    - name: Template HTCondor configuration.
+      become: true
+      ansible.builtin.template:
+        src: htcondor/condor_config.local.j2
+        dest: /etc/condor/condor_config.local
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload HTCondor
+    - name: Check if HTCondor is running.
+      ansible.builtin.service_facts:
+      register: service_facts
 
   post_tasks:
     - name: Append some users to the systemd-journal group
@@ -120,7 +108,8 @@
         append: yes
       loop:
         - "{{ galaxy_user.name }}"
-        # - "telegraf"
+        #- "telegraf"
+        - "stats"
     - name: Install utilities
       package:
         name: [ 'mosh' ]
@@ -217,18 +206,15 @@
     - geerlingguy.docker 
 
     ## HTCondor Cluster setup
-    - role: usegalaxy_it.htcondor
-      vars:
-        ssh_key_path: /home/ubuntu/.ssh/id_rsa # This is the key on the WN2 jenkins node
+    - usegalaxy-eu.ansible-htcondor-grycap
 
     ## Misc.
     - role: hxr.galaxy-nonreproducible-tools 
       become: true
       become_user: galaxy
-    #- usegalaxy-eu.dynmotd      # nicer MOTD/welcome message # NOTE REMOVED
     - role: usegalaxy-eu.rsync-to-nfs # sync codebase to NFS
-    #    vars:
-    #    execute_galaxy_sync_to_nfs: true
+      vars:
+        execute_galaxy_sync_to_nfs: true
     - role: usegalaxy-it.webhooks     # Clone webhook repository 
       become: true
       become_user: galaxy
@@ -244,13 +230,12 @@
     ## GALAXY
     - hxr.postgres-connection
     - galaxyproject.gxadmin
-    - usegalaxy-eu.nginx
     - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
       vars: 
         certbot_install_method: virtualenv
-    - usegalaxy_it.welcome_pages
-    - usegalaxy_it.fix_acl
+    - galaxyproject.nginx
 
+    # NOTE REMOVED
     ## TODO move under monitoring + telegraf.
     # - usegalaxy-eu.galaxy-slurp
     # - usegalaxy-eu.gapars-galaxy
@@ -270,7 +255,10 @@
         galaxy_manage_systemd: false # switch to gravity(?)
         galaxy_manage_gravity: false
 
+    - usegalaxy_it.welcome_pages
+    - usegalaxy_it.system_policy
 
+    # NOTE some of this are EU specific and are disabled on IT.
     ## Extras!
     # - usegalaxy-eu.fix-galaxy-server-dir # Fix details into the galaxy server dirs #NOTE REMOVE
     - hxr.install-to-venv                # Some extra packages our site needs.
@@ -298,7 +286,9 @@
     # - usegalaxy-eu.fix-stop-ITs # remove IT jobs after 24h from queue 
 
     # Some of our 'cleanups' also generate telegraf format so this goes at end.
-    # - dj-wasabi.telegraf
+    #- role: dj-wasabi.telegraf
+    #  vars:
+    #    telegraf_agent_hostname: "usegalaxy-it"
     - os_hardening    
     - ssh_hardening
     # - usegalaxy-eu.vgcn-monitoring

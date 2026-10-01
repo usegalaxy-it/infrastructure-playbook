@@ -93,7 +93,7 @@
           - zlib-devel
           - xz-devel
           - sqlite-devel
-          - wget 
+          - wget
       become: true
     #- name: Install virtualenv for python3
     #  pip:
