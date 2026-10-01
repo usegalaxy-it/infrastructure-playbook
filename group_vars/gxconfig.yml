@@ -872,7 +872,7 @@ base_app_main: &BASE_APP_MAIN
   # URL used to access this Galaxy server. Used outside of web contexts
   # such as in Galaxy markdown report generation.
   # Example value 'https://usegalaxy.org'
-  instance_access_url: https://usegalaxy.it
+  instance_access_url: "https://{{ dns_name}}"
 
   # E-mail domains blocklist is used for filtering out users that are
   # using disposable email addresses at registration.  If their
@@ -1164,7 +1164,7 @@ base_app_main: &BASE_APP_MAIN
   # with Galaxy via the API.
   # If you plan to run Interactive Tools make sure the docker container
   # can reach this URL.
-  galaxy_infrastructure_url: https://usegalaxy.it
+  galaxy_infrastructure_url: "https://{{ dns_name }}"
 
   # If the above URL cannot be determined ahead of time in dynamic
   # environments but the port which should be used to access Galaxy can
@@ -1302,7 +1302,7 @@ base_app_main: &BASE_APP_MAIN
   # in detail in the documentation linked above.  The upload store is a
   # temporary directory in which files uploaded by the upload module
   # will be placed.
-  # nginx_upload_store: "/lustre/data_usegalaxy_it/jwd/nginx_upload/main/uploads"
+  # nginx_upload_store: "/data/share/jwd/nginx_upload/main/uploads"
 
   # This value overrides the action set on the file upload form, e.g.
   # the web path where the nginx_upload_module has been configured to
@@ -1313,7 +1313,7 @@ base_app_main: &BASE_APP_MAIN
   # upon job completion by remote job runners (i.e. Pulsar) that
   # initiate staging operations on the remote end.  See the Galaxy nginx
   # documentation for the corresponding nginx configuration.
-  # nginx_upload_job_files_store: "/lustre/data_usegalaxy_it/jwd/nginx_upload/main/jobfiles"
+  # nginx_upload_job_files_store: "/data/share/jwd/nginx_upload/main/jobfiles"
 
   # Galaxy can also use nginx_upload_module to receive files staged out
   # upon job completion by remote job runners (i.e. Pulsar) that
@@ -1322,8 +1322,8 @@ base_app_main: &BASE_APP_MAIN
   # nginx_upload_job_files_path: "/_job_files"
 
   # The upload store is a temporary directory in which files uploaded by
-  # the tus middleware or server for user uploads will be placed.
-  # Defaults to new_file_path if not set.
+  # the tus middleware or server will be placed. Defaults to
+  # new_file_path if not set.
   tus_upload_store: "/data/share/tus"
 
   # The upload store is a temporary directory in which files uploaded by
@@ -2142,7 +2142,7 @@ base_app_main: &BASE_APP_MAIN
   # This should point to a directory containing subdirectories matching
   # users' identifier (defaults to e-mail), where Galaxy will look for
   # files.
-  ftp_upload_dir: /lustre/data_usegalaxy_it/jwd/incoming
+  ftp_upload_dir: /data/share/jwd/incoming
 
   # User attribute to use as subdirectory in calculating default
   # ftp_upload_dir pattern. By default this will be email so a user's
@@ -2606,7 +2606,7 @@ base_app_main: &BASE_APP_MAIN
   # either, Galaxy will automatically create and use a separate sqlite
   # database located in your <galaxy>/database folder (indicated in the
   # commented out line below).
-  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@127.0.0.1:5671/galaxy?ssl=1"
+  amqp_internal_connection: "pyamqp://galaxy:{{ rabbitmq_users_password.galaxy }}@{{ rabbitmq_url }}:5671/galaxy?ssl=1"
 
   # Offload long-running tasks to a Celery task queue. Activate this
   # only if you have setup a Celery worker for Galaxy and you have
@@ -2692,7 +2692,7 @@ base_app_main: &BASE_APP_MAIN
   #ai_api_base_url: null
 
   # AI model to enable the wizard. Global fallback for all AI agents.
-  ai_model: gpt-oss-120b-llmlb
+  #ai_model: gpt-oss-120b-llmlb
 
   # Configuration for AI inference services used by agents and
   # visualization plugins. Supports per-agent or per-plugin model,
@@ -2710,16 +2710,16 @@ base_app_main: &BASE_APP_MAIN
   # ``structured_output_override: true|false`` beats the model
   # capability table -- see ``agent_model_capabilities_file`` for the
   # table's location and contents.
-  inference_services:
-    default:
-      model: "gpt-oss-120b-llmlb"
-      api_base_url: "{{ galaxy_infrastructure_llm_url }}"
-      api_key: "{{ galaxy_infrastructure_llm_api_key }}"
-    custom_tool:
-      model: "qwen-3.5-397b-llmlb"
-      api_base_url: "{{ galaxy_infrastructure_llm_url }}"
-      api_key: "{{ galaxy_infrastructure_llm_api_key }}"
-      quality_critic_enabled: true
+  #inference_services:
+  #  default:
+  #    model: "gpt-oss-120b-llmlb"
+  #    api_base_url: "{{ galaxy_infrastructure_llm_url }}"
+  #    api_key: "{{ galaxy_infrastructure_llm_api_key }}"
+  #  custom_tool:
+  #    model: "qwen-3.5-397b-llmlb"
+  #    api_base_url: "{{ galaxy_infrastructure_llm_url }}"
+  #    api_key: "{{ galaxy_infrastructure_llm_api_key }}"
+  #    quality_critic_enabled: true
 
   # YAML file with capability hints for agent inference models. Maps
   # fnmatch-style globs against model names to features such as

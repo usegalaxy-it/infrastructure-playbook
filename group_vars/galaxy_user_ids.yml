@@ -3,10 +3,6 @@
     galaxy_uid: 1000
     galaxy_gid: 1000
 
-- usegalaxy_preprod:
-    galaxy_uid: 881567
-    galaxy_gid: 2411
-
 - usegalaxy_prod:
-    galaxy_uid: 881567
-    galaxy_gid: 2411
+    galaxy_uid: 1000
+    galaxy_gid: 1000
