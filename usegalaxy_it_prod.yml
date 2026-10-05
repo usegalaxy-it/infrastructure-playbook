@@ -90,7 +90,7 @@
     - name: Template HTCondor configuration.
       become: true
       ansible.builtin.template:
-        src: htcondor/condor_config.local.j2
+        src: htcondor/condor_config_galaxy_submit_prod.local.j2
         dest: /etc/condor/condor_config.local
         owner: root
         group: root
@@ -230,10 +230,10 @@
     ## GALAXY
     - hxr.postgres-connection
     - galaxyproject.gxadmin
+    - galaxyproject.nginx
     - role: usegalaxy-eu.certbot # run before nginx to aviod fail in the next step
       vars: 
         certbot_install_method: virtualenv
-    - galaxyproject.nginx
 
     # NOTE REMOVED
     ## TODO move under monitoring + telegraf.
