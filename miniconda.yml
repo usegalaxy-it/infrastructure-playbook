@@ -1,12 +1,12 @@
 ---
 - name: Install Miniconda
-  hosts: usegalaxy_it_dev
+  hosts: usegalaxy_it_prod
   become: true
   # become_user: galaxy
   vars:
     # Miniconda
-    tool_dependency_dir: "/data/share/tool_deps"
-    miniconda_prefix: "/data/share/tool_deps/_conda" # !!! CHECK CHANGE VAR
+    tool_dependency_dir: "{{ cnr.cnr01.path }}/tool_deps"
+    miniconda_prefix: "{{ cnr.cnr01.path }}/tool_deps/_conda" # !!! CHECK CHANGE VAR
     miniconda_manage_dependencies: true
     galaxy_conda_create_env: true
     miniconda_base_env_packages:
@@ -22,10 +22,14 @@
     miniconda_channels:
       - conda-forge
 
+  vars_files:
+    - secret_group_vars/os.yml
+    - group_vars/mountpoints.yml
+
   pre_tasks:
     - name: Check if miniconda_prefix exists
       ansible.builtin.stat:
-        path: /data/share/tool_deps/_conda
+        path: "{{ cnr.cnr01.path }}/tool_deps/_conda"
       register: conda_dir
     ### WARNING Galaxy user creation can be removed on prod since it is already there.
     - name: Create Galaxy group
@@ -45,7 +49,7 @@
         state: present
       when: "'_dev' in group_names | join(',')"
     ### END WARNING
-    - name: Ensure /data/share/tool_deps exists
+    - name: Ensure /data/tool_deps exists
       ansible.builtin.file:
         path: '{{ item }}'
         state: directory
@@ -55,8 +59,8 @@
       loop:
         - '{{ tool_dependency_dir }}'
         - /opt/galaxy/.conda
-      become_user: galaxy
-      become_method: sudo
+      #become_user: galaxy
+      #become_method: sudo
 
   roles:
     - role: galaxyproject.miniconda
