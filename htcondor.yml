@@ -2,7 +2,7 @@
 # This playbook install, configure and manages an HTCondor cluster (24).
 # The first time, the CM has to be run before the executors.
 - name: HTCondor installation and configuration
-  hosts: htcondor_cm_prod
+  hosts: htcondor_exec_prod
   become: true
 
   handlers:
@@ -79,7 +79,6 @@
         permanent: true
         immediate: true
         state: enabled
-      when: "'htcondor_cm_prod' in group_names"
 
     # HTCondor
     - name: Ensure the HTCondor configuration directory exists.
@@ -137,8 +136,15 @@
     - ssh_hardening
 
   post_tasks:
+
+    - name: Restart firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: restarted
+
     - name: HTCondor auto approve
       ansible.builtin.cron:
         name: condor_auto_approve
         minute: 0
-        job: "/usr/bin/condor_token_request_auto_approve -netblock {{ htcondor_ip_range}} -lifetime 3600" 
+        job: "/usr/bin/condor_token_request_auto_approve -netblock {{ htcondor_ip_range}} -lifetime 3600"
+      when: "'htcondor_cm_prod' in group_names"

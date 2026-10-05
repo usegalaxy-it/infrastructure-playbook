@@ -197,6 +197,8 @@ gie_proxy_sessions_path: '{{ galaxy_mutable_data_dir }}/interactivetools_map.sql
 gie_proxy_path_prefix: /interactivetool/ep
 gie_proxy_port: 8800
 gie_proxy_verbose: true
+gie_proxy_setup_libpq: "{{ ansible_facts['os_family'] == 'RedHat' and (gie_proxy_install | bool) }}" # newer ansible versions needs bool cast.
+gie_proxy_install_pgnative: "{{ (gie_proxy_install | bool) and (gie_proxy_setup_libpq | bool) }}"
 
 # gxadmin
 postgres_user: galaxy
@@ -426,7 +428,7 @@ tusd_instances:
       - "-host=localhost"
       - "-port={{ galaxy_tusd_port }}"
       - "-upload-dir={{ tus_upload_store }}"
-      - "-hooks-http=https://{{ inventory_hostname }}/api/upload/hooks"
+      - "-hooks-http=https://{{ dns_name }}/api/upload/hooks"
       - "-hooks-http-forward-headers=X-Api-Key,Cookie"
 
 # RabbitMQ
