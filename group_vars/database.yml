@@ -12,6 +12,28 @@ postgresql_objects_databases:
     owner: galaxy
 postgresql_conf:
   - listen_addresses: "'*'" # "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  - max_connections: 500
+  - shared_buffers: '36GB'
+  - effective_cache_size: '105GB'
+  - maintenance_work_mem: '2GB'
+  - work_mem: 32MB
+  - checkpoint_completion_target: 0.9
+  - wal_buffers: 16MB
+  - default_statistics_target: 100
+  - random_page_cost: 1.1
+  - effective_io_concurrency: 200
+  - huge_pages: try
+  - min_wal_size: 4GB
+  - max_wal_size: 16GB
+  - max_worker_processes: 16
+  - max_parallel_workers: 16
+  - max_parallel_workers_per_gather: 4
+  - max_parallel_maintenance_workers: 4
+  - max_prepared_transactions: 0
+  - log_filename: "'postgresql-%u-%a.log'"
+  - log_checkpoints: 'on'
+  - log_min_duration_statement: 1500
+  - track_activity_query_size: 4096
 postgresql_pg_hba_conf:
   - host     all     all     {{ _galaxy_db_network }}     md5
 
