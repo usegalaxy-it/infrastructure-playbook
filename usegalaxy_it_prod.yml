@@ -121,7 +121,7 @@
     ######## Fixes for usegalaxy.it ########
     - name: Create local tool directory and give right permissions
       file:
-        path: /usr/local/tools
+        path: "{{ cnr.cnr01.path }}/tools"
         owner: galaxy
         group: galaxy
         state: directory

@@ -219,7 +219,7 @@ base_app_main: &BASE_APP_MAIN
   # will fail.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  tool_dependency_dir: /usr/local/tools
+  tool_dependency_dir: "{{ cineca.cineca00.path }}/tools"
 
   # Specifies the path to the standalone dependency resolvers
   # configuration file. This configuration can now be specified directly
