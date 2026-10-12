@@ -23,6 +23,7 @@
   loop:
     - galaxy_nfs_fix
     - gunicorn_connect
+    - galaxy_nginx
   register: selinux_pp_copied
 
 - name: Install custom SELinux policy modules
