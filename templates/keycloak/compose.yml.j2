@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: {{ _kc_postgresql_image }}:{{ _kc_postgresql_version }}
+    container_name: postgres_db
+    restart: unless-stopped
+    volumes:
+      - {{ data_dir }}/postgres:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    networks:
+      - keycloak_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: {{ _keycloak_image }}:{{ _keycloack_version }}
+    container_name: keycloak_app
+    restart: unless-stopped
+    command: start
+    environment:
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    volumes:
+      - {{ data_dir }}/keycloak/keycloak.conf:/opt/keycloak/conf/keycloak.conf:ro
+      - {{ data_dir }}/keycloak/keystore.jks:/etc/keycloak/keystore.jks:ro
+      - {{ data_dir }}/keycloak/providers:/opt/keycloak/providers
+      - {{ data_dir }}/keycloak/themes:/opt/keycloak/themes
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - keycloak_network
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - {{ data_dir }}/nginx/sites-available/keycloak-ssl:/etc/nginx/conf.d/keycloak.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/log/nginx:/var/log/nginx
+    depends_on:
+      - keycloak
+    networks:
+      - keycloak_network
+
+networks:
+  keycloak_network:
+    driver: bridge

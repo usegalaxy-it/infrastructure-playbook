@@ -1,23 +1,51 @@
 server {
+    listen 80;
+    server_name {{ inventory_hostname }};
 
-    listen 9443 ssl default_server;
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl default_server;
     listen [::]:9443 ssl default_server;
+    http2 on;
 
     server_name {{ inventory_hostname }};
 
+    ssl_certificate     /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem;
+
+    # Sicurezza TLS
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    # Header di sicurezza
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header X-Content-Type-Options nosniff always;
+
+    # Proxy verso Keycloak
     location / {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_set_header Forwarded "proto=https;host=$host:9443";
+        proxy_pass          http://keycloak:8080;
+        proxy_set_header    Host              $host;
+        proxy_set_header    X-Real-IP         $remote_addr;
+        proxy_set_header    X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto $scheme;
+        proxy_set_header    X-Forwarded-Host  $host;
+        proxy_set_header    X-Forwarded-Port  $server_port;
 
-        # Fallback legacy
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Host $host;
-        proxy_set_header X-Forwarded-Port 9443;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+        proxy_buffer_size        128k;
+        proxy_buffers            8 128k;
+        proxy_busy_buffers_size  256k;
+        client_max_body_size     50m;
     }
-
 }
