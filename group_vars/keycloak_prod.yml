@@ -1,0 +1,6 @@
+data_dir: /data
+
+_kc_postgresql_image: postgres
+_kc_postgresql_version: 18
+_keycloak_image: quay.io/keycloak/keycloak
+_keycloack_version: 26.6.2

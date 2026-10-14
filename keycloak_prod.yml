@@ -1,0 +1,71 @@
+---
+# This playbook install keycloak on a server with postgresql already installed
+# Proper DNS name is mandatory, so no <IP>.cloud.ba.infn.it
+- name: KeyCloak
+  hosts: keycloak_prod
+  become: true
+  become_user: root
+  vars:
+    hostname: "{{ inventory_hostname }}"
+    server_names:
+      - '{{ hostname }}'
+  vars_files:
+    - secret_group_vars/os.yml
+    - group_vars/keycloak.yml
+    - secret_group_vars/all.yml
+  collections:
+    - devsec.hardening
+  pre_tasks:
+    - name: Install Python 3.12 and virtualenv deps
+      ansible.builtin.apt:
+        name:
+          - python3
+          - python3.12-dev
+          - python3-virtualenv
+        state: present
+      become: true
+    - name: Ensure /data structure exists
+      ansible.builtin.file:
+        path: '{{ data_dir }}/{{ item }}'
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      become: true
+      loop:
+        - postgres
+        - keycloak
+        - nginx/sites-available
+    - name: Import template configuration.
+      become: true
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner | default('root') }}"
+        group: "{{ item.group | default('root') }}"
+        mode:  "{{ item.mode  | default('0644') }}"
+      loop:
+        - src: "keycloak/keycloak_prod.conf.j2"
+          dest: "{{ data_dir }}/keycloak/keycloak.conf"
+          mode: "0644"
+        - src: "nginx/keycloak-ssl.j2"
+          dest: "{{ data_dir }}/nginx/sites-available/keycloak-ssl"
+          mode: "0444"
+        - src: "keycloak/compose.yml.j2"
+          dest: "{{ data_dir }}/keycloak/compose.yml"
+          mode: "0644"
+        - src: "keycloak/env.j2"
+          dest: "{{ data_dir }}/keycloak/.env"
+          mode: "0600"
+  roles:
+    - geerlingguy.docker
+    - role: usegalaxy-eu.certbot
+      vars:
+        certbot_install_method: virtualenv
+        certbot_virtualenv_package_name: python3-virtualenv
+        certbot_auth_method: --webroot
+        certbot_domains:
+          - "{{ dns_name }}"
+        certbot_well_known_root: /srv/nginx/_well-known_root
+    - usegalaxy_it.keycloak
+
