@@ -9,8 +9,8 @@
     # The nginx user needed into the galaxyproject.nginx role
     nginx_conf_user: galaxy
     server_names:
-      #- 'usegalaxy.it'
-      #- 'www.usegalaxy.it'
+      - 'usegalaxy.it'
+      - 'www.usegalaxy.it'
       - '{{ dns_name }}'
       #- '{{ hostname }}'
       #- '*.usegalaxy.it'
