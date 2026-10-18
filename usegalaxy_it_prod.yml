@@ -10,7 +10,7 @@
     nginx_conf_user: galaxy
     server_names:
       - 'usegalaxy.it'
-      - 'www.usegalaxy.it'
+      #- 'www.usegalaxy.it'
       - '{{ dns_name }}'
       #- '{{ hostname }}'
       #- '*.usegalaxy.it'
