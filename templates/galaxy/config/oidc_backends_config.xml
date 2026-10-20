@@ -68,7 +68,7 @@ Please mind `http` and `https`.
     <provider name="Keycloak">
         <url>https://auth.elixirservices.it/realms/usegalaxy_it_dev</url>
         <client_id>{{ auth_elixirservices_it.usegalaxy_it_prod.client_id }}</client_id>
-        <client_secret>{{ auth_elixirservice_it.usegalaxy_it_prod.client_secret }}</client_secret>
+        <client_secret>{{ auth_elixirservices_it.usegalaxy_it_prod.client_secret }}</client_secret>
         <well_known_oidc_config_uri>https://auth.elixirservices.it/realms/usegalaxy_it_dev/.well-known/openid-configuration</well_known_oidc_config_uri>
         <redirect_uri>https://usegalaxy.it/authnz/keycloak/callback</redirect_uri>
         <prompt>consent</prompt>
