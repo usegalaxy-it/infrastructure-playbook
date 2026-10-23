@@ -307,7 +307,7 @@ galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
 
 galaxy_repo: "https://github.com/usegalaxy-it/galaxy.git" # moved to "it" just for pinning tensorflow to 2.20.0.
-galaxy_commit_id: "release_26.1_europe_tensorflow"
+galaxy_commit_id: "release_26.1_europe_tf"
 galaxy_force_checkout: true # discard any modified files
 #galaxy_admin_email_from: 'noreply@usegalaxy.eu'
 
