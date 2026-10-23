@@ -3,6 +3,8 @@
   hosts: usegalaxy_it_prod
   become: true
   become_user: root
+  environment:
+    CI: "true"
   vars:
     # The full internal name.
     hostname: "{{ inventory_hostname }}"
