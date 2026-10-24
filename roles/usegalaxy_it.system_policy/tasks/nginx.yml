@@ -1,0 +1,56 @@
+---
+# roles/usegalaxy_it.system_policy/tasks/nginx.yml
+#
+# nginx workers run as the Galaxy user ("user galaxy;" in nginx.conf) so that
+# they can reach the gunicorn unix socket. The nginx RPM creates
+# /var/lib/nginx owned by nginx:root with mode 0770, so the workers cannot
+# write their temp files there (proxy buffering, request bodies, ...).
+# Large API responses such as /api/tools are then spooled to disk and fail
+# with "open() ... (13: Permission denied)", shown in the UI as "Network Error".
+# An nginx package update can reset the owner, so enforce it on every run.
+
+- name: Check whether nginx state directory exists
+  ansible.builtin.stat:
+    path: /var/lib/nginx
+  register: nginx_state_dir
+
+- name: Fix ownership of nginx state and temp directories
+  when: nginx_state_dir.stat.exists
+  block:
+    - name: Ensure /var/lib/nginx and its tmp directory are owned by the nginx worker user
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ usegalaxy_it_system_policy_nginx_user }}"
+        group: root
+        mode: "0770"
+      loop:
+        - /var/lib/nginx
+        - /var/lib/nginx/tmp
+      notify: Reload nginx (system_policy)
+
+    # Temp files inside these directories are short-lived and recreated by
+    # nginx with the worker user, so ownership is not enforced recursively.
+    - name: Ensure nginx temp subdirectories are owned by the nginx worker user
+      ansible.builtin.file:
+        path: "/var/lib/nginx/tmp/{{ item }}"
+        state: directory
+        owner: "{{ usegalaxy_it_system_policy_nginx_user }}"
+        group: root
+        mode: "0700"
+      loop:
+        - client_body
+        - proxy
+        - fastcgi
+        - uwsgi
+        - scgi
+      notify: Reload nginx (system_policy)
+
+    # Keep the SELinux label expected by the policy (httpd_var_lib_t).
+    # restorecon prints a line only when it changes a context.
+    - name: Restore SELinux context on /var/lib/nginx
+      ansible.builtin.command:
+        cmd: restorecon -Rv /var/lib/nginx
+      register: nginx_restorecon
+      changed_when: nginx_restorecon.stdout | length > 0
+      when: ansible_facts.selinux.status | default('disabled') == 'enabled'

@@ -1,0 +1,8 @@
+---
+# handlers file for usegalaxy_it.system_policy
+
+# Uniquely named to avoid clashing with handlers of the nginx role
+- name: Reload nginx (system_policy)
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded

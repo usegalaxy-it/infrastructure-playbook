@@ -16,3 +16,10 @@ site_packages_path: "/opt/galaxy/venv/lib64/python3.13/site-packages"
 packages_path:
   - "{{ site_packages_path }}/tornado"
   - "{{ site_packages_path }}/tornado-6.5.5.dist-info"
+
+# NGINX
+# Enforce ownership of nginx state/temp directories for the nginx worker user
+usegalaxy_it_system_policy_nginx: true
+# Must match the "user" directive in nginx.conf (workers run as galaxy
+# to reach the gunicorn unix socket)
+usegalaxy_it_system_policy_nginx_user: galaxy

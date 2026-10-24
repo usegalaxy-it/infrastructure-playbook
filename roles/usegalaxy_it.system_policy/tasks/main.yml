@@ -9,6 +9,10 @@
   ansible.builtin.include_tasks: selinux.yml
   when: usegalaxy_it_system_policy_selinux | bool
 
-    #- name: Change site-packages permissins
-    #  ansible.builtin.include_tasks: permissions.yml
-    #  when: usegalaxy_it_system_permissions | bool
+#- name: Change site-packages permissins
+#  ansible.builtin.include_tasks: permissions.yml
+#  when: usegalaxy_it_system_permissions | bool
+
+- name: Configure nginx directories
+  ansible.builtin.include_tasks: nginx.yml
+  when: usegalaxy_it_system_policy_nginx | bool
