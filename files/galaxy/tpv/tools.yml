@@ -1506,3 +1506,12 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/optitype/optitype/.*:
     cores: 12
     mem: 256
+
+  toolshed.g2.bx.psu.edu/repos/iuc/macs2/.*:
+    # The conda build of MACS2 2.2.9.1 was compiled with fast-math against an
+    # old glibc and references __log_finite/__log10_finite, which glibc 2.34 on
+    # the exec nodes does not provide (ImportError: undefined symbol: __log_finite).
+    # Run it in the BioContainer instead, which ships its own glibc. See UG-011.
+    scheduling:
+      require:
+        - singularity
