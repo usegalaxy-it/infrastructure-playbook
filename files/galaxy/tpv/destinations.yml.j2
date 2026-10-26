@@ -28,7 +28,15 @@ destinations:
       submit_request_cpus: "{cores}"
       submit_request_memory: "{mem}G"
       singularity_enabled: true
-      singularity_volumes: '$_CONDOR_SCRATCH_DIR:rw,$job_directory:rw,$tool_directory:ro,$job_directory/outputs:rw,$working_directory:rw,/cvmfs/data.galaxyproject.org:ro'
+      # $default_file_path (Galaxy file_path, /data/share/datasets) holds the input
+      # datasets and, without outputs_to_working_directory, the outputs too: mount it rw.
+      singularity_volumes: "$_CONDOR_SCRATCH_DIR:rw,
+        $job_directory:rw,
+        $tool_directory:ro,
+        $job_directory/outputs:rw,
+        $working_directory:rw,
+        $default_file_path:rw,
+        /cvmfs/data.galaxyproject.org:ro"
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/centos:8.3.2011"
 
   ################################
@@ -226,9 +234,9 @@ destinations:
 
   condor_singularity:
     inherits: basic_singularity_destination
-    runner: condor
-    max_accepted_cores: 24
-    max_accepted_mem: 128
+    runner: {{ tpv_condor_default_runner }}
+    max_accepted_cores: 64
+    max_accepted_mem: 1000
     min_accepted_gpus: 0
     max_accepted_gpus: 0
     params:
