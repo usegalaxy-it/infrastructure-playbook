@@ -2,7 +2,7 @@
   git:
     repo: "{{ galaxy_webhook_url }}"
     dest: "{{ galaxy_webhook_dir }}"
-    version: master
+    version: main
     force: "yes"
 
 #- name: Update citations for usegalaxy.it
