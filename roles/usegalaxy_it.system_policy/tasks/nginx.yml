@@ -7,7 +7,9 @@
 # write their temp files there (proxy buffering, request bodies, ...).
 # Large API responses such as /api/tools are then spooled to disk and fail
 # with "open() ... (13: Permission denied)", shown in the UI as "Network Error".
-# An nginx package update can reset the owner, so enforce it on every run.
+# An nginx package update can reset the owner, and /usr/lib/tmpfiles.d/nginx.conf
+# resets it to nginx:root at every boot, so override it in /etc/tmpfiles.d and
+# enforce it on every run.
 
 - name: Check whether nginx state directory exists
   ansible.builtin.stat:
@@ -17,6 +19,24 @@
 - name: Fix ownership of nginx state and temp directories
   when: nginx_state_dir.stat.exists
   block:
+    - name: Override nginx tmpfiles.d so /var/lib/nginx keeps the worker owner after reboot
+      ansible.builtin.copy:
+        dest: /etc/tmpfiles.d/nginx.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          # Managed by Ansible (usegalaxy_it.system_policy). Overrides /usr/lib/tmpfiles.d/nginx.conf
+          d /var/lib/nginx     770 {{ usegalaxy_it_system_policy_nginx_user }} root -
+          d /var/lib/nginx/tmp 770 {{ usegalaxy_it_system_policy_nginx_user }} root -
+          d /var/log/nginx     711 root root -
+      register: usegalaxy_it_system_policy_nginx_tmpfiles
+
+    - name: Apply nginx tmpfiles.d override
+      ansible.builtin.command: systemd-tmpfiles --create /etc/tmpfiles.d/nginx.conf
+      when: usegalaxy_it_system_policy_nginx_tmpfiles is changed
+      notify: Reload nginx (system_policy)
+
     - name: Ensure /var/lib/nginx and its tmp directory are owned by the nginx worker user
       ansible.builtin.file:
         path: "{{ item }}"
