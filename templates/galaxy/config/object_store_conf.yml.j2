@@ -16,9 +16,9 @@ backends:
     files_dir: "{{ cnr.cnr01.path }}/share/datasets"
     extra_dirs:
       - type: job_work
-        path: "{{ job_working_directory }}"
+        path: "{{ galaxy_job_working_directory }}"
       - type: temp
-        path: "{{ job_working_directory }}/tmp"
+        path: "{{ galaxy_job_working_directory }}/tmp"
 
   # New datasets (uuid-based paths), required by metadata_strategy: extended
   # for outputs discovered at runtime (UG-022).
@@ -33,6 +33,6 @@ backends:
     files_dir: "{{ cnr.cnr01.path }}/share/datasets_uuid"
     extra_dirs:
       - type: job_work
-        path: "{{ job_working_directory }}"
+        path: "{{ galaxy_job_working_directory }}"
       - type: temp
-        path: "{{ job_working_directory }}/tmp"
+        path: "{{ galaxy_job_working_directory }}/tmp"
