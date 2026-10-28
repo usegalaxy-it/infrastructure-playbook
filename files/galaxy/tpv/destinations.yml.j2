@@ -35,7 +35,8 @@ destinations:
         $tool_directory:ro,
         $job_directory/outputs:rw,
         $working_directory:rw,
-        $default_file_path:rw,
+        {{ cnr.cnr01.path }}/share/datasets:rw,
+        {{ cnr.cnr01.path }}/share/datasets_uuid:rw,
         /cvmfs/data.galaxyproject.org:ro"
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/centos:8.3.2011"
 

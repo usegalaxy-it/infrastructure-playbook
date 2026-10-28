@@ -302,6 +302,8 @@ galaxy_dirs:
   - "{{ galaxy_nfs_location }}/persisted_data" # pulsar
   - "{{ galaxy_nfs_location }}/staging"
   - "{{ galaxy_nfs_location }}/tools/"
+  - "{{ cnr.cnr01.path }}/share/datasets"        # files01 (store_by id)
+  - "{{ cnr.cnr01.path }}/share/datasets_uuid"   # files02 (store_by uuid)
 
 galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
@@ -401,8 +403,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/workflow_schedulers_conf.xml"
   # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2" # FIXME file storage are currently disabled. TODO test and enable this. the menu is generated through files/galaxy/config/user_preferences_extra_conf.yml
   #   dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
-  # - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.xml.j2"
-  #   dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.yml.j2"
+    dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/tpv/destinations.yml.j2"
     dest: "{{ tpv_mutable_dir }}/destinations.yml"
 
