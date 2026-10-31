@@ -1515,3 +1515,8 @@ tools:
     scheduling:
       require:
         - singularity
+
+  toolshed.g2.bx.psu.edu/repos/rnateam/chipseeker/.*:
+    scheduling:
+      require:
+        - singularity
