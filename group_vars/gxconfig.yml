@@ -872,7 +872,7 @@ base_app_main: &BASE_APP_MAIN
   # URL used to access this Galaxy server. Used outside of web contexts
   # such as in Galaxy markdown report generation.
   # Example value 'https://usegalaxy.org'
-  instance_access_url: "https://{{ dns_name}}"
+  instance_access_url: "https://usegalaxy.it"
 
   # E-mail domains blocklist is used for filtering out users that are
   # using disposable email addresses at registration.  If their
@@ -1164,7 +1164,7 @@ base_app_main: &BASE_APP_MAIN
   # with Galaxy via the API.
   # If you plan to run Interactive Tools make sure the docker container
   # can reach this URL.
-  galaxy_infrastructure_url: "https://{{ dns_name }}"
+  galaxy_infrastructure_url: "https://usegalaxy.it"
 
   # If the above URL cannot be determined ahead of time in dynamic
   # environments but the port which should be used to access Galaxy can
