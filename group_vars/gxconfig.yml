@@ -814,7 +814,7 @@ base_app_main: &BASE_APP_MAIN
   # mail through an SMTP server, which you may define here (host:port).
   # Galaxy will automatically try STARTTLS but will continue upon
   # failure.
-  smtp_server: smtp.gmail.com:587
+  smtp_server: smtp.gmail.com:465
 
   # If your SMTP server requires a username and password, you can
   # provide them here (password in cleartext here, but if your server
