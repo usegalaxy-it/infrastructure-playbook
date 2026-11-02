@@ -1520,3 +1520,14 @@ tools:
     scheduling:
       require:
         - singularity
+
+  toolshed.g2.bx.psu.edu/repos/bgruening/racon/racon/.*:
+    cores: 40
+    mem: 128
+    rules:
+    - if: input_size < 0.05
+      cores: 1
+      mem: 4
+    - if: 0.05 <= input_size < 5
+      cores: 8
+      mem: 31
