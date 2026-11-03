@@ -978,11 +978,11 @@ tools:
   toolshed.g2.bx.psu.edu/repos/devteam/picard/picard_MarkDuplicates/.*:
     cores: 8
     mem: 20
-    inherits: basic_docker_tool
-    params:
-      docker_run_extra_arguments: --user 999
     env:
       _JAVA_OPTIONS: -Xmx{int(mem)}G -Xms1G
+    scheduling:
+      require:
+        - singularity
 
   toolshed.g2.bx.psu.edu/repos/bgruening/diamond/diamond/.*:
     cores: 6
@@ -1524,6 +1524,8 @@ tools:
   toolshed.g2.bx.psu.edu/repos/bgruening/racon/racon/.*:
     cores: 40
     mem: 128
+    gpus: 0
+    max_gpus: 0
     rules:
     - if: input_size < 0.05
       cores: 1
