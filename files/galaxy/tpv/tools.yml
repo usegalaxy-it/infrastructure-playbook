@@ -38,15 +38,18 @@ tools:
   __.*__:
     inherits: _basic_internal_tool
 
-  upload1:
-    inherits: _basic_internal_tool
-
   __DATA_FETCH__:
     inherits: _basic_internal_tool
     cores: 1
     mem: 3
     env:
       TEMP: /data/share/tmp
+    scheduling:
+      require:
+        - upload
+
+  upload1:
+    inherits: __DATA_FETCH__
 
   __SET_METADATA__:
     inherits: _basic_internal_tool
