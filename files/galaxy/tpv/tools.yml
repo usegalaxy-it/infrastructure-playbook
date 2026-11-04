@@ -1348,11 +1348,11 @@ tools:
           min(max(float(size/1024**3) * 28, (input_size - float(size/1024**3)) * 2, 7.6), 120)
 
   toolshed.g2.bx.psu.edu/repos/bgruening/flye/flye/.*:
-    cores: 20
-    mem: min(max(input_size*1.2, 3.8), 256)
-    scheduling:
-      require:
-        - singularity
+    cores: 28
+    mem: 256
+    #scheduling:
+    #  require:
+    #    - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/funannotate_annotate/funannotate_annotate/.*:
     inherits: basic_docker_tool
@@ -1533,5 +1533,3 @@ tools:
     - if: 0.05 <= input_size < 5
       cores: 8
       mem: 31
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/flye/flye/.*: {cores: 28, mem: 256}
