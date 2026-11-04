@@ -1829,7 +1829,7 @@ base_app_main: &BASE_APP_MAIN
   # OIDC provider needs to be configured and will serve as the account
   # provider. If this option is set to true, allow_local_account
   # creation will be overridden with false.
-  #disable_local_accounts: false
+  disable_local_accounts: true
 
   # Allow administrators to delete accounts.
   allow_user_deletion: true
