@@ -24,9 +24,9 @@ SOFT_UID_DOMAIN = True
 # Job Management
 SYSTEM_PERIODIC_HOLD = \
   (JobStatus == 1 || JobStatus == 2) && \
-  ((time() - JobStartDate) >= (2592000))
+  ((time() - JobStartDate) >= (1728000))
 SYSTEM_PERIODIC_HOLD_REASON = \
-  ifThenElse(((time() - JobStartDate) >= (2592000), \
+  ifThenElse(((time() - JobStartDate) >= 1728000), \
              "Maximum wallclock time exceeded", \
                  "Unspecified reason")
 SYSTEM_PERIODIC_REMOVE = \
