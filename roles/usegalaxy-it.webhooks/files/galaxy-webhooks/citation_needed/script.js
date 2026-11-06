@@ -84,7 +84,7 @@ if (container) {
             document.createTextNode(":"),
         ]),
         galaxyBlock,
-        el("div", { className: "cit-need-divider", textContent: "Acknowledge the European Galaxy server" }),
+        el("div", { className: "cit-need-divider", textContent: "Acknowledge the Italian Galaxy server" }),
         euBlock,
         el("div", { className: "cit-need-footer" }, [makeCopyButton("Copy BibTeX", () => BIBTEX)]),
     ]);
