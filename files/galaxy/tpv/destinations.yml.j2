@@ -24,6 +24,11 @@ destinations:
 
   basic_singularity_destination:
     abstract: true
+    env:
+      - name: APPTAINER_CACHEDIR
+        value: "{{ cnr.cnr01.path }}/singularity_cache"
+      - name: SINGULARITY_CACHEDIR
+        value: "{{ cnr.cnr01.path }}/singularity_cache"
     params:
       submit_request_cpus: "{cores}"
       submit_request_memory: "{mem}G"
