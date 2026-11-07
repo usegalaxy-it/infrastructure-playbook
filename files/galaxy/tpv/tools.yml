@@ -1540,3 +1540,12 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/meryl_.*:
     cores: 24
     mem: 130 # this can be further checked.
+
+  toolshed.g2.bx.psu.edu/repos/bgruening/bionano_scaffold/bionano_scaffold/.*:
+    cores: 8
+    mem: 32
+    scheduling:
+      require:
+        - singularity
+      reject:
+        - docker
