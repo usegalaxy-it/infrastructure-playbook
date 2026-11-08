@@ -197,10 +197,6 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/mashmap/mashmap/.*:
     cores: 8
     mem: 32
-    scheduling:
-      require:
-        - conda
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/galaxy-australia/alphafold2/alphafold/.*:
     cores: 10
@@ -959,20 +955,12 @@ tools:
         - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/bakta/bakta/.*:
-    cores: 8
-    memory: 24
-    scheduling:
-      require:
-        - conda
-        - singularity
+    cores: 20
+    memory: 30
 
   toolshed.g2.bx.psu.edu/repos/iuc/compleasm/compleasm/.*:
-    cores: 1
-    mem: 40
-    scheduling:
-      require:
-        - conda
-        - singularity
+    cores: 16
+    mem: 80
 
   # 27:02:2024: We seem to have issues with the tools when loaded from the conda envs.
   # For whatever reason they seem to get stuck in the D state and never finish.
