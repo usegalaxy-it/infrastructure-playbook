@@ -961,6 +961,9 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/compleasm/compleasm/.*:
     cores: 16
     mem: 80
+    scheduling: 
+      require:      
+        - singularity
 
   # 27:02:2024: We seem to have issues with the tools when loaded from the conda envs.
   # For whatever reason they seem to get stuck in the D state and never finish.
