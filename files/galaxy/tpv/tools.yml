@@ -1224,3 +1224,10 @@ tools:
     scheduling:
       require:
         - singularity
+
+  toolshed.g2.bx.psu.edu/repos/bgruening/edta/edta/.*:
+    cores: 16
+    mem: 64
+    scheduling:
+      require:
+        - singularity
