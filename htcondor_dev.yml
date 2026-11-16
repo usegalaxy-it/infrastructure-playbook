@@ -93,7 +93,7 @@
     - name: Template HTCondor CM configuration.
       become: true
       ansible.builtin.template:
-        src: htcondor/condor_config.local.j2
+        src: htcondor/condor_config_dev.local.j2
         dest: /etc/condor/condor_config.local
         owner: root
         group: root
