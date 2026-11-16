@@ -17,11 +17,13 @@ global:
     # is persisted in the OOM_MEM_SCALE destination param, which Galaxy carries
     # across resubmissions.
     OOM_SCALING_FACTOR: 2
-    # Memory cap (GB) for resubmitted jobs. Keep it at or below the memory of
-    # the largest exec node, otherwise a resubmitted job can never be matched
-    # by HTCondor and stays idle (max_accepted_mem in destinations.yml.j2 is
-    # higher than the real node memory).
-    OOM_SCALING_CAP: 480
+    # Memory cap (GiB) for resubmitted jobs. It must fit in the largest slot
+    # HTCondor advertises, otherwise a resubmitted job is never matched and
+    # stays idle (max_accepted_mem in destinations.yml.j2 does not prevent
+    # this). request_memory is "{mem}G" (GiB); the largest exec nodes
+    # (vm-condor-exec-01/02, 512 GB) advertise TotalMemory = 513199 MB, i.e.
+    # ~501 GiB. Usegalaxy-eu uses 512.
+    OOM_SCALING_CAP: 500
 destinations:
   # - TPV does not regex-match destination names: list each destination.
   # - condor_upload is left out on purpose (max_accepted_mem 10).
