@@ -121,7 +121,7 @@ roles:
     src: https://github.com/galaxyproject/ansible-miniconda.git
     version: 0.3.4
   - name: usegalaxy_eu.tpv_auto_lint
-    version: 0.4.5
+    version: 0.4.8
   - name: geerlingguy.redis
     version: 1.8.0
   - name: usegalaxy-it.postgres_replication
