@@ -13,7 +13,7 @@
 # back to the regular service account for all following playbooks/tasks.
 
 - name: Remap user playbook
-  hosts: celerycluster_dev
+  hosts: htcondor_exec_dev
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"
@@ -27,7 +27,7 @@
 
   vars_files:
     - group_vars/galaxy_user_ids.yml
-    - group_vars/mountpoints_dev.yml
+    - group_vars/mountpoints.yml
 
   pre_tasks:
 

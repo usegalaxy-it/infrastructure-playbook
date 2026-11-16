@@ -1,3 +1,17 @@
+### LEGACY PART - DO NOT REMOVE
+
+# Autofs volumes
+autofs_service.install: True
+autofs_service.enable: True
+nfs_kernel_tuning: True
+autofs_mount_points:
+  - data
+  - usrlocal
+autofs_conf_files:
+  data:
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
 ### MOUNTPOINTS
 # TODO
 # This is not currently fully implemented.
@@ -43,7 +57,7 @@ cineca:
   cineca00:
     name: cineca00
     path: /opt/galaxy
-    export: 192.168.0.65:/opt/galaxy/&
+    export: "{{ groups['nfs_dev'][0] }}:/opt/galaxy/&"
     docker_perm: rw
     nfs_options:
       - hard
@@ -52,7 +66,7 @@ cineca:
   cineca01:
     name: cineca01
     path: /data/share
-    export: 192.168.0.65:/data/share/&
+    export: "{{ groups['nfs_dev'][0] }}:/data/share/&"
     docker_perm: rw
     nfs_options:
       - hard
