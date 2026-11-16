@@ -12,6 +12,11 @@ galaxy_jobconf:
   plugins:
     - id: condor
       load: galaxy.jobs.runners.condor:CondorJobRunner
+    # htcondor2-based runner: reports memory holds (HoldReasonCode 26/34) and
+    # SIGKILL as memory_limit_reached, needed for TPV OOM resubmission (UG-101).
+    # Selected per environment with tpv_condor_default_runner.
+    - id: htcondor
+      load: galaxy.jobs.runners.htcondor:HTCondorJobRunner
     - id: local
       load: galaxy.jobs.runners.local:LocalJobRunner
     - id: pulsar_embedded
@@ -99,6 +104,7 @@ galaxy_jobconf:
         - "{{ tpv_config_dir }}/interactive_tools.yml"
         - "{{ tpv_config_dir }}/users.yml"
         - "{{ tpv_config_dir }}/roles.yml"
+        - "{{ tpv_config_dir }}/resubmission.yml"  # keep last: scales mem after all other rules (UG-101)
   tools:
     # TODO(hxr): implement validation that checks that every destination
     # used here is defined above.
