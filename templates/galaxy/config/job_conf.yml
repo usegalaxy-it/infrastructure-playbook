@@ -102,6 +102,8 @@ galaxy_jobconf:
         - "{{ tpv_config_dir }}/tool_defaults.yml"
         - "{{ tpv_config_dir }}/destinations.yml"
         - "{{ tpv_config_dir }}/tools.yml"
+        - "{{ tpv_config_dir }}/singularity_tools.yml"  # temporary: delete at the switch to Singularity (TODO-024)
+        - "{{ tpv_config_dir }}/conda_legacy_tools.yml"  # after tools.yml: tools kept on Conda win
         - "{{ tpv_config_dir }}/interactive_tools.yml"
         - "{{ tpv_config_dir }}/users.yml"
         - "{{ tpv_config_dir }}/roles.yml"

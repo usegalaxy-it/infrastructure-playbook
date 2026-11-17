@@ -58,9 +58,6 @@ tools:
 
   toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/.*:
     inherits: _basic_gpu_resource_param_tool
-    scheduling:
-      require:
-        - singularity  # can be removed after closing https://github.com/usegalaxy-eu/issues/issues/928
 
   toolshed.g2.bx.psu.edu/repos/bgruening/tabpfn/tabpfn/.*:
     inherits: _basic_gpu_resource_param_tool
@@ -71,26 +68,6 @@ tools:
     env:
       HOME: /tmp
       TABPFN_ALLOW_CPU_LARGE_DATASET: 1
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/deeptools_.*/deeptools_.*/.*:
-    rules:
-      - id: deeptools_singularity
-        if: |
-          # versions without singularity container available
-          no_container = {
-              '2.0.1.0',
-              '2.1.0.0',
-              '2.2.2.0',  # a container is available but it is broken
-              '2.2.3.0',
-              '2.5.0.0',
-              '3.0.1.0',
-              '3.0.2.0',
-          }
-          any(helpers.tool_version_eq(tool, version) for version in no_container)
-        scheduling:
-          require:
-            - conda
-            - singularity
 
   toolshed.g2.bx.psu.edu/repos/bgruening/keras_train_and_eval/keras_train_and_eval/.*:
     inherits: _basic_gpu_resource_param_tool
@@ -181,18 +158,10 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/sleuth/sleuth/.*:
     cores: 4
     mem: 16
-    scheduling:
-      require:
-        - conda
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/rnaquast/rna_quast/.*:
     cores: 12
     mem: 40
-    scheduling:
-      require:
-        - conda
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/mashmap/mashmap/.*:
     cores: 8
@@ -256,9 +225,6 @@ tools:
             #  if: |
             #    "cz-pulsar" in {tag.value for tag in entity.tpv_tags.tags}
             #  gpus: 1
-    scheduling:
-      require:
-        - singularity
 
   basic_docker_tool:
     params:
@@ -366,9 +332,6 @@ tools:
 
   toolshed.g2.bx.psu.edu/repos/iuc/bbtools_tadpole/bbtools_tadpole/.*:
     mem: 8
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/ecology/cb_ivr/cb_ivr/.*:
     inherits: basic_docker_tool
@@ -404,9 +367,6 @@ tools:
   toolshed.g2.bx.psu.edu/repos/q2d2/.*:
     cores: 28
     mem: 128
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/cherri_train/cherri_train/.*:
     inherits: basic_docker_tool
@@ -435,9 +395,6 @@ tools:
   toolshed.g2.bx.psu.edu/repos/genouest/helixer/helixer/.*:
     cores: 4
     mem: 30
-    scheduling:
-      require:
-        - singularity
     rules:
       - if: input_size >= 0.2
         gpus: 1
@@ -653,9 +610,6 @@ tools:
     mem: 20
     env:
       _JAVA_OPTIONS: -Xmx{int(mem)}G -Xms1G
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/bgruening/diamond/diamond/.*:
     cores: 6
@@ -674,20 +628,6 @@ tools:
     scheduling:
       require:
         - docker
-  toolshed.g2.bx.psu.edu/repos/bgruening-util/stress_ng/stress_ng/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
-  toolshed.g2.bx.psu.edu/repos/galaxyp/maxquant/maxquant/.*:
-    scheduling:
-      require:
-        - singularity
-  toolshed.g2.bx.psu.edu/repos/iuc/lumpy_prep/lumpy_prep/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
   # is there a way to avoid this
   ".*pcgr.*":
     mem: 16
@@ -697,20 +637,10 @@ tools:
     scheduling:
       require:
         - docker
-  toolshed.g2.bx.psu.edu/repos/iuc/vardict_java/vardict_java/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
 # Not for Pulsar, or is the file copied?
   toolshed.g2.bx.psu.edu/repos/climate/cds_essential_variability/cds_essential_variability/.*:
     env:
       COPERNICUS_CDSAPIRC_KEY_FILE: /data/db/data_managers/COPERNICUS_CDSAPIRC_KEY_FILE
-  toolshed.g2.bx.psu.edu/repos/iuc/idr_download_by_ids/idr_download_by_ids/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
   toolshed.g2.bx.psu.edu/repos/imgteam/overlay_moving_and_fixed_image/ip_viz_overlay_moving_and_fixed_image/.*:
     cores: 8
   basic_numba_tool:
@@ -817,38 +747,9 @@ tools:
         cores: 8
         mem: 28
 
-  toolshed.g2.bx.psu.edu/repos/imgteam/unzip/unzip/.*:
-    scheduling:
-      require:
-        - singularity
-
   # Also on add_to_tpv_shared_db.yml but without NUMBA_CACHE_DIR
   toolshed.g2.bx.psu.edu/repos/iuc/gemini_inheritance/gemini_inheritance/.*:
     inherits: basic_numba_tool
-
-  toolshed.g2.bx.psu.edu/repos/iuc/chira_map/chira_map/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
-
-  toolshed.g2.bx.psu.edu/repos/iuc/chira_merge/chira_merge/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
-
-  toolshed.g2.bx.psu.edu/repos/iuc/chira_quantify/chira_quantify/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
-
-  toolshed.g2.bx.psu.edu/repos/iuc/chira_extract/chira_extract/.*:
-    scheduling:
-      require:
-        - singularity
-        - conda
 
   toolshed.g2.bx.psu.edu/repos/galaxyp/custom_pro_db/custom_pro_db/.*:
     mem: 16
@@ -872,19 +773,11 @@ tools:
     mem: 6
     cores: 1
 
-  toolshed.g2.bx.psu.edu/repos/iuc/circos/circos/.*:
-    scheduling:
-      require:
-        - singularity
-
   toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.6.*:
     mem: 4
     cores: 6
     params:
       singularity_container_id_override: "docker://teambraker/braker3:v1.0.6"
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.7.*:
     mem: 4
@@ -895,9 +788,6 @@ tools:
       singularity_container_id_override: "docker://teambraker/braker3:v3.0.7.1"
       ## This should not be needed. Why are ENVs not passed into the container?
       singularity_cleanenv: true
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.8.*:
     cores: 6
@@ -906,18 +796,12 @@ tools:
       singularity_container_id_override: "docker://teambraker/braker3:v3.0.7.4"
       ## This should not be needed. Why are ENVs not passed into the container?
       singularity_cleanenv: true
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.3.*:
     mem: 4
     cores: 6
     params:
       singularity_container_id_override: "docker://teambraker/braker3:v.1.0.4"
-    scheduling:
-      require:
-        - singularity
 
   # GeneMark is a pain and needs special casing
   toolshed.g2.bx.psu.edu/repos/genouest/braker/braker/.*:
@@ -950,9 +834,6 @@ tools:
       GALAXY_DATA_INDEX_DIR: "/opt/galaxy/tool-data/"
     params:
       singularity_container_id_override: "quay.io/biocontainers/mulled-v2-56685ecbcd8a92192501538ce5a05b1be490b742:1f13308a8260334d826a999ba1f77b563eccd8a5-0"
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/bakta/bakta/.*:
     cores: 20
@@ -961,9 +842,6 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/compleasm/compleasm/.*:
     cores: 16
     mem: 80
-    scheduling: 
-      require:      
-        - singularity
 
   # 27:02:2024: We seem to have issues with the tools when loaded from the conda envs.
   # For whatever reason they seem to get stuck in the D state and never finish.
@@ -971,9 +849,6 @@ tools:
   # we can avoid the issue.
   toolshed.g2.bx.psu.edu/repos/iuc/abricate/abricate/.*:
     mem: 30.4
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/galaxyp/eggnog_mapper/eggnog_mapper/.*:
     cores: 8
@@ -982,9 +857,6 @@ tools:
       EGGNOG_DBMEM: "--dbmem"
     params:
       singularity_run_extra_arguments: "--env EGGNOG_DBMEM=--dbmem"
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/bwa_mem2/bwa_mem2/.*:
     cores: 32
@@ -1036,9 +908,6 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/funannotate_clean/funannotate_clean/.*:
     cores: 8
     mem: 40
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/funannotate_predict/funannotate_predict/.*:
     # we need this here because we need to set the GENEMARK_PATH
@@ -1050,63 +919,14 @@ tools:
     params:
       singularity_run_extra_arguments: "--env GENEMARK_PATH=/usr/local/tools/genemark/etp.for_braker/bin/gmes/"
       singularity_no_mount: null
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/kraken2/kraken2/.*:
     cores: 2
     mem: 70
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_compute_graph/scanpy_compute_graph/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_filter_cells/scanpy_filter_cells/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_find_cluster/scanpy_find_cluster/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_find_variable_genes/scanpy_find_variable_genes/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_multiplet_scrublet/scanpy_multiplet_scrublet/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_normalise_data/scanpy_normalise_data/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_plot_embed/scanpy_plot_embed/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_run_dpt/scanpy_run_dpt/.*:
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/bgruening/omark/omark/.*:
     cores: 8
     mem: 4
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/red/red/.*:
     cores: 1
@@ -1148,22 +968,10 @@ tools:
   # in /data/singularity_cache). cores: 3 comes from the TPV shared database.
   toolshed.g2.bx.psu.edu/repos/iuc/falco/falco/.*:
     cores: 3
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/peterjc/tmhmm_and_signalp/Psortb/.*:
-    scheduling:
-      require:
-        - conda
-        - singularity
     env:
       _GALAXY_JOB_TMP_DIR: '/tmp'
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/hicexplorer_hicinfo/hicexplorer_hicinfo/.*:
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/galaxyp/fragpipe/fragpipe/.*:
     cores: 12
@@ -1174,27 +982,10 @@ tools:
       _GALAXY_JOB_TMP_DIR: '/tmp'
     params:
       singularity_no_mount: null
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/iuc/optitype/optitype/.*:
     cores: 12
     mem: 256
-
-  toolshed.g2.bx.psu.edu/repos/iuc/macs2/.*:
-    # The conda build of MACS2 2.2.9.1 was compiled with fast-math against an
-    # old glibc and references __log_finite/__log10_finite, which glibc 2.34 on
-    # the exec nodes does not provide (ImportError: undefined symbol: __log_finite).
-    # Run it in the BioContainer instead, which ships its own glibc. See UG-011.
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/rnateam/chipseeker/.*:
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/bgruening/racon/racon/.*:
     cores: 40
@@ -1217,27 +1008,9 @@ tools:
     cores: 8
     mem: 32
     scheduling:
-      require:
-        - singularity
       reject:
         - docker
-
-  toolshed.g2.bx.psu.edu/repos/bgruening/mitohifi/mitohifi/.*:
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert/msconvert/.*:
-    scheduling:
-      require:
-        - singularity
 
   toolshed.g2.bx.psu.edu/repos/bgruening/edta/edta/.*:
     cores: 16
     mem: 64
-    scheduling:
-      require:
-        - singularity
-
-  toolshed.g2.bx.psu.edu/repos/iuc/brew3r_r/brew3r_r/.*:
-    scheduling: {require: [singularity]}
