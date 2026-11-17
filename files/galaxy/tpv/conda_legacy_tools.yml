@@ -1,0 +1,192 @@
+# Tools that must keep running with Conda, now and after the switch to Singularity + CVMFS (TODO-024).
+# Loaded after tools.yml and singularity_tools.yml, so it wins over both.
+# '_conda_legacy' rejects the singularity destinations, so these tools stay on condor_tpv (Conda).
+# Do not list here a tool that must run in a container (singularity_tools.yml): this file would win
+# and send it back to Conda.
+#
+# Today (Conda default) this changes nothing for the tools listed here, except that their old
+# 'require: [conda, singularity]' rules are gone from tools.yml (UG-112: no destination had the conda tag).
+# At the switch, tool_defaults.yml will require the 'singularity' tag by default and this file keeps
+# the listed tools on Conda. To move a tool to Singularity: test it in the container, then comment
+# its entry out.
+tools:
+  _conda_legacy:
+    abstract: true
+    scheduling:
+      reject:
+        - singularity
+
+  ##### usegalaxy.eu conda_in_container (94 patterns, 146 installed tool versions)
+  # https://github.com/usegalaxy-eu/infrastructure-playbook/blob/master/files/galaxy/tpv/conda_in_container.yml.j2
+  # Known NOT to work with their own container image. Only the patterns matching a tool installed on usegalaxy.it.
+  # Left out: compleasm (runs in its container, see singularity_tools.yml and UG-103).
+  'toolshed.g2.bx.psu.edu/repos/iuc/snpfreqplot/snpfreqplot/.*': {inherits: _conda_legacy}
+  'barchart_gnuplot': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/datamash_transpose/datamash_transpose/1.8\+galaxy.': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/datamash_transpose/datamash_transpose/1.9\+galaxy0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/tgac/miranda/miranda/3.3a': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/canu/canu/2.3\+galaxy0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/medaka_consensus_pipeline/medaka_consensus_pipeline/2.1.1\+galaxy0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/gga/apollo_.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/rnateam/remurna/remurna/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/computational-metabolomics/sirius_csifingerid/sirius_csifingerid/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/enasearch_search_data/enasearch_search_data/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/mashmap/mashmap/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/bakta/bakta/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/arriba_get_filters/arriba_get_filters/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/sailfish/sailfish/0.7.6.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/text_processing/tp_cat/0.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/text_processing/tp_easyjoin_tool/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/text_processing/tp_find_and_replace/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/text_processing/tp_multijoin_tool/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/text_processing/tp_sort_rows/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/blankenberg/naive_variant_caller/naive_variant_caller/0.0.[12]': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/crs4/prokka/prokka/1.1[23].*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/crs4/taxonomy_krona_chart/taxonomy_krona_chart/2.[06].*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/bamleftalign/bamleftalign/0.0.2': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/bowtie_color_wrappers/bowtie_color_wrapper/1.1.2': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/bowtie_wrappers/bowtie_wrapper/1.1.2': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/bowtie2/bowtie2/2\.2\.6.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/bwa_wrappers/bwa_color_wrapper/1.0.2': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/bwa_wrappers/bwa_wrapper/1.2.3': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/clustalw/clustalw/0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/concat/gops_concat_1/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/coverage/gops_coverage_1/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/cufflinks/cufflinks/2.2.1.2': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/cummerbund_to_tabular/cummerbund_to_cuffdiff/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/divide_pg_snp/dividePgSnp/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/fastq_to_fasta/cshl_fastq_to_fasta/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/fastq_to_tabular/fastq_to_tabular/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.[56].*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/fastqtofasta/fastq_to_fasta_python/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/find_diag_hits/find_diag_hits/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/generate_pc_lda_matrix/generate_matrix_for_pca_and_lda1/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/gi2taxonomy/Fetch Taxonomic Ranks/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/histogram/histogram_rpy/1.0.[34]': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/indels_3way/indels_3way/1.0.3': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/lca_wrapper/lca1/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/lda_analysis/lda_analy1/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/megablast_xml_parser/megablast_xml_parser/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/mine/maximal_information_based_nonparametric_exploration/0.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/mutate_snp_codon/mutate_snp_codon_1/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/plot_from_lda/plot_for_lda_output1/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/poisson2test/poisson2test/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/principal_component_analysis/pca1/1.0.2': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/sam_pileup/sam_pileup/1.1.3': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/sam2interval/sam2interval/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/short_reads_trim_seq/trim_reads/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/snpfreq/hgv_snpFreq/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/subtract/gops_subtract_1/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/subtract_query/subtract_query1/0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/t2ps/Draw_phylogram/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/t2t_report/t2t_report/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/t_test_two_samples/t_test_two_samples/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/tabular_to_fasta/tab2fasta/1.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/tabular_to_fastq/tabular_to_fastq/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/tophat_fusion_post/tophat_fusion_post/0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/ucsc_custom_track/build_ucsc_custom_track_1/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/vcf[^/]*/vcf[^/]*/0\.0\.[234]': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/vcf2pgsnp/vcf2pgSnp/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/vcfsort/vcfsort/1.0.0_rc[13]\+galaxy0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/vcftools_[^/]*/vcftools_[^/]*/0\.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/weblogo3/rgweblogo3/0.4': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/devteam/xy_plot/XY_Plot_1/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/ethevenot/biosigner/biosigner/2.2.7': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/ethevenot/multivariate/Multivariate/2.3.10': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/ethevenot/univariate/Univariate/2.2.4': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/bed_to_protein_map/bed_to_protein_map/0.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/custom_pro_db/custom_pro_db/1.22.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/gffcompare_to_bed/gffcompare_to_bed/0.1.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/pep_pointer/pep_pointer/0.1.3': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/guru-ananda/karyotype_plot/karyotype_Plot_1/1.0.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/collection_column_join/collection_column_join/0.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/disco/disco/1.2.[01]': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/egsea/egsea/1.10.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/meme_[^/]*/meme_[^/]*/4\.1[12]\..*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/pilon/pilon/1.20.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/resize_coordinate_window/resize_coordinate_window/1.0.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/scikit_bio_diversity_beta_diversity/scikit_bio_diversity_beta_diversity/0.4.2.0': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/variant_analyzer/[^/]+/1\..*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/vegan_[^/]*/vegan_[^/]*/0\.0\..*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/vsearch/vsearch_[^/]*/1\..*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/lecorguille/anova/abims_anova/1.2.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/lparsons/fastq_join/fastq_join/1.1.2-806.1': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/peterjc/mummer/mummerplot_wrapper/0.0.7': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/pjbriggs/trimmomatic/trimmomatic/0.32.3': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/pipelign/pipelign/0.2\+galaxy0': {inherits: _conda_legacy}
+
+  ##### UG-112: 'require: [conda, singularity]' in tools.yml (EU conda_in_container copy), no destination
+  # had the conda tag, so these tools could not run at all. 9 of them are also in EU conda_in_container.
+  'toolshed.g2.bx.psu.edu/repos/iuc/sleuth/sleuth/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/rnaquast/rna_quast/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/lumpy_prep/lumpy_prep/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/vardict_java/vardict_java/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/idr_download_by_ids/idr_download_by_ids/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/chira_map/chira_map/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/chira_merge/chira_merge/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/chira_quantify/chira_quantify/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/iuc/chira_extract/chira_extract/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/peterjc/tmhmm_and_signalp/Psortb/.*': {inherits: _conda_legacy}
+  'toolshed.g2.bx.psu.edu/repos/bgruening-util/stress_ng/stress_ng/.*': {inherits: _conda_legacy}
+
+  ##### usegalaxy.it: no container image for the exact requirement (54 tool versions, UG-110 group B)
+  # Conda envs to be fixed by hand, see Notes UG-110 'Manual conda fix'.
+  # rnateam
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/kinwalker/rbc_kinwalker/1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rna2dfold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaaliduplex/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaalifold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnacofold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnadistance/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaduplex/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaeval/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnafold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaheat/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnainverse/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnalalifold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnalfold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnapaln/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnapdist/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnapkplex/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaplex/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaplfold/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaplot/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnasnoop/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnasubopt/2\.1\.6\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/rnateam/vienna_rna/rnaup/2\.1\.6\.0': {inherits: _conda_legacy}
+  # ecology (gdal=3.0.0 + geos=3.7.1)
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdal_merge/gdal_gdal_merge/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdal_merge/gdal_gdal_merge/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdal_translate/gdal_gdal_translate/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdal_translate/gdal_gdal_translate/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdaladdo/gdal_gdaladdo/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdaladdo/gdal_gdaladdo/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdalbuildvrt/gdal_gdalbuildvrt/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdalbuildvrt/gdal_gdalbuildvrt/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdalinfo/gdal_gdalinfo/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdalinfo/gdal_gdalinfo/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdalwarp/gdal_gdalwarp/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_gdalwarp/gdal_gdalwarp/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_ogr2ogr/gdal_ogr2ogr/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_ogr2ogr/gdal_ogr2ogr/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_ogrinfo/gdal_ogrinfo/3\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/ecology/gdal_ogrinfo/gdal_ogrinfo/3\.0\.0\+galaxy1': {inherits: _conda_legacy}
+  # iuc hmmer3 (hmmer=3.1b1)
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_alimask/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmalign/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmbuild/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmconvert/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmemit/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmfetch/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmscan/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_hmmsearch/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_jackhmmer/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_nhmmer/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_nhmmscan/0\.1\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/iuc/hmmer3/hmmer_phmmer/0\.1\.0': {inherits: _conda_legacy}
+  # devteam vcftools (vcftools=0.1.11 + tabix)
+  'toolshed\.g2\.bx\.psu\.edu/repos/devteam/vcftools_isec/vcftools_isec/0\.1\.1': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/devteam/vcftools_merge/vcftools_merge/0\.1\.1': {inherits: _conda_legacy}
+  # devteam R tools (r=2.11.0)
+  'toolshed\.g2\.bx\.psu\.edu/repos/devteam/draw_stacked_barplots/draw_stacked_barplots/1\.0\.0': {inherits: _conda_legacy}
+  'toolshed\.g2\.bx\.psu\.edu/repos/devteam/t_test_two_samples/t_test_two_samples/1\.0\.0': {inherits: _conda_legacy}
