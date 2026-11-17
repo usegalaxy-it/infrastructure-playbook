@@ -554,7 +554,10 @@ base_app_main: &BASE_APP_MAIN
   # one file).
   # The value of this option will be resolved with respect to
   # <config_dir>.
-  datatypes_config_file: "{{ galaxy_config_dir }}/datatypes_conf.xml"
+  # usegalaxy.it: use the datatypes shipped with the Galaxy release (as
+  # usegalaxy.fr), plus our local additions. The old custom
+  # datatypes_conf.xml was frozen in 2023 and missed 114 datatypes of 26.1.
+  datatypes_config_file: "{{ galaxy_server_dir }}/lib/galaxy/config/sample/datatypes_conf.xml.sample,{{ galaxy_config_dir }}/datatypes_conf_local.xml"
 
   # Enable sniffing of compressed datatypes. This can be
   # configured/overridden on a per-datatype basis in the

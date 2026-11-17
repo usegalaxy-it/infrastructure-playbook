@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+  Local datatypes for usegalaxy.it.
+
+  Galaxy loads the datatypes shipped with the release first
+  (lib/galaxy/config/sample/datatypes_conf.xml.sample, see datatypes_config_file
+  in group_vars/gxconfig.yml) and then this file. Only add here the extensions
+  that are not in the Galaxy sample. No sniffers: the sniff order comes from the
+  Galaxy sample.
+
+  All entries below come from the old files/galaxy/config/datatypes_conf.xml and
+  are also defined by usegalaxy.eu.
+-->
+<datatypes>
+  <registration>
+    <!-- Not used by any installed tool (17/11/2026); kept for existing datasets -->
+    <datatype extension="arb" auto_compressed_types="gz" type="galaxy.datatypes.binary:Binary" subclass="true" display_in_upload="true"/>
+    <!-- bgruening/nanopolish_eventalign -->
+    <datatype extension="fast5" type="galaxy.datatypes.binary:H5" display_in_upload="true"/>
+    <!-- Not used by any installed tool (17/11/2026); kept for existing datasets -->
+    <datatype extension="hic_matrix" type="galaxy.datatypes.binary:CompressedArchive" subclass="True" display_in_upload="True"/>
+    <!-- Not used by any installed tool (17/11/2026); kept for existing datasets -->
+    <datatype extension="ibd" type="galaxy.datatypes.binary:Binary" mimetype="application/octet-stream" subclass="True" display_in_upload="True"/>
+    <!-- Not used by any installed tool (17/11/2026); kept for existing datasets -->
+    <datatype extension="mat" type="galaxy.datatypes.binary:Binary" subclass="True" display_in_upload="true"/>
+    <!-- W4M metabolomics tools: xcms_*, abims_xcms_*, abims_CAMERA_annotateDiffreport, msnbase_readmsdata, profia, metams_runGC, NMR_Read, Nmr* (15 tools) -->
+    <datatype extension="no_unzip.zip" type="galaxy.datatypes.binary:CompressedArchive" subclass="true" display_in_upload="true"/>
+  </registration>
+</datatypes>
