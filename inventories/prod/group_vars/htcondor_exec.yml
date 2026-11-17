@@ -19,8 +19,10 @@ htcondor_daemons:
 htcondor_domain: "usegalaxy.it"
 htcondor_type_of_node: wn
 htcondor_role_manager: true
-htcondor_server: "{{ groups['htcondor_cm_dev'][0] }}"
-htcondor_ip_range: '192.168.0.0/24'
+htcondor_server: "{{ groups['htcondor_cm'][0] }}"
+htcondor_ip_range: '10.10.10.0/24'
+htcondor_firewall_condor: false
+htcondor_firewall_nfs: false
 
 # CVMFS
 cvmfs_role: client

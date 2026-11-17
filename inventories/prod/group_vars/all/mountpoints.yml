@@ -1,0 +1,8 @@
+cnr:
+  cnr00:
+    name: cnr00
+    path: /opt/galaxy
+  cnr01:
+    name: cnr01
+    path: /data
+galaxy_data_path: "{{ cnr.cnr01.path }}"

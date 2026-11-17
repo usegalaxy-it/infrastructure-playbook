@@ -1,6 +1,6 @@
 ---
 - name: Backup VM
-  hosts: backup_prod # <- Inventory entry
+  hosts: backup # <- Inventory entry
   become: true
   vars_files:
     - secret_group_vars/os.yml

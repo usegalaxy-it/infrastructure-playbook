@@ -1,6 +1,6 @@
 ---
 - name: Replica VM
-  hosts: replica_prod # <- Inventory entry
+  hosts: replica # <- Inventory entry
   become: true
   become_user: root
   vars_files:

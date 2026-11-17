@@ -3,7 +3,7 @@
 # Configura un server NFSv4 con due share: /opt/galaxy e /data/share
 
 - name: Configure NFS server
-  hosts: nfs_dev
+  hosts: nfs
   become: true
   vars:
     galaxy_uid: 1000

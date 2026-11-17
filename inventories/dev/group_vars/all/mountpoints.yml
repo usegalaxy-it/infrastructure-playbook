@@ -1,0 +1,21 @@
+cineca:
+  cineca00:
+    name: cineca00
+    path: /opt/galaxy
+    export: "{{ groups['nfs'][0] }}:/opt/galaxy/&"
+    docker_perm: rw
+    nfs_options:
+      - hard
+      - rw
+      - nosuid
+  cineca01:
+    name: cineca01
+    path: /data/share
+    export: "{{ groups['nfs'][0] }}:/data/share/&"
+    docker_perm: rw
+    nfs_options:
+      - hard
+      - rw
+      - nosuid
+
+galaxy_data_path: "{{ cineca.cineca01.path }}"

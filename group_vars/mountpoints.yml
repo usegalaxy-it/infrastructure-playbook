@@ -1,3 +1,17 @@
+### LEGACY PART - DO NOT REMOVE
+
+# Autofs volumes
+autofs_service.install: True
+autofs_service.enable: True
+nfs_kernel_tuning: True
+autofs_mount_points:
+  - data
+  - usrlocal
+autofs_conf_files:
+  data:
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/data/share
+  usrlocal:
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/opt/galaxy
 ### MOUNTPOINTS
 # TODO
 # This is not currently fully implemented.
@@ -39,31 +53,31 @@ cvmfs:
       - nosuid
       - nconnect=2
 
-cineca:
-  cineca00:
-    name: cineca00
-    path: /opt/galaxy
-    export: 192.168.0.65:/opt/galaxy/&
-    docker_perm: rw
-    nfs_options:
-      - hard
-      - rw
-      - nosuid
-  cineca01:
-    name: cineca01
-    path: /data/share
-    export: 192.168.0.65:/data/share/&
-    docker_perm: rw
-    nfs_options:
-      - hard
-      - rw
-      - nosuid
-
-# CNR mountpoints are currently managed by sysadmin and not through autofs.
-cnr:
-  cnr00:
-    name: cnr00
-    path: /opt/galaxy
-  cnr01:
-    name: cnr01
-    path: /data
+#cineca:
+#  cineca00:
+#    name: cineca00
+#    path: /opt/galaxy
+#    export: "{{ groups['nfs'][0] }}:/opt/galaxy/&"
+#    docker_perm: rw
+#    nfs_options:
+#      - hard
+#      - rw
+#      - nosuid
+#  cineca01:
+#    name: cineca01
+#    path: /data/share
+#    export: "{{ groups['nfs'][0] }}:/data/share/&"
+#    docker_perm: rw
+#    nfs_options:
+#      - hard
+#      - rw
+#      - nosuid
+#
+## CNR mountpoints are currently managed by sysadmin and not through autofs.
+#cnr:
+#  cnr00:
+#    name: cnr00
+#    path: /opt/galaxy
+#  cnr01:
+#    name: cnr01
+#    path: /data

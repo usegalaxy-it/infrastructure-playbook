@@ -2,7 +2,7 @@
 # This playbook install, configure and manages an HTCondor cluster (24).
 # The first time, the CM has to be run before the executors.
 - name: HTCondor installation and configuration
-  hosts: htcondor_exec_dev
+  hosts: htcondor_exec
   become: true
 
   handlers:
@@ -15,7 +15,7 @@
         state: reloaded
 
   vars_files:
-    - group_vars/mountpoints_dev.yml
+    - group_vars/mountpoints.yml
     - secret_group_vars/htcondor.yml
   collections:
     - devsec.hardening
@@ -55,15 +55,31 @@
           - python3-wheel-wheel
         enablerepo: crb
         state: present
-    - name: Install python3-virtualenv
-      yum:
-        name: python3-virtualenv
-        enablerepo: epel-release
+    #- name: Install python3-virtualenv
+    #  yum:
+    #    name: python3-virtualenv
+    #    enablerepo: epel-release
+
+    - name: Install Packages for AlmaLinux
+      dnf:
+        name:
+          - langpacks-en
+          - glibc-all-langpacks
+          - epel-release
+          - tmpwatch # for gxadmin
+          - python3.13
+          - python3.13-devel
+          - python3.13-pip
+          - python3.13-pip-wheel
+          - python-psycopg2
+          - python3-psycopg2
+          - python3-virtualenv
+        enablerepo: crb
         state: present
-    - name: Install Dependencies
-      package:
-        name: [ 'python3-psycopg2', 'python3', 'pip']
-      become: true
+    #- name: Install Dependencies
+    #  package:
+    #    name: [ 'python3-psycopg2', 'python3', 'pip']
+    #  become: true
 
     # HTCondor
     - name: Ensure the HTCondor configuration directory exists.
@@ -82,7 +98,7 @@
         owner: root
         group: root
         mode: "0644"
-      when: "'htcondor_cm_dev' in group_names"
+      when: "'htcondor_cm' in group_names"
     - name: Template HTCondor Executors configuration.
       become: true
       ansible.builtin.template:
@@ -91,13 +107,13 @@
         owner: root
         group: root
         mode: "0644"
-      when: "'htcondor_exec_dev' in group_names"
+      when: "'htcondor_exec' in group_names"
       notify: Reload HTCondor
     - name: Check if HTCondor is running.
       ansible.builtin.service_facts:
       register: service_facts
     - debug:
-        msg: "{{ service_facts.ansible_facts.services['condor.service'] | default('NON TROVATO') }}"
+        msg: "{{ service_facts.ansible_facts.services['condor.service'] | default('NOT FOUND') }}"
 
   roles:
     - role: usegalaxy_eu.handy.os_setup
@@ -111,7 +127,7 @@
     - geerlingguy.repo-epel
     - influxdata.chrony         # sync time
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
-    - usegalaxy-eu.autofs
+    - usegalaxy-eu.autofs # uses group_vars mountpoints
     - usegalaxy-eu.ansible-htcondor-grycap
     - galaxyproject.cvmfs
     # Uncooment telegraf to use it with grafana
@@ -121,8 +137,10 @@
     - ssh_hardening
 
   post_tasks:
+  # firewalld not needed in dev
     - name: HTCondor auto approve
       ansible.builtin.cron:
         name: condor_auto_approve
         minute: 0
-        job: "/usr/bin/condor_token_request_auto_approve -netblock {{ htcondor_ip_range}} -lifetime 3600" 
+        job: "/usr/bin/condor_token_request_auto_approve -netblock {{ htcondor_ip_range}} -lifetime 3600"
+      when: "'htcondor_cm' in group_names"
