@@ -1,1 +1,2 @@
 env: dev
+db_secrets_file: secret_group_vars/db-dev.yml
