@@ -97,8 +97,9 @@ galaxy_jobconf:
       function: map_tool_to_destination
       rules_module: tpv.rules
       tpv_config_files:
-        - "{{ tpv_config_dir }}/tool_defaults.yml"
+        # Shared database first, then our defaults: later files win (UG-109)
         - "https://raw.githubusercontent.com/galaxyproject/tpv-shared-database/main/tools.yml"
+        - "{{ tpv_config_dir }}/tool_defaults.yml"
         - "{{ tpv_config_dir }}/destinations.yml"
         - "{{ tpv_config_dir }}/tools.yml"
         - "{{ tpv_config_dir }}/interactive_tools.yml"
