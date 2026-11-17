@@ -13,7 +13,7 @@ postgresql_objects_databases:
 postgresql_conf:
   - listen_addresses: "'*'" # "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
   - max_connections: 500
-  - shared_buffers: '36GB'
+  - shared_buffers: '3GB'
   - effective_cache_size: '105GB'
   - maintenance_work_mem: '2GB'
   - work_mem: 32MB
@@ -46,11 +46,11 @@ backup_dir_daily: /data/backups/daily
 backup_dir_weekly: /data/backups/weekly
 cleanup_log_path: /data/cron_cleanup
 backup_log_path: /data/cron_backup
-backup_ip: "{{ hostvars[groups['backup_prod'][0]]['ansible_host'] }}" # <- Inventory entry
+backup_ip: "{{ hostvars[groups['backup'][0]]['ansible_host'] }}" # <- Inventory entry
 db_name: "galaxy"
 
 #replication
 postgres_replication: true
 replica_user_name: replica
-master_ip: "{{ hostvars[groups['database_prod'][0]]['ansible_host'] }}" # <- Inventory entry
-replica_ip: "{{ hostvars[groups['replica_prod'][0]]['ansible_host'] }}" # <- Inventory entry
+master_ip: "{{ hostvars[groups['database'][0]]['ansible_host'] }}" # <- Inventory entry
+replica_ip: "{{ hostvars[groups['replica'][0]]['ansible_host'] }}" # <- Inventory entry
