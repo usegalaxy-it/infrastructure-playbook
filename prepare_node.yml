@@ -13,7 +13,7 @@
 # back to the regular service account for all following playbooks/tasks.
 
 - name: Remap user playbook
-  hosts: usegalaxy_it_dev
+  hosts: htcondor_cm htcondor_exec
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"
@@ -27,7 +27,7 @@
 
   vars_files:
     - group_vars/galaxy_user_ids.yml
-    - group_vars/mountpoints.yml
+    #- group_vars/mountpoints.yml
 
   pre_tasks:
 
@@ -80,7 +80,12 @@
         enable_exclude_packages: true
         enable_pam_limits: true       # Prevent out of control processes
         enable_install_software: true # Some extra admin tools (*top, vim, etc)
-    - usegalaxy-eu.autofs
+    - role: usegalaxy-eu.autofs
+      when: 
+        - "'nfs' not in group_names"
+        - "'database' not in group_names"
+        - "'replica' not in group_names"
+        - "'backup' not in group_names"
 
   post_tasks:
     - name: Create galaxy group.
