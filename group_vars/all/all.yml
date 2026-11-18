@@ -12,7 +12,7 @@ certbot_environment: production # !!! CHECK -> change to production
 certbot_domains:
  - "{{ hostname }}"
 certbot_agree_tos: --agree-tos
-certbot_admin_email: usegalaxy-it@acnr.it
+certbot_admin_email: usegalaxy-it@cnr.it
 certbot_auth_method: --standalone
 
 usegalaxy_eu_autofs_mounts:
@@ -33,7 +33,7 @@ chrony_keyfile: '/etc/chrony.keys'
 galaxy_uid: 999
 galaxy_gid: 999
 
-# WallE
+# WallE # REMOVE 
 walle_verbose: true
 walle_tool: interactive
 walle_user_name: "{{ galaxy_user.name }}"

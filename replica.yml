@@ -5,8 +5,8 @@
   become_user: root
   vars_files:
     - secret_group_vars/os.yml
-    - secret_group_vars/db-main.yml # <- Inventory entry
-    - group_vars/database.yml # <- Inventory entry  
+    - "{{ db_secrets_file }}" # <- Inventory entry, dynamic based on inventory
+#    - group_vars/database.yml # <- Inventory entry , now on groupvars all/
   pre_tasks:
     - name: install acl and psycopg2 packages
       dnf:

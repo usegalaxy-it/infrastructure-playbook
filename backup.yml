@@ -4,7 +4,7 @@
   become: true
   vars_files:
     - secret_group_vars/os.yml
-    - group_vars/database.yml # <- Inventory entry
+#    - group_vars/database.yml # <- Inventory entry 	now on group vars all
   roles:  
     - role: usegalaxy-it.postgres_backup
       become: true
