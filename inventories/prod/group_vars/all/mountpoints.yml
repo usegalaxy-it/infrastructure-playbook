@@ -5,4 +5,6 @@ cnr:
   cnr01:
     name: cnr01
     path: /data
+
 galaxy_data_path: "{{ cnr.cnr01.path }}"
+galaxy_server_path "{{ cnr.cnr00.path }}"

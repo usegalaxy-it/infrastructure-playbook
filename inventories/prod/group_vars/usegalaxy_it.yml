@@ -4,7 +4,7 @@ docker_users:
   - galaxy
 
 # Miniconda role variables (galaxyproject.miniconda)
-conda_prefix: "{{ cnr.cnr01.path }}/tool_deps/_conda"
+conda_prefix: "{{ galaxy_data_path }}/tool_deps/_conda"
 
 # Custom pip installer
 pip_venv_path: "{{ galaxy_venv_dir }}"
@@ -97,7 +97,7 @@ certbot_well_known_root: /srv/nginx/_well-known_root
 #certbot_hostname_override: 'usegalaxy.it' # this variable overrides certbot default hostmane which takes the first in the domain list by default.
 
 # rsync to nfs
-galaxy_nfs_location: "{{ cnr.cnr01.path }}/share"
+galaxy_nfs_location: "{{ galaxy_data_path }}/share"
 
 # Nginx
 nginx_servers:
@@ -169,8 +169,8 @@ galaxy_systemd_memory_limit_workflow: 15
 # Those are used by destinations.yml.j2 but are not configured in the role
 # since we are using here the default systemd role and not the usegalaxy.it forked one.
 # since /opt/galaxy is still shared here
-galaxy_server_handler_dir: '{{ cnr.cnr00.path }}/server'
-galaxy_venv_handler_dir: '{{ cnr.cnr00.path }}/venv'
+galaxy_server_handler_dir: '{{ galaxy_server_path }}/server'
+galaxy_venv_handler_dir: '{{ galaxy_server_path }}/venv'
 
 # HTCondor
 htcondor_version: 24.x
@@ -182,7 +182,7 @@ htcondor_daemons:
 htcondor_domain: "usegalaxy.it"
 htcondor_type_of_node: front
 htcondor_role_submit: true
-htcondor_server: "{{ groups['htcondor_cm_prod'][0] }}"
+htcondor_server: "{{ groups['htcondor_cm'][0] }}"
 
 # gie_proxy
 gie_proxy_dir: '{{ galaxy_root }}/gie-proxy/proxy'
@@ -203,7 +203,7 @@ gie_proxy_install_pgnative: "{{ (gie_proxy_install | bool) and (gie_proxy_setup_
 
 # gxadmin
 postgres_user: galaxy
-postgres_host: "{{ groups['database_prod'][0] }}"
+postgres_host: "{{ groups['database'][0] }}"
 postgres_port: 5432
 
 # Slurp script
@@ -303,8 +303,8 @@ galaxy_dirs:
   - "{{ galaxy_nfs_location }}/persisted_data" # pulsar
   - "{{ galaxy_nfs_location }}/staging"
   - "{{ galaxy_nfs_location }}/tools/"
-  - "{{ cnr.cnr01.path }}/share/datasets"        # files01 (store_by id)
-  - "{{ cnr.cnr01.path }}/share/datasets_uuid"   # files02 (store_by uuid)
+  - "{{ galaxy_data_path }}/share/datasets"        # files01 (store_by id)
+  - "{{ galaxy_data_path }}/share/datasets_uuid"   # files02 (store_by uuid)
 
 galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
@@ -429,7 +429,7 @@ tpv_condor_upload_runner: htcondor
 tpv_condor_docker_runner: htcondor
 
 # TUS
-tus_upload_store: "{{ cnr.cnr01.path }}/share/tus"
+tus_upload_store: "{{ galaxy_data_path }}/share/tus"
 galaxy_tusd_port: 1080
 tusd_instances:
   - name: main
@@ -444,7 +444,7 @@ tusd_instances:
 
 # RabbitMQ
 # This is used internally. Use the private ip address!
-rabbitmq_url: "{{ hostvars[groups['rabbitmq_prod'][0]]['ansible_host'] }}"
+rabbitmq_url: "{{ hostvars[groups['rabbitmq'][0]]['ansible_host'] }}"
 
 # Redis
 redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"

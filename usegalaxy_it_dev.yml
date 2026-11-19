@@ -1,6 +1,6 @@
 ---
 - name: UseGalaxy
-  hosts: usegalaxy_it_dev
+  hosts: usegalaxy_it
   become: true
   become_user: root
   vars:
@@ -15,14 +15,14 @@
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
     # - group_vars/custom-sites.yml      # Subdomains are listed here
-    - group_vars/gxconfig-dev.yml          # The base galaxy configuration
+    # - group_vars/gxconfig.yml          # The base galaxy configuration, now in groupvars all
     - group_vars/toolbox.yml           # User controlled toolbox
     - group_vars/galaxy_user_ids.yml   # Change galaxy id and group id
-    - group_vars/mountpoints_dev.yml
-    - secret_group_vars/db-dev.yml    # DB URL + some postgres stuff
+   # - group_vars/mountpoints.yml ### Not needed after split inventories
+    - {{ db_secrets_file }}    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
     - secret_group_vars/htcondor.yml   # condor secrets
-    - secret_group_vars/rabbitmq_dev.yml   # rabbitmq + pulsar
+    - {{ rabbit_secrets_file }}  # rabbitmq + pulsar
     - templates/galaxy/config/job_conf.yml
   collections:
     - devsec.hardening
@@ -51,16 +51,8 @@
         msg: '{{ handy_groups }}'
     # end galaxy user setup
     - name: Install Packages for AlmaLinux
-      dnf:
-        name:
-          - langpacks-en
-          - glibc-all-langpacks
-          - epel-release
-          - tmpwatch # for gxadmin
-          - python3.13
-          - python3.13-devel
-          - python3.13-pip
-          - python3.13-pip-wheel
+      ansible.builtin.dnf:
+        name: '{{ python_dependencies }}'
         enablerepo: crb
         state: present
     #- name: Install python3-wheel-wheel 
@@ -74,33 +66,16 @@
     #    enablerepo: epel-release
     #    state: present
     - name: Install Dependencies
-      package:
-        name:
-          - acl
-          - bzip2
-          - git
-          - make
-          - postgresql
-          - python-psycopg2
-          - python3-psycopg2
-          - bc
-          - tar
-          - pip
-          - gcc
-          - openssl-devel
-          - bzip2-devel
-          - libffi-devel
-          - zlib-devel
-          - xz-devel
-          - sqlite-devel
-          - wget
+      ansible.builtin.dnf:
+        name: '{{ os_dependencies }}'
+        state: present
       become: true
     #- name: Install virtualenv for python3
     #  pip:
     #    name: virtualenv
     #    executable: pip3
     - name: Update ca-certificates
-      yum:
+      ansible.builtin.dnf:
         name: ca-certificates
         state: latest
     #- name: Disable SELinux
@@ -126,7 +101,7 @@
     - name: Template HTCondor configuration.
       become: true
       ansible.builtin.template:
-        src: htcondor/condor_config.local.j2
+        src: htcondor/condor_config_galaxy_submit.local.j2
         dest: /etc/condor/condor_config.local
         owner: root
         group: root
@@ -157,7 +132,7 @@
     ######## Fixes for usegalaxy.it ########
     - name: Create local tool directory and give right permissions
       file:
-        path: "{{ cineca.cineca01.path}}/tools"
+        path: "{{ galaxy_data_path }}/tools"
         owner: galaxy
         group: galaxy
         state: directory

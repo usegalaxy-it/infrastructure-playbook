@@ -150,7 +150,7 @@ base_app_main: &BASE_APP_MAIN
   # directory exists before using 'objects' as the default.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  #file_path: objects
+  file_path: /data/share/datasets
 
   # Where temporary files are stored. It must be accessible at the same
   # path on any cluster nodes that will run Galaxy jobs, unless using
@@ -219,7 +219,7 @@ base_app_main: &BASE_APP_MAIN
   # will fail.
   # The value of this option will be resolved with respect to
   # <data_dir>.
-  tool_dependency_dir: "{{ cnr.cnr01.path }}/tools"
+  tool_dependency_dir: "{{ galaxy_data_path }}/tools"
 
   # Specifies the path to the standalone dependency resolvers
   # configuration file. This configuration can now be specified directly
@@ -554,10 +554,7 @@ base_app_main: &BASE_APP_MAIN
   # one file).
   # The value of this option will be resolved with respect to
   # <config_dir>.
-  # usegalaxy.it: use the datatypes shipped with the Galaxy release (as
-  # usegalaxy.fr), plus our local additions. The old custom
-  # datatypes_conf.xml was frozen in 2023 and missed 114 datatypes of 26.1.
-  datatypes_config_file: "{{ galaxy_server_dir }}/lib/galaxy/config/sample/datatypes_conf.xml.sample,{{ galaxy_config_dir }}/datatypes_conf_local.xml"
+  datatypes_config_file: "{{ galaxy_config_dir }}/datatypes_conf.xml"
 
   # Enable sniffing of compressed datatypes. This can be
   # configured/overridden on a per-datatype basis in the
@@ -817,7 +814,7 @@ base_app_main: &BASE_APP_MAIN
   # mail through an SMTP server, which you may define here (host:port).
   # Galaxy will automatically try STARTTLS but will continue upon
   # failure.
-  smtp_server: smtp.gmail.com:465
+  smtp_server: smtp.gmail.com:587
 
   # If your SMTP server requires a username and password, you can
   # provide them here (password in cleartext here, but if your server
@@ -831,7 +828,7 @@ base_app_main: &BASE_APP_MAIN
 
   # If your SMTP server requires SSL from the beginning of the
   # connection
-  smtp_ssl: true
+  #smtp_ssl: true
 
   # On the user registration form, users may choose to join a mailing
   # list. This is the address used to subscribe to the list. Uncomment
@@ -875,7 +872,7 @@ base_app_main: &BASE_APP_MAIN
   # URL used to access this Galaxy server. Used outside of web contexts
   # such as in Galaxy markdown report generation.
   # Example value 'https://usegalaxy.org'
-  instance_access_url: "https://usegalaxy.it"
+  instance_access_url: https://usegalaxy-it.ext.cineca.it
 
   # E-mail domains blocklist is used for filtering out users that are
   # using disposable email addresses at registration.  If their
@@ -1167,7 +1164,7 @@ base_app_main: &BASE_APP_MAIN
   # with Galaxy via the API.
   # If you plan to run Interactive Tools make sure the docker container
   # can reach this URL.
-  galaxy_infrastructure_url: "https://usegalaxy.it"
+  galaxy_infrastructure_url: https://usegalaxy-it.ext.cineca.it
 
   # If the above URL cannot be determined ahead of time in dynamic
   # environments but the port which should be used to access Galaxy can
@@ -1337,7 +1334,7 @@ base_app_main: &BASE_APP_MAIN
   # Galaxy can upload user files in chunks without using nginx. Enable
   # the chunk uploader by specifying a chunk size larger than 0. The
   # chunk size is specified in bytes (default: 10MB).
-  #chunk_upload_size: 0
+  chunk_upload_size: 0
 
   # Have Galaxy manage dynamic proxy component for routing requests to
   # other services based on Galaxy's session cookie.  It will attempt to
@@ -1557,7 +1554,7 @@ base_app_main: &BASE_APP_MAIN
   # errors will be sent to the indicated sentry instance.  This
   # connection string is available in your sentry instance under
   # <project_name> -> Settings -> API Keys.
-  #sentry_dsn: "{{ sentry_dsn.main }}"
+  # sentry_dsn: "{{ sentry_dsn.main }}"
 
   # Determines the minimum log level that will be sent as an event to
   # Sentry. Possible values are DEBUG, INFO, WARNING, ERROR or CRITICAL.
@@ -1568,22 +1565,10 @@ base_app_main: &BASE_APP_MAIN
   # to Sentry. A value higher than 0 is required to analyze performance.
   #sentry_traces_sample_rate: 0.0
 
-  # Sample rate for client-side (browser) performance tracing, between 0
-  # and 1. Controls what fraction of page loads and navigations generate
-  # performance traces sent to Sentry. Independent of
-  # sentry_traces_sample_rate, which controls server-side tracing.
-  #sentry_client_traces_sample_rate: 0.0
-
   # Use this option to provide the path to location of the CA
   # (Certificate Authority) certificate file if the sentry server uses a
   # self-signed certificate.
   #sentry_ca_certs: null
-
-  # Default is true if statsd_host is set. Enable the statsd middleware.
-  # If false and statsd_host is also set, only timing of certain
-  # performance-critical backend tasks (e.g. the job handler monitor
-  # loop time) data will be sent to statsd, but not web request timing.
-  #enable_statsd_middleware: false
 
   # Log to statsd Statsd is an external statistics aggregator
   # (https://github.com/etsy/statsd) Enabling the following options will
@@ -1618,11 +1603,6 @@ base_app_main: &BASE_APP_MAIN
   # Mock out statsd client calls - only used by testing infrastructure
   # really. Do not set this in production environments.
   #statsd_mock_calls: false
-
-  # How often (in seconds) the Celery beat task emits queue-depth,
-  # SSE-connection, and WorkerProcess gauges. Only active when
-  # statsd_host is set. Set to 0 to disable.
-  #queue_metrics_interval: 15
 
   # Add an option to the library upload form which allows administrators
   # to upload a directory of files.
@@ -1818,21 +1798,13 @@ base_app_main: &BASE_APP_MAIN
   # page (even if require_login is true).
   show_welcome_with_login: true
 
-  # Controls the order of the login page to prefer OIDC-based login and
-  # registration.
-  #prefer_oidc_login: false ### TODO TEST AND ENABLE THIS. WE WANT OIDC ONLY FOR NOW
+  # Controls the order of the login page to prefer Custos-based login
+  # and registration.
+  #prefer_custos_login: false
 
-  # Allow unregistered users to create new local (non-OIDC) accounts
-  # (otherwise, they will have to be created by an admin). This option
-  # will be overridden to false in case disable_local_accounts is set to
-  # true.
-  allow_local_account_creation: false ### DISABLE LOGIN for usegalaxy.it. ONLY THROUGH OIDC
-
-  # Disable local accounts. If this option is set to true, at least one
-  # OIDC provider needs to be configured and will serve as the account
-  # provider. If this option is set to true, allow_local_account
-  # creation will be overridden with false.
-  disable_local_accounts: true
+  # Allow unregistered users to create new accounts (otherwise, they
+  # will have to be created by an admin).
+  allow_user_creation: false ### DISABLE LOGIN for usegalaxy.it domain connection
 
   # Allow administrators to delete accounts.
   allow_user_deletion: true
@@ -1943,11 +1915,6 @@ base_app_main: &BASE_APP_MAIN
   # panel state defined by the integrated tool panel.
   #default_panel_view: default
 
-  default_panel_view: default
-  default_panel_view_by_host:
-    ssh.usegalaxy.eu: my_panel
-    ecology.usegalaxy.eu: my_panel
-
   # Default format for the export of workflows. Possible values are 'ga'
   # or 'format2'.
   #default_workflow_export_format: ga
@@ -1994,7 +1961,7 @@ base_app_main: &BASE_APP_MAIN
   #history_local_serial_workflow_scheduling: false
 
   # Enables and disables OpenID Connect (OIDC) support.
-  enable_oidc: true
+  enable_oidc: false
 
   # Sets the path to OIDC configuration file.
   # The value of this option will be resolved with respect to
@@ -2005,23 +1972,6 @@ base_app_main: &BASE_APP_MAIN
   # The value of this option will be resolved with respect to
   # <config_dir>.
   oidc_backends_config_file: "{{ galaxy_config_dir }}/oidc_backends_config.xml"
-
-  # Sets the full sequence of steps that Python Social Auth goes through
-  # when authenticating an OIDC login. Use when you want to completely
-  # customize the pipeline (e.g. for testing).
-  # By default, Galaxy uses galaxy.authnz.psa_authnz.AUTH_PIPELINE - see
-  # there for example steps.
-  # Each element should be an import path to a function, e.g.
-  # galaxy.authnz.psa_authnz.contains_required_data
-  #oidc_auth_pipeline: null
-
-  # Sets additional authentication pipeline steps, added after the
-  # default steps (from galaxy.authnz.psa_authnz.AUTH_PIPELINE).
-  # Use when you want to keep the default pipeline, but add additional
-  # custom processing.
-  # Each element should be an import path to a function, e.g.
-  # galaxy.authnz.psa_authnz.contains_required_data
-  #oidc_auth_pipeline_extra: null
 
   # Sets the prefix for OIDC scopes specific to this Galaxy instance. If
   # an API call is made against this Galaxy instance using an OIDC
@@ -2311,24 +2261,6 @@ base_app_main: &BASE_APP_MAIN
   # handler processes. Float values are allowed.
   #workflow_monitor_sleep: 1.0
 
-  # Time in seconds between workflow completion monitor iterations. The
-  # completion monitor checks for workflows that have all jobs completed
-  # and triggers completion hooks (e.g., exports, notifications). Float
-  # values are allowed.
-  #workflow_completion_monitor_sleep: 5.0
-
-  # In which cases Galaxy should calculate a hash for a new dataset.
-  # Dataset hashes can be used by the Galaxy job cache/search to check
-  # if job inputs match. Setting the 'enable_celery_tasks' option to
-  # true is also required for dataset hash calculation. Possible values
-  # are: 'always', 'upload' (the default), 'never'. If set to 'upload',
-  # the hash is calculated only for the outputs of upload jobs.
-  #calculate_dataset_hash: upload
-
-  # Hash function to use if 'calculate_dataset_hash' is enabled.
-  # Possible values are: 'md5', 'sha1', 'sha256', 'sha512'
-  #hash_function: sha256
-
   # Determines how metadata will be set. Valid values are `directory`,
   # `extended`, `directory_celery` and `extended_celery`. In extended
   # mode jobs will decide if a tool run failed, the object stores
@@ -2401,7 +2333,7 @@ base_app_main: &BASE_APP_MAIN
   # completion.  These bits include the job working directory, external
   # metadata temporary files, and DRM stdout and stderr files (if using
   # a DRM).  Possible values are: always, onsuccess, never
-  cleanup_job: never # !!! NEEDED FOR DEBUGGING
+  cleanup_job: never # !!! CHECK
 
   # When running DRMAA jobs as the Galaxy user
   # (https://docs.galaxyproject.org/en/master/admin/cluster.html#submitting-jobs-as-the-real-user)
@@ -2621,12 +2553,6 @@ base_app_main: &BASE_APP_MAIN
   # https://docs.galaxyproject.org/en/master/admin/production.html#use-celery-for-asynchronous-tasks
   enable_celery_tasks: true
 
-  # Submit tool jobs through the asynchronous tool requests API
-  # (`/api/jobs`) when available. The client falls back to the legacy
-  # `/api/tools` endpoint when this is disabled, when Celery is not
-  # enabled, or when the tool does not provide a typed parameter schema.
-  enable_tool_requests: false
-
   # Configuration options passed to Celery.
   # To refer to a task by name, use the template `galaxy.foo` where
   # `foo` is the function name of the task defined in the
@@ -2641,6 +2567,13 @@ base_app_main: &BASE_APP_MAIN
   # disabled on a per-task basis at this time.)
   # For details, see Celery documentation at
   # https://docs.celeryq.dev/en/stable/userguide/configuration.html.
+  #celery_conf:
+  #  broker_url: null
+  #  result_backend: null
+  #  task_routes:
+  #    galaxy.fetch_data: galaxy.external
+  #    galaxy.set_job_metadata: galaxy.external
+
   celery_conf:
     result_backend: "{{ redis_connection_string }}"
     result_expires: 259200 # in sec = 3 days, delete task runs at 4 am, see celery docs
@@ -2648,24 +2581,9 @@ base_app_main: &BASE_APP_MAIN
       galaxy.fetch_data: disabled
       # galaxy.fetch_data: galaxy.external
       galaxy.set_job_metadata: galaxy.external
-
   # If set to a non-0 value, upper limit on number of tasks that can be
   # executed per user per second.
   #celery_user_rate_limit: 0.0
-
-  # Maximum number of Celery tasks that can execute concurrently for a
-  # single user. If set to 0 (default), no concurrency limit is
-  # enforced. When a user exceeds this limit, new tasks are deferred and
-  # retried until a slot becomes available. A periodic cleanup task
-  # reclaims slots from crashed workers by inspecting active tasks on
-  # all workers.
-  #celery_user_concurrency_limit: 0
-
-  # When both `celery_user_rate_limit` and `celery_user_concurrency_limit` 
-  # are set, rate limiting runs first (to schedule the timeslot) and concurrency 
-  # limiting runs second (to gate execution based on active task count). 
-  # This means a task must both reach its scheduled timeslot *and* 
-  # have a concurrency slot available before it can execute.
 
   # Allow disabling pbkdf2 hashing of passwords for legacy situations.
   # This should normally be left enabled unless there is a specific
@@ -2686,67 +2604,6 @@ base_app_main: &BASE_APP_MAIN
   # always use the regular select fields, use any other positive number
   # as threshold (above threshold: regular select fields will be used)
   #select_type_workflow_threshold: -1
-
-  # API key for an AI provider. AI provider is Openai By default
-  # (https://openai.com/) to enable the wizard (or more?)
-  #ai_api_key: "{{ openai_api_key }}"
-
-  # AI API base URL. Needs to be OpenAI compatible, defaults to OpenAI
-  #ai_api_base_url: null
-
-  # AI model to enable the wizard. Global fallback for all AI agents.
-  #ai_model: gpt-oss-120b-llmlb
-
-  # Configuration for AI inference services used by agents and
-  # visualization plugins. Supports per-agent or per-plugin model,
-  # temperature, max_tokens, api_key, api_base_url, and enabled
-  # settings. Valid keys include agent types (e.g. router,
-  # error_analysis) and plugin names (e.g. jupyterlite). Agents and
-  # plugins inherit from 'default' configuration, which itself falls
-  # back to global ai_model/ai_api_key settings. All agents are enabled
-  # by default. Example: inference_services: { default: { model:
-  # gpt-4o-mini, temperature: 0.7 }, custom_tool: { enabled: false },
-  # jupyterlite: { model: gpt-4o } } Set static_responses to a YAML file
-  # path to replace all LLM calls with deterministic responses for
-  # testing: inference_services: { static_responses:
-  # test/integration/static_agents.yml } Per-agent or default-block
-  # ``structured_output_override: true|false`` beats the model
-  # capability table -- see ``agent_model_capabilities_file`` for the
-  # table's location and contents.
-  #inference_services:
-  #  default:
-  #    model: "gpt-oss-120b-llmlb"
-  #    api_base_url: "{{ galaxy_infrastructure_llm_url }}"
-  #    api_key: "{{ galaxy_infrastructure_llm_api_key }}"
-  #  custom_tool:
-  #    model: "qwen-3.5-397b-llmlb"
-  #    api_base_url: "{{ galaxy_infrastructure_llm_url }}"
-  #    api_key: "{{ galaxy_infrastructure_llm_api_key }}"
-  #    quality_critic_enabled: true
-
-  # YAML file with capability hints for agent inference models. Maps
-  # fnmatch-style globs against model names to features such as
-  # structured-output (tool-calling / JSON-mode) support. Galaxy ships a
-  # sample populated with common model families; admins can drop a file
-  # named ``agent_model_capabilities.yml`` in ``config_dir`` to override
-  # the shipped table for private models. ``inference_services``
-  # ``structured_output_override`` overrides this table for a specific
-  # agent or default block.
-  # The value of this option will be resolved with respect to
-  # <config_dir>.
-  #agent_model_capabilities_file: agent_model_capabilities.yml
-
-  # Path to the SQLite FTS5 database used by the GTN training agent.
-  # Resolves against ``data_dir`` so admins can place it in a
-  # mutable-data directory. The file is downloaded automatically on
-  # first use from ``gtn_database_url`` if it does not exist.
-  # The value of this option will be resolved with respect to
-  # <data_dir>.
-  #gtn_database_path: gtn/gtn_search.db
-
-  # URL used to download the GTN search database when the local file at
-  # ``gtn_database_path`` is missing.
-  #gtn_database_url: https://depot.galaxyproject.org/chatgxy/gtn_search.db
 
   # Allow the display of tool recommendations in workflow editor and
   # after tool execution. If it is enabled and set to true, please
@@ -2798,26 +2655,6 @@ base_app_main: &BASE_APP_MAIN
   # <config_dir>.
   #vault_config_file: vault_conf.yml
 
-  # Time (in seconds) between Hashicorp Vault token renewal attempts.
-  # Set to 0 to disable automatic token renewal (the default). When
-  # enabled, a Celery Beat periodic task will call Vault's renew-self
-  # endpoint at this interval. Recommended value: half the token TTL
-  # (e.g. 1800 for a 1-hour TTL token). Requires Celery Beat to be
-  # running.
-  #vault_token_renewal_interval: 0
-
-  # Configuration file for URL request headers allow-list with URL
-  # pattern matching. This file defines which HTTP headers are allowed
-  # in URL fetch requests based on URL patterns, and whether they should
-  # be treated as sensitive (encrypted in the vault) or not. If no
-  # allow-list is specified, no headers will be allowed in URL requests.
-  # This provides fine-grained security control over what headers can be
-  # sent when Galaxy fetches external URLs on behalf of users, allowing
-  # different headers for different target domains or services.
-  # The value of this option will be resolved with respect to
-  # <config_dir>.
-  #url_headers_config_file: url_headers_conf.yml
-
   # Display built-in converters in the tool panel.
   #display_builtin_converters: true
 
@@ -2850,58 +2687,17 @@ base_app_main: &BASE_APP_MAIN
   # Message to display on the export citations tool page
   #citations_export_message_html: When writing up your analysis, remember to include all references that should be cited in order to completely describe your work. Also, please remember to <a href="https://galaxyproject.org/citing-galaxy">cite Galaxy</a>.
 
-  # Enables real-time updates via Server-Sent Events (SSE), replacing
-  # the history (3 s), entry-point (10 s) and notification (30 s)
-  # polling loops with push events delivered over a single
-  # ``/api/events/stream`` connection per browser tab. A background
-  # monitor watches for history changes (via PostgreSQL LISTEN/NOTIFY,
-  # or audit-table polling as a fallback for SQLite); entry-point
-  # changes are dispatched directly from the code paths that mutate
-  # them; in-app notifications and broadcasts are pushed when
-  # ``enable_notification_system`` is also true. When disabled, polling
-  # remains the source of updates for all three. See the admin guide
-  # "Server-Sent Events for real-time updates" for the full
-  # architecture, monitoring guidance and proxy configuration.
-  enable_sse_updates: false
-
-  # The interval in seconds between history audit table polls when using
-  # the polling fallback (SQLite or when PostgreSQL LISTEN/NOTIFY is
-  # unavailable). Only used when enable_sse_updates is true. Lower
-  # values mean faster updates but more database queries. Recommended
-  # range: 1-5 seconds.
-  #history_audit_monitor_poll_interval: 2
-
   # Enables the Notification System integrated in Galaxy.
   # Users can receive automatic notifications when a certain resource is
   # shared with them or when some long running operations have finished,
   # etc.
   # The system allows notification scheduling and expiration, and users
   # can opt-out of specific notification categories or channels.
-  # Delivery is push-based via Server-Sent Events when
-  # ``enable_sse_updates`` is also true, and falls back to 30-second
-  # polling against ``/api/notifications/status`` otherwise.
   # Admins can schedule and broadcast notifications that will be visible
   # to all users, including special server-wide announcements such as
   # scheduled maintenance, high load warnings, and event announcements,
   # to name a few examples.
   enable_notification_system: true
-
-  # Enable the Model Context Protocol (MCP) server integration.
-  # MCP allows AI assistants (like Claude, ChatGPT, etc.) to interact
-  # with Galaxy programmatically through a standardized protocol. When
-  # enabled, Galaxy exposes an MCP endpoint that provides tools for
-  # searching, executing tools, managing histories, and more.
-  # The MCP server requires API key authentication and uses the existing
-  # Galaxy REST API internally. This feature is experimental and
-  # disabled by default.
-  enable_mcp_server: false ### TODO CHECK MCP SERVER
-
-  # URL path where the MCP server endpoint will be mounted (default:
-  # /api/mcp).
-  # This setting only takes effect when 'enable_mcp_server' is true. The
-  # MCP endpoint will be accessible at this path relative to the Galaxy
-  # base URL.
-  #mcp_server_path: /api/mcp
 
   # The interval in seconds between attempts to delete all expired
   # notifications from the database (every 24 hours by default). Runs in
@@ -2924,8 +2720,8 @@ base_app_main: &BASE_APP_MAIN
   # to new_file_path if not set.
   file_source_temp_dir: /data/share/jwd/tmp/
 
-  # Deprecated. This option is ignored by the fsspec-based WebDAV file
-  # source.
+  # Default value for use_temp_files for webdav plugins that don't
+  # explicitly declare this.
   #file_source_webdav_use_temp_files: true
 
   # Number of seconds before file source content listings are refreshed.
@@ -2935,58 +2731,9 @@ base_app_main: &BASE_APP_MAIN
   # affects s3fs file sources.
   #file_source_listings_expiry_time: 60
 
-  # Set the default value in the Admin UI to automatically install tool
-  # dependencies when installing tools from the Tool Shed or not. Tool
-  # dependencies are the software packages and libraries required for a
-  # tool to function properly. Tool dependencies are typically specified
-  # in the tool's XML configuration using <requirement> tags. Galaxy can
-  # automatically install these dependencies if the tool_dependency_dir
-  # is properly configured in the galaxy.yml file. This option should be
-  # set to false if containerized versions of tools are used.
-  #install_tool_dependencies: true
-
-  # Set the default value in the Admin UI to automatically install
-  # repository dependencies when installing tools from the Tool Shed.
-  # Repository dependencies are other Tool Shed repositories that the
-  # tool being installed depends on and they are commonly used with tool
-  # suites. Repository dependencies ensure that all necessary components
-  # are installed for the tool (or suite) to work correctly within the
-  # Galaxy environment.
-  #install_repository_dependencies: true
-
-  # Set the default value in the Admin UI to automatically install
-  # resolver dependencies when installing tools from the Tool Shed.
-  # Resolver dependencies is a mechanism used by Galaxy to locate and
-  # make available the required software packages for Galaxy tools.
-  # Galaxy uses dependency resolvers (e.g., Conda) to determine how to
-  # satisfy these dependencies. This option should be set to false if
-  # containerized versions of tools are used.
-  #install_resolver_dependencies: true
-
-  # Enables the cleanup of failed Galaxy job's working directories. Runs
-  # in a Celery task.
-  #enable_failed_jobs_working_directory_cleanup: false
-
-  # The number of days to keep failed Galaxy job's working directories
-  # before attempting to delete them if
-  # enable_failed_jobs_working_directory_cleanup is ``true``. Runs in a
-  # Celery task.
-  #failed_jobs_working_directory_cleanup_days: 5
-
-  # The interval in seconds between attempts to delete all failed Galaxy
-  # job's working directories from the filesystem (every 24 hours by
-  # default) if enable_failed_jobs_working_directory_cleanup is
-  # ``true``. Runs in a Celery task.
-  #failed_jobs_working_directory_cleanup_interval: 86400
-
-  # Enable beta tool formats (yaml, cwl, ...) which is a prerequisite
-  # for user defined tools.
-  enable_beta_tool_formats: true
-
   # TODO(hxr): UNDOCUMENTED
   ucsc_build_sites: "{{ galaxy_config_dir }}/ucsc_build_sites.txt"
 
-# Not sure if this option is still needed.
 galaxy_config_hash:
   "uwsgi": {}
   "galaxy":
