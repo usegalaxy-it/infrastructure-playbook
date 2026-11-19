@@ -2,3 +2,6 @@ env: prod
 db_secrets_file: secret_group_vars/db-main.yml
 rabbit_secrets_file: secret_group_vars/rabbitmq.yml
 
+
+htcondor_ip_range: '10.10.10.0/24'
+htcondor_network_interface: "enp6s18"

@@ -26,9 +26,9 @@ destinations:
     abstract: true
     env:
       - name: APPTAINER_CACHEDIR
-        value: "{{ cnr.cnr01.path }}/singularity_cache"
+        value: "{{ galaxy_data_path }}/singularity_cache"
       - name: SINGULARITY_CACHEDIR
-        value: "{{ cnr.cnr01.path }}/singularity_cache"
+        value: "{{ galaxy_data_path }}/singularity_cache"
     params:
       submit_request_cpus: "{cores}"
       submit_request_memory: "{mem}G"
@@ -40,8 +40,8 @@ destinations:
         $tool_directory:ro,
         $job_directory/outputs:rw,
         $working_directory:rw,
-        {{ cnr.cnr01.path }}/share/datasets:rw,
-        {{ cnr.cnr01.path }}/share/datasets_uuid:rw,
+        {{ galaxy_data_path }}/share/datasets:rw,
+        {{ galaxy_data_path }}/share/datasets_uuid:rw,
         /cvmfs/data.galaxyproject.org:ro"
       singularity_default_container_id: "/cvmfs/singularity.galaxyproject.org/all/centos:8.3.2011"
 

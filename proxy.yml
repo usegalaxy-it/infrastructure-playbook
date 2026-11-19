@@ -1,0 +1,90 @@
+---
+# Edge reverse proxy sulla macchina di controllo (floating IP).
+# Solo TCP passthrough (nginx stream): TLS e certificati restano sui backend.
+# Funziona sia su Debian/Ubuntu sia su RHEL/Alma.
+- name: Edge reverse proxy (TCP passthrough)
+  hosts: proxy
+  become: true
+  vars:
+    proxy_os:
+      Debian:
+        packages: [nginx, libnginx-mod-stream]
+        nginx_user: www-data
+        modules_include: /etc/nginx/modules-enabled/*.conf
+      RedHat:
+        packages: [nginx, nginx-mod-stream, policycoreutils-python-utils]
+        nginx_user: nginx
+        modules_include: /usr/share/nginx/modules/*.conf
+    proxy_cfg: "{{ proxy_os[ansible_facts.os_family] }}"
+    selinux_on: "{{ ansible_facts.selinux.status | default('disabled') == 'enabled' }}"
+
+  tasks:
+    - name: Install nginx with stream module
+      ansible.builtin.package:
+        name: "{{ proxy_cfg.packages }}"
+        state: present
+
+    - name: Allow nginx to connect to backends (SELinux)
+      ansible.posix.seboolean:
+        name: httpd_can_network_connect
+        state: true
+        persistent: true
+      when: selinux_on
+
+    - name: Allow nginx to listen on non-standard ports (SELinux)
+      community.general.seport:
+        ports: "{{ item.listen }}"
+        proto: tcp
+        setype: http_port_t
+        state: present
+      loop: "{{ proxy_streams | rejectattr('listen', 'in', [80, 443]) | list }}"
+      loop_control:
+        label: "{{ item.name }}:{{ item.listen }}"
+      when: selinux_on
+
+    - name: Template nginx.conf (stream only, no http server)
+      ansible.builtin.template:
+        src: proxy/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: "0644"
+        validate: nginx -t -c %s
+      notify: Reload nginx
+
+    - name: Open proxy ports (ufw)
+      community.general.ufw:
+        rule: allow
+        port: "{{ item.listen }}"
+        proto: tcp
+      loop: "{{ proxy_streams }}"
+      loop_control:
+        label: "{{ item.name }}:{{ item.listen }}"
+      when:
+        - proxy_manage_firewall | default(false)
+        - ansible_facts.os_family == 'Debian'
+
+    - name: Open proxy ports (firewalld)
+      ansible.posix.firewalld:
+        port: "{{ item.listen }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
+      loop: "{{ proxy_streams }}"
+      loop_control:
+        label: "{{ item.name }}:{{ item.listen }}"
+      when:
+        - proxy_manage_firewall | default(false)
+        - ansible_facts.os_family == 'RedHat'
+
+    - name: Enable and start nginx
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

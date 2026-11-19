@@ -88,7 +88,8 @@ certbot_virtualenv_package_name: python3-virtualenv
 certbot_virtualenv_command: "python3.13 -m venv"
 #certbot_dns_provider:
 certbot_auth_method: --webroot
-certbot_domains: "{{ server_names }}"
+certbot_domains:
+  -  "{{ galaxy_public_hostname }}"
 certbot_post_renewal: |
   systemctl restart nginx || true
 certbot_share_key_users:

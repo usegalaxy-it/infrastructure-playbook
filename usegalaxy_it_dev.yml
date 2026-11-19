@@ -10,7 +10,7 @@
     nginx_conf_user: galaxy
     server_names:
       - '{{ hostname }}'
-      - 'usegalaxy-it.ext.cineca.it'
+      - '{{ galaxy_public_hostname }}'
       #- '*.usegalaxy-it.ext.cineca.it'
   vars_files:
     # - group_vars/tiaas.yml             # All of the training infrastructure
@@ -19,10 +19,10 @@
     - group_vars/toolbox.yml           # User controlled toolbox
     - group_vars/galaxy_user_ids.yml   # Change galaxy id and group id
    # - group_vars/mountpoints.yml ### Not needed after split inventories
-    - {{ db_secrets_file }}    # DB URL + some postgres stuff
+    - "{{ db_secrets_file }}"    # DB URL + some postgres stuff
     - secret_group_vars/all.yml        # All of the other assorted secrets...
     - secret_group_vars/htcondor.yml   # condor secrets
-    - {{ rabbit_secrets_file }}  # rabbitmq + pulsar
+    - "{{ rabbit_secrets_file }}"  # rabbitmq + pulsar
     - templates/galaxy/config/job_conf.yml
   collections:
     - devsec.hardening

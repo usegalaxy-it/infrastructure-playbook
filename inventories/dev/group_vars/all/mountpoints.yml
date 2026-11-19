@@ -34,4 +34,4 @@ cineca:
       - nosuid
 
 galaxy_data_path: "{{ cineca.cineca01.path }}"
-galaxy_server_path "{{ cineca.cineca00.path }}"
+galaxy_server_path: "{{ cineca.cineca00.path }}"

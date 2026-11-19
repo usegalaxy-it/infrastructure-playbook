@@ -21,10 +21,11 @@ htcondor_domain: "usegalaxy.it"
 htcondor_type_of_node: front
 htcondor_role_manager: true
 htcondor_server: "{{ groups['htcondor_cm'][0] }}"
-htcondor_ip_range: '10.10.10.0/24'
+# htcondor_ip_range: '10.10.10.0/24' # now defined in inventories/*/group_vars/all/vars.yml
+
 htcondor_firewall_condor: false
 htcondor_firewall_nfs: false
-htcondor_network_interface: "enp6s18"
+# htcondor_network_interface: "enp6s18" # now defined in inventories/*/group_vars/all/vars.yml
 
 # CVMFS
 cvmfs_role: client

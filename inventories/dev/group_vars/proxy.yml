@@ -1,0 +1,20 @@
+---
+# Porte esposte sul floating IP e backend a cui inoltrarle.
+# backend_group: gruppo dell'inventory; si usa il primo host (ansible_host).
+proxy_streams:
+  - name: galaxy_http          # certbot (ACME) + redirect a https
+    listen: 80
+    backend_group: usegalaxy_it
+    backend_port: 80
+  - name: galaxy_https         # Galaxy + /flower
+    listen: 443
+    backend_group: usegalaxy_it
+    backend_port: 443
+  # Da scommentare quando si apre RabbitMQ all'esterno:
+  # - name: rabbitmq
+  #   listen: 5671
+  #   backend_group: rabbitmq
+  #   backend_port: 5671
+
+# true se sulla macchina di controllo il firewall (ufw o firewalld) è attivo
+proxy_manage_firewall: false

@@ -1,0 +1,35 @@
+# {{ ansible_managed }}
+# Edge proxy: solo TCP passthrough. Nessun blocco http, nessun certificato qui.
+
+user {{ proxy_cfg.nginx_user }};
+worker_processes auto;
+error_log /var/log/nginx/error.log notice;
+pid /run/nginx.pid;
+
+include {{ proxy_cfg.modules_include }};
+
+events {
+    worker_connections 1024;
+}
+
+stream {
+    log_format proxy '$remote_addr [$time_local] $protocol $status '
+                     '$bytes_sent $bytes_received $session_time "$upstream_addr"';
+    access_log /var/log/nginx/stream_access.log proxy;
+
+{% for s in proxy_streams %}
+{% set backend = groups[s.backend_group][0] %}
+    # {{ s.name }}: :{{ s.listen }} -> {{ s.backend_group }} ({{ backend }})
+    upstream {{ s.name }} {
+        server {{ hostvars[backend].ansible_host | default(backend) }}:{{ s.backend_port }};
+    }
+
+    server {
+        listen {{ s.listen }};
+        proxy_pass {{ s.name }};
+        proxy_connect_timeout 5s;
+        proxy_timeout {{ s.timeout | default('1h') }};
+    }
+
+{% endfor %}
+}
