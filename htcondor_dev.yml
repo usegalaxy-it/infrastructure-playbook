@@ -99,6 +99,7 @@
         group: root
         mode: "0644"
       when: "'htcondor_cm' in group_names"
+      notify: Reload HTCondor
     - name: Template HTCondor Executors configuration.
       become: true
       ansible.builtin.template:
