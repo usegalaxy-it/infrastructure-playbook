@@ -1,0 +1,48 @@
+# TEMPORARY: tools that must run in a Singularity container while the default is still Conda.
+# Loaded right after tools.yml. Only the scheduling tag lives here: cores, mem, env and container
+# params of these tools stay in tools.yml.
+#
+# Delete this file at the switch to Singularity + CVMFS (TODO-024), when tool_defaults.yml requires
+# the 'singularity' tag for every tool: remove it from job_conf.yml and from galaxy_config_files.
+# A tool listed here must not be in conda_legacy_tools.yml (that file is loaded later and wins).
+# Each entry sets only scheduling (no 'inherits', so it does not replace an 'inherits' set in tools.yml).
+tools:
+  'toolshed.g2.bx.psu.edu/repos/chemteam/gmx_sim/gmx_sim/.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'toolshed.g2.bx.psu.edu/repos/galaxy-australia/alphafold2/alphafold/.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'toolshed.g2.bx.psu.edu/repos/iuc/bbtools_tadpole/bbtools_tadpole/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/q2d2/.*': {scheduling: {require: [singularity]}} # QIIME 2: image quay.io/qiime2/amplicon (not a BioContainer)
+  'toolshed.g2.bx.psu.edu/repos/genouest/helixer/helixer/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/devteam/picard/picard_MarkDuplicates/.*': {scheduling: {require: [singularity]}} # UG-036
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/maxquant/maxquant/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/imgteam/unzip/unzip/.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'toolshed.g2.bx.psu.edu/repos/iuc/circos/circos/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.6.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.7.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.8.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/genouest/braker3/braker3/3.0.3.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'srma_wrapper': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/iuc/abricate/abricate/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/eggnog_mapper/eggnog_mapper/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/iuc/funannotate_clean/funannotate_clean/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/iuc/funannotate_predict/funannotate_predict/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/iuc/kraken2/kraken2/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_compute_graph/scanpy_compute_graph/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_filter_cells/scanpy_filter_cells/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_find_cluster/scanpy_find_cluster/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_find_variable_genes/scanpy_find_variable_genes/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_multiplet_scrublet/scanpy_multiplet_scrublet/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_normalise_data/scanpy_normalise_data/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_plot_embed/scanpy_plot_embed/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/ebi-gxa/scanpy_run_dpt/scanpy_run_dpt/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/bgruening/omark/omark/.*': {scheduling: {require: [singularity]}} # not installed on usegalaxy.it (17/11/2026)
+  'toolshed.g2.bx.psu.edu/repos/iuc/falco/falco/.*': {scheduling: {require: [singularity]}} # broken conda env (12/11)
+  'toolshed.g2.bx.psu.edu/repos/bgruening/hicexplorer_hicinfo/hicexplorer_hicinfo/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/iuc/episcanpy_build_matrix/episcanpy_build_matrix/.*': {scheduling: {require: [singularity]}}
+  'toolshed.g2.bx.psu.edu/repos/iuc/macs2/.*': {scheduling: {require: [singularity]}} # conda build of MACS2 2.2.9.1 needs __log_finite, missing in glibc 2.34 on the exec nodes (UG-011)
+  'toolshed.g2.bx.psu.edu/repos/rnateam/chipseeker/.*': {scheduling: {require: [singularity]}} # broken conda mulled env (UG-027)
+  'toolshed.g2.bx.psu.edu/repos/bgruening/mitohifi/mitohifi/.*': {scheduling: {require: [singularity]}} # image not from BioContainers
+  'toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert/msconvert/.*': {scheduling: {require: [singularity]}} # container only (07/11)
+  'toolshed.g2.bx.psu.edu/repos/bgruening/edta/edta/.*': {scheduling: {require: [singularity]}} # broken conda env (12/11)
+  'toolshed.g2.bx.psu.edu/repos/iuc/compleasm/compleasm/.*': {scheduling: {require: [singularity]}} # conda env has no CA bundle, download of file_versions.tsv.hash fails (UG-103)
+  'toolshed.g2.bx.psu.edu/repos/bgruening/bionano_scaffold/bionano_scaffold/.*': {scheduling: {require: [singularity]}} # image not from BioContainers
+  'toolshed.g2.bx.psu.edu/repos/iuc/brew3r_r/brew3r_r/.*': {scheduling: {require: [singularity]}} # broken conda env (12/11)
