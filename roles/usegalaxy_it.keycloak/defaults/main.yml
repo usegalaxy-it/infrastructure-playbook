@@ -1,2 +1,6 @@
 ---
 # defaults file for usegalaxy_it.keycloak
+
+# Deploy the themes in files/keycloak/themes/ to {{ data_dir }}/keycloak/themes
+# (enabled per environment in group_vars/keycloak_<env>.yml).
+keycloak_custom_themes_enabled: false
