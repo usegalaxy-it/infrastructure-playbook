@@ -1,2 +1,19 @@
 ---
 # handlers file for usegalaxy_it.keycloak
+# Keycloak keeps gzipped theme resources in the container (not on a volume);
+# a restart alone would keep serving the old CSS/images.
+- name: Clear Keycloak theme cache
+  ansible.builtin.command: docker exec keycloak_app rm -rf /opt/keycloak/data/tmp/kc-gzip-cache
+  register: _kc_cache_clear
+  changed_when: true
+  failed_when: false
+  listen: Restart keycloak
+  become: true
+
+- name: Restart keycloak
+  community.docker.docker_compose_v2:
+    project_src: "{{ data_dir }}/keycloak"
+    services:
+      - keycloak
+    state: restarted
+  become: true

@@ -27,6 +27,9 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+{% if keycloak_java_opts_append is defined %}
+      JAVA_OPTS_APPEND: "{{ keycloak_java_opts_append }}"
+{% endif %}
     volumes:
       - {{ data_dir }}/keycloak/keycloak.conf:/opt/keycloak/conf/keycloak.conf:ro
       - {{ data_dir }}/keycloak/keystore.jks:/etc/keycloak/keystore.jks:ro
@@ -39,7 +42,7 @@ services:
       - keycloak_network
 
   nginx:
-    image: nginx:stable-alpine
+    image: {{ keycloak_nginx_image | default('nginx:stable-alpine') }}
     container_name: nginx_proxy
     restart: unless-stopped
     ports:
