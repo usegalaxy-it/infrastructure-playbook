@@ -1,14 +1,13 @@
 ---
 - name: MQ
-  hosts: rabbitmq_prod
+  hosts: rabbitmq
   become: true
   vars:
-    hostname: "{{ groups['rabbitmq_prod'][0] }}"
+    hostname: "{{ groups['rabbitmq'][0] }}"
   vars_files:
     - secret_group_vars/os.yml
     - secret_group_vars/all.yml
-    - secret_group_vars/rabbitmq.yml # Pulsar + MQ Connections
-    - group_vars/rabbitmq.yml
+    - "{{ rabbit_secrets_file }}"  # rabbitmq + pulsar
   collections:
     - devsec.hardening
   pre_tasks:
@@ -101,21 +100,21 @@
         owner: redis
         group: redis
         state: directory
-        mode: 755
+        mode: "0755"
     - name: Create redis log dir
       ansible.builtin.file:
         path: /var/log/redis
         owner: redis
         group: redis
         state: directory
-        mode: 755
+        mode: "0755"
     - name: Touches redis
       ansible.builtin.file:
         path: /var/log/redis/redis-server.log
         owner: redis
         group: redis
         state: touch
-        mode: 644
+        mode: "0644"
   roles:
     ## Starting configuration of the operating system
     - role: usegalaxy_eu.handy.os_setup

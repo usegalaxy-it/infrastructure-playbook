@@ -1,5 +1,5 @@
 ---
-hostname: "{{ groups['rabbitmq_prod'][0] }}"
+hostname: "{{ groups['rabbitmq'][0] }}"
 
 # create_user task
 handy_groups:
@@ -107,7 +107,7 @@ rabbitmq_container:
   name: rabbit_hole
   image: rabbitmq:4.2.6
     #hostname: rabbitmq
-  hostname: "{{ groups['rabbitmq_prod'][0] }}"
+  hostname: "{{ groups['rabbitmq'][0] }}"
 
 rabbitmq_container_pause: 60
 
@@ -122,9 +122,9 @@ redis_logfile: /var/log/redis/redis-server.log
 redis_conf_path: /etc/redis
 
 ## Telegraf
-# telegraf_plugins_extra:
-#   prometheus:
-#     plugin: prometheus
-#     config:
-#       - urls = ["http://172.17.0.2:15692/metrics"]
+#telegraf_plugins_extra:
+#  prometheus:
+#    plugin: prometheus
+#    config:
+#      - urls = ["http://172.17.0.2:15692/metrics"]
 

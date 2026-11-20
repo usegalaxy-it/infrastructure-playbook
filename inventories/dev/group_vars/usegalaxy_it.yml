@@ -1,4 +1,6 @@
 ---
+os_env_umask: "022" ### Permessi giusti nel venv 
+
 # Docker
 docker_users:
   - galaxy
@@ -326,8 +328,10 @@ galaxy_config_files:
     dest: "{{ galaxy_config['galaxy']['builds_file_path'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/data_manager_conf.xml"
     dest: "{{ galaxy_config['galaxy']['data_manager_config_file'] }}"
-  - src: "{{ galaxy_config_file_src_dir }}/config/datatypes_conf.xml"
-    dest: "{{ galaxy_config['galaxy']['datatypes_config_file'] }}"
+# - src: "{{ galaxy_config_file_src_dir }}/config/datatypes_conf.xml"
+#    dest: "{{ galaxy_config['galaxy']['datatypes_config_file'] }}"
+  - src: "{{ galaxy_config_file_src_dir }}/config/datatypes_conf_local.xml"
+    dest: "{{ galaxy_config_dir }}/datatypes_conf_local.xml"
   - src: "{{ galaxy_config_file_src_dir }}/config/dependency_resolvers_conf.xml"
     dest: "{{ galaxy_config['galaxy']['dependency_resolvers_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/email_domain_blocklist.conf"
@@ -341,6 +345,10 @@ galaxy_config_files:
   # test? Unknown if this works.
   - src: "{{ galaxy_config_file_src_dir }}/config/error_report.yml"
     dest: "{{ galaxy_config_dir }}/error_report.yml"
+  - src: "files/galaxy/config/nagios_tool_conf.xml"
+    dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
+  - src: "files/galaxy/config/echo_main_env.xml"
+    dest: "{{ galaxy_config_dir }}/echo_main_env.xml"
   - src: "{{ galaxy_config_file_src_dir }}/config/job_metrics_conf.yml"
     dest: "{{ galaxy_config['galaxy']['job_metrics_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/config/migrated_tools_conf.xml"
@@ -398,10 +406,10 @@ galaxy_config_templates:
   #  dest: "{{ galaxy_server_dir }}/lib/galaxy/tools/toolbox/filters/user_filters.py"
   #- src: "{{ galaxy_config_template_src_dir }}/config/nagios_tool_conf.xml" # NOTE: test tool #REMOVED
   #  dest: "{{ galaxy_config_dir }}/nagios_tool_conf.xml"
-  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
-  #  dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
-  #- src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml" # TODO enable OIDC LS AAI
-  #  dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_backends_config.xml"
+    dest: "{{ galaxy_config['galaxy']['oidc_backends_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/oidc_config.xml"
+    dest: "{{ galaxy_config['galaxy']['oidc_config_file'] }}"
   # - src: "{{ galaxy_config_template_src_dir }}/config/grt.yml.j2"
   #   dest: "{{ galaxy_config_dir }}/grt.yml"
   - src: "{{ galaxy_config_template_src_dir }}/config/pulsar_app.yml"
@@ -412,8 +420,8 @@ galaxy_config_templates:
     dest: "{{ galaxy_config_dir }}/workflow_schedulers_conf.xml"
   # - src: "{{ galaxy_config_template_src_dir }}/config/file_sources_conf.yml.j2" # FIXME file storage are currently disabled. TODO test and enable this. the menu is generated through files/galaxy/config/user_preferences_extra_conf.yml
   #   dest: "{{ galaxy_config_dir }}/file_sources_conf.yml"
-  # - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf.xml.j2"
-  #   dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
+  - src: "{{ galaxy_config_template_src_dir }}/config/object_store_conf_dev.yml.j2"
+    dest: "{{ galaxy_config['galaxy']['object_store_config_file'] }}"
   - src: "{{ galaxy_config_file_src_dir }}/tpv/destinations.yml.j2"
     dest: "{{ tpv_mutable_dir }}/destinations.yml"
 

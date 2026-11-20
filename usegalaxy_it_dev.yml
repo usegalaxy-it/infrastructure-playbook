@@ -78,6 +78,8 @@
       ansible.builtin.dnf:
         name: ca-certificates
         state: latest
+    - name: Trust internal CA
+      ansible.builtin.include_tasks: tasks/trust_internal_ca.yml
     #- name: Disable SELinux
     #  selinux:
     #    state: disabled
@@ -266,6 +268,8 @@
         galaxy_build_client: true
         galaxy_manage_systemd: false # switch to gravity(?)
         galaxy_manage_gravity: false
+
+#    - hxr.galaxy-echo-tool ###	Per nagios? Luca
 
     - usegalaxy_it.welcome_pages
     - usegalaxy_it.system_policy

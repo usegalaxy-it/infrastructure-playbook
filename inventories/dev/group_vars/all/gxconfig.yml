@@ -2551,7 +2551,7 @@ base_app_main: &BASE_APP_MAIN
   # database at '<data_dir>/results.sqlite' for storing task results.
   # For details, see
   # https://docs.galaxyproject.org/en/master/admin/production.html#use-celery-for-asynchronous-tasks
-  enable_celery_tasks: true
+  enable_celery_tasks: false 					### TODO test senza celery, riattivare
 
   # Configuration options passed to Celery.
   # To refer to a task by name, use the template `galaxy.foo` where

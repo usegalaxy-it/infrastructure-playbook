@@ -6,3 +6,7 @@ galaxy_public_hostname: 131-175-80-230.sslip.io   	#nome temporaneo aspettando  
 
 htcondor_ip_range: '192.168.0.0/24'
 htcondor_network_interface: "eth0"      
+
+
+internal_ca_dir: /root/usegalaxy-internal-ca/dev
+internal_ca_cn: "usegalaxy-it dev internal CA"
