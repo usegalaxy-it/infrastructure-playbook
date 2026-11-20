@@ -1,0 +1,28 @@
+---
+# Deploy custom Keycloak themes (bind-mounted in the container at /opt/keycloak/themes).
+# Source: files/keycloak/themes/<theme_name>/{login,account,email,...}
+# Keycloak caches themes in production mode, so a change triggers a restart of the
+# keycloak service (handler "Restart keycloak").
+
+- name: Ensure themes and providers directories exist
+  ansible.builtin.file:
+    path: "{{ data_dir }}/keycloak/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - themes
+    - providers
+  become: true
+
+- name: Copy custom themes
+  ansible.builtin.copy:
+    src: "keycloak/themes/"
+    dest: "{{ data_dir }}/keycloak/themes/"
+    owner: root
+    group: root
+    directory_mode: "0755"
+    mode: "0644"
+  become: true
+  notify: Restart keycloak
