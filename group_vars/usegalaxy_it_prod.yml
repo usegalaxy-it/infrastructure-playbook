@@ -139,6 +139,10 @@ nginx_conf_http:
   gzip_min_length: 128
 nginx_enable_default_server: false
 nginx_flavor: ""
+# Install nginx from the nginx.org stable repository instead of AppStream (EL9 AppStream ships 1.20.1).
+# The package is installed in pre_tasks, before galaxyproject.nginx, which only ensures it is present.
+nginx_org_repo_enabled: true
+nginx_org_package: nginx-1.30.7
 
 # Nginx Letsencrypt bindings
 nginx_ssl_role: usegalaxy-eu.certbot
