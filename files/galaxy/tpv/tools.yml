@@ -969,6 +969,17 @@ tools:
   toolshed.g2.bx.psu.edu/repos/iuc/falco/falco/.*:
     cores: 3
 
+  # cooler 0.9.3 (lldelisle cooler_* wrappers: balance, cload_tabix, csort_tabix, makebins, ...):
+  # the conda mulled env resolved numpy 2, which removed np.string_, so cooler balance fails
+  # reading the .cool file (TEST-075/076/111, 07/11/2026). The wrappers pin only cooler=0.9.3
+  # and htslib=1.18. Run them in the matching BioContainer instead, built 2023-09 with numpy 1.x:
+  # quay.io/biocontainers/mulled-v2-1c209eef6285865d0b64df3a28faf785403bc225:db8591d04e6c73bb149a88febbe5b044323d9d7a-0
+  # (pre-pull it once, serially, into /data/singularity_cache to avoid the concurrent build race, UG-102).
+  toolshed.g2.bx.psu.edu/repos/lldelisle/cooler_.*:
+    scheduling:
+      require:
+        - singularity
+
   toolshed.g2.bx.psu.edu/repos/peterjc/tmhmm_and_signalp/Psortb/.*:
     env:
       _GALAXY_JOB_TMP_DIR: '/tmp'
