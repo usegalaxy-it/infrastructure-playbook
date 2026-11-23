@@ -13,7 +13,7 @@ backends:
     weight: 0
     badges:
       - type: more_stable
-    files_dir: "{{ cnr.cnr01.path }}/share/datasets"
+    files_dir: "{{ galaxy_share_path }}/datasets"
     extra_dirs:
       - type: job_work
         path: "{{ galaxy_job_working_directory }}"
@@ -30,7 +30,7 @@ backends:
     weight: 1
     badges:
       - type: more_stable
-    files_dir: "{{ galaxy_data_path }}/share/datasets_uuid"
+    files_dir: "{{ galaxy_share_path }}/datasets_uuid"
     extra_dirs:
       - type: job_work
         path: "{{ galaxy_job_working_directory }}"

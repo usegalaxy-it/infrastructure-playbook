@@ -50,6 +50,10 @@
     - debug:
         msg: '{{ handy_groups }}'
     # end galaxy user setup
+    - name: Resolve public hostname locally (tusd hooks)  ### tusd looks up the vm on local network
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 {{ galaxy_public_hostname }}"
     - name: Install Packages for AlmaLinux
       ansible.builtin.dnf:
         name: '{{ python_dependencies }}'
@@ -79,7 +83,7 @@
         name: ca-certificates
         state: latest
     - name: Trust internal CA
-      ansible.builtin.include_tasks: tasks/trust_internal_ca.yml
+      ansible.builtin.include_tasks: trust_internal_ca.yml
     #- name: Disable SELinux
     #  selinux:
     #    state: disabled

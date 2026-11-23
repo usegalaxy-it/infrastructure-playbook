@@ -112,7 +112,7 @@ roles:
   - name: usegalaxy_eu.influxdbserver
     version: 2.0.0
   - name: usegalaxy_eu.flower
-    version: 2.1.1
+    version: 2.2.0
   - name: paprikant.beacon
     src: https://github.com/Paprikant/ansible-role-beacon
   - name: paprikant.beacon-importer

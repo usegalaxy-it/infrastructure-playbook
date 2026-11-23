@@ -303,8 +303,8 @@ galaxy_dirs:
   - "{{ galaxy_nfs_location }}/persisted_data" # pulsar
   - "{{ galaxy_nfs_location }}/staging"
   - "{{ galaxy_nfs_location }}/tools/"
-  - "{{ galaxy_data_path }}/share/datasets"        # files01 (store_by id)
-  - "{{ galaxy_data_path }}/share/datasets_uuid"   # files02 (store_by uuid)
+  - "{{ galaxy_share_path }}/datasets"        # files01 (store_by id)
+  - "{{ galaxy_share_path }}/datasets_uuid"   # files02 (store_by uuid)
 
 galaxy_instance_hostname: "{{ inventory_hostname }}"
 galaxy_config_style: yaml
@@ -429,7 +429,7 @@ tpv_condor_upload_runner: htcondor
 tpv_condor_docker_runner: htcondor
 
 # TUS
-tus_upload_store: "{{ galaxy_data_path }}/share/tus"
+tus_upload_store: "{{ galaxy_share_path }}/tus"
 galaxy_tusd_port: 1080
 tusd_instances:
   - name: main

@@ -1,13 +1,18 @@
 ---
 - name: Celery cluster
-  hosts: celerycluster_dev
+  hosts: celerycluster
   become: true
   become_user: root
   vars_files:
     - "secret_group_vars/all.yml"
-    - "group_vars/celerycluster_dev.yml"
-    - "secret_group_vars/rabbitmq_dev.yml"
+    - "{{ rabbit_secrets_file }}"  # rabbitmq + pulsar
   pre_tasks:
+    - name: Trust internal CA
+      ansible.builtin.include_tasks: trust_internal_ca.yml
+    - name: Enable epel-release
+      dnf:
+        name: epel-release
+        state: present
     - name: Install Packages for AlmaLinux
       dnf:
         name:
@@ -58,6 +63,7 @@
         enable_create_user: true
         enable_kernel_5: true
         enable_install_software: true
+    - usegalaxy_it.system_policy
     - usegalaxy-eu.galaxy-systemd
     - influxdata.chrony
     ## Filesystems

@@ -13,7 +13,7 @@
 # back to the regular service account for all following playbooks/tasks.
 
 - name: Remap user playbook
-  hosts: usegalaxy_it
+  hosts: celerycluster
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"

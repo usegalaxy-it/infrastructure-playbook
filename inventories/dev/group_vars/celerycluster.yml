@@ -33,9 +33,9 @@ autofs_mount_points:
 
 autofs_conf_files:
   data:
-    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/data/share
+    - share       -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/data/share
   usrlocal:
-    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs_dev'][0] }}:/opt/galaxy
+    - /opt/galaxy        -rw,hard,nosuid,nfs,nfsvers=4,minorversion=2         {{ groups['nfs'][0] }}:/opt/galaxy
 
 # SystemD
 # IT currently has a smaller VM for celery (eu is 16 cores 32 gb ram). We reduce the number of max tasks and internal workers.
@@ -65,7 +65,7 @@ flower_broker_url: "amqp://flower:{{ rabbitmq_users_password.flower }}@{{ rabbit
 tailscale_authkey: "{{ tailacale_auth_key_usegalaxy_it }}" # FIXME tailscale is not installed.
 
 # RabbitMQ
-rabbitmq_url: "{{ hostvars[groups['rabbitmq_dev'][0]]['ansible_host'] }}"
+rabbitmq_url: "{{ hostvars[groups['rabbitmq'][0]]['ansible_host'] }}"
 
 # Redis
 redis_connection_string: "redis://:{{ redis_requirepass }}@{{ rabbitmq_url }}:6379/0"

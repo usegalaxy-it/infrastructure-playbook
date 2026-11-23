@@ -8,3 +8,4 @@ cnr:
 
 galaxy_data_path: "{{ cnr.cnr01.path }}"
 galaxy_server_path: "{{ cnr.cnr00.path }}"
+galaxy_share_path: "{{ cnr.cnr01.path }}/share"
