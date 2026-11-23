@@ -39,3 +39,38 @@
     #- nginx_hardening
     #- ssh_hardening
 
+  post_tasks:
+    # The role's "configure default users" handler drops basic-security.groovy after a package upgrade.
+    # On the next start it would reset the admin password and could replace the security realm
+    # (GitHub OAuth), so remove it before any restart below.
+    - name: Remove the admin bootstrap script written by geerlingguy.jenkins
+      ansible.builtin.file:
+        path: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+        state: absent
+
+    # geerlingguy.jenkins edits the systemd override with a regexp that never matches existing lines,
+    # so every change of a value appends a new Environment line instead of replacing the old one.
+    # Drop every Environment line that does not carry the value set in the playbook.
+    - name: Remove stale Environment lines from the Jenkins systemd override
+      ansible.builtin.lineinfile:
+        path: "{{ jenkins_init_file }}"
+        regexp: '^Environment="{{ item.option }}=(?!{{ item.value | regex_escape }}"$)'
+        state: absent
+      loop: "{{ jenkins_init_changes }}"
+      loop_control:
+        label: "{{ item.option }}"
+      register: _jenkins_override_cleanup
+
+    - name: Remove plugins listed in jenkins_plugins_absent
+      ansible.builtin.file:
+        path: "{{ jenkins_home }}/plugins/{{ item[0] }}{{ item[1] }}"
+        state: absent
+      loop: "{{ jenkins_plugins_absent | default([]) | product(['.jpi', '.hpi', '.jpi.pinned', '.jpi.disabled', '']) | list }}"
+      register: _jenkins_plugins_removed
+
+    - name: Restart Jenkins after the cleanup
+      ansible.builtin.systemd:
+        name: jenkins
+        state: restarted
+        daemon_reload: true
+      when: _jenkins_override_cleanup is changed or _jenkins_plugins_removed is changed
