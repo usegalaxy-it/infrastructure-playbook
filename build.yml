@@ -24,6 +24,14 @@
         state: latest
         only_upgrade: true
         update_cache: true
+    # galaxyproject.nginx only ensures nginx is present; keep the Ubuntu packages on the latest security release
+    - name: Upgrade the installed nginx packages
+      ansible.builtin.apt:
+        name:
+          - "nginx*"
+          - "libnginx-mod-*"
+        state: latest
+        only_upgrade: true
 
   collections:
     - devsec.hardening
