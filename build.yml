@@ -17,6 +17,13 @@
           - python3-virtualenv
           - policycoreutils-python-utils
       become: yes
+    # geerlingguy.java only ensures the JDK is present; keep it on the latest security release
+    - name: Upgrade the installed JDK
+      ansible.builtin.apt:
+        name: "{{ java_packages }}"
+        state: latest
+        only_upgrade: true
+        update_cache: true
 
   collections:
     - devsec.hardening

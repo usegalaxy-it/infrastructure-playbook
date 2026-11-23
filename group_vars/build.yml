@@ -12,7 +12,8 @@ jenkins_admin_token: "{{ jenkins_admin_token_secret }}"
 # runSetupWizard=false is default.
 # The DirectoryBrowserSupport.CSP override (embedding Galaxy in workflow test pages) was dropped:
 # Jenkins now serves user content with its default Content-Security-Policy.
-jenkins_java_options: "-Dhudson.model.ParametersAction.keepUndefinedParameters=true -Djenkins.install.runSetupWizard=false"
+# -XX:-UseBASE64Intrinsics: Java4Shell (CVE-2026-114938) mitigation, independent of the JDK build and the host CPU.
+jenkins_java_options: "-XX:-UseBASE64Intrinsics -Dhudson.model.ParametersAction.keepUndefinedParameters=true -Djenkins.install.runSetupWizard=false"
 
 # Plugins installed on the controller (as found on the VM), kept at the latest release
 jenkins_plugins_state: latest
