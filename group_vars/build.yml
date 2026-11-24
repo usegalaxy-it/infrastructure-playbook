@@ -3,6 +3,8 @@ jenkins_home: /var/lib/jenkins
 jenkins_http_port: 4000
 jenkins_url_prefix: /jenkins
 jenkins_prefer_lts: true
+# geerlingguy.jenkins 5.3.0 installs the 2023 key, which no longer verifies the repository (rotated with 2.541.1)
+jenkins_repo_key_url: https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
 # Upgrade Jenkins to the latest LTS on every run
 jenkins_package_state: latest
 java_packages:
