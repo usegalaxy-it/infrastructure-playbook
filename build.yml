@@ -83,9 +83,32 @@
       loop: "{{ jenkins_plugins_absent | default([]) | product(['.jpi', '.hpi', '.jpi.pinned', '.jpi.disabled', '']) | list }}"
       register: _jenkins_plugins_removed
 
+    - name: Install the plugin alignment script
+      ansible.builtin.copy:
+        src: jenkins/align_plugins.py
+        dest: /usr/local/sbin/jenkins-align-plugins
+        owner: root
+        group: root
+        mode: "0755"
+
+    # Upgrade plugins only to releases compatible with the installed core, and add missing dependencies
+    - name: Align plugins with the Jenkins core
+      ansible.builtin.command: /usr/local/sbin/jenkins-align-plugins --apply
+      environment:
+        JENKINS_HOME: "{{ jenkins_home }}"
+      register: _jenkins_plugins_aligned
+      changed_when: "'installed ' in _jenkins_plugins_aligned.stdout"
+
+    - name: Show the plugin alignment result
+      ansible.builtin.debug:
+        var: _jenkins_plugins_aligned.stdout_lines
+
     - name: Restart Jenkins after the cleanup
       ansible.builtin.systemd:
         name: jenkins
         state: restarted
         daemon_reload: true
-      when: _jenkins_override_cleanup is changed or _jenkins_plugins_removed is changed
+      when: >-
+        _jenkins_override_cleanup is changed
+        or _jenkins_plugins_removed is changed
+        or _jenkins_plugins_aligned is changed
