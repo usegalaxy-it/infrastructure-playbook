@@ -3,6 +3,8 @@
   hosts: usegalaxy_it
   become: true
   become_user: root
+  environment:
+    CI: "true"
   vars:
     # The full internal name.
     hostname: "{{ inventory_hostname }}"
@@ -54,6 +56,10 @@
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "127.0.0.1 {{ galaxy_public_hostname }}"
+    - name: Enable epel-release for python3-virtualenv
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
     - name: Install Packages for AlmaLinux
       ansible.builtin.dnf:
         name: '{{ python_dependencies }}'
@@ -87,6 +93,38 @@
     #- name: Disable SELinux
     #  selinux:
     #    state: disabled
+    # nginx from nginx.org (AppStream only ships 1.20.1)
+    - name: nginx.org repository
+      when: nginx_org_repo_enabled | default(false)
+      become: true
+      block:
+        - name: Add the nginx.org stable repository
+          ansible.builtin.yum_repository:
+            name: nginx-stable
+            file: nginx
+            description: nginx stable repo
+            baseurl: "https://nginx.org/packages/rhel/$releasever/$basearch/"
+            gpgcheck: true
+            gpgkey: https://nginx.org/keys/nginx_signing.key
+            module_hotfixes: true
+            enabled: true
+        - name: Read the AppStream repository settings
+          ansible.builtin.command: dnf config-manager --dump appstream
+          register: _appstream_dump
+          changed_when: false
+          check_mode: false
+        - name: Exclude nginx from AppStream
+          ansible.builtin.command: dnf config-manager --save --setopt=appstream.excludepkgs=nginx*
+          when: _appstream_dump.stdout is not search('(?m)^excludepkgs = .*nginx\*')
+        - name: Install nginx from nginx.org
+          ansible.builtin.dnf:
+            name: "{{ nginx_org_package | default('nginx') }}"
+            state: present
+        # The nginx.org package ships a default server on port 80; vhosts are managed by galaxyproject.nginx
+        - name: Remove the nginx.org default server
+          ansible.builtin.file:
+            path: /etc/nginx/conf.d/default.conf
+            state: absent
     # HTCondor
     - name: Set htcondor password
       set_fact:
@@ -118,6 +156,16 @@
       register: service_facts
 
   post_tasks:
+    # The nginx.org build keeps its temp paths under /var/cache/nginx and the workers run as nginx_conf_user.
+    # Done after the roles, so the galaxy user exists on a fresh host.
+    - name: Give the nginx workers ownership of /var/cache/nginx
+      ansible.builtin.file:
+        path: /var/cache/nginx
+        state: directory
+        owner: "{{ nginx_conf_user }}"
+        recurse: true
+      become: true
+      when: nginx_org_repo_enabled | default(false)
     - name: Append some users to the systemd-journal group
       user:
         name: "{{ item }}"
@@ -272,8 +320,6 @@
         galaxy_build_client: true
         galaxy_manage_systemd: false # switch to gravity(?)
         galaxy_manage_gravity: false
-
-#    - hxr.galaxy-echo-tool ###	Per nagios? Luca
 
     - usegalaxy_it.welcome_pages
     - usegalaxy_it.system_policy
