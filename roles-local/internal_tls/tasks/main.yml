@@ -1,0 +1,130 @@
+---
+# Certificato TLS firmato dalla CA interna, al posto di certbot,
+# per gli host senza nome pubblico (es. RabbitMQ).
+#
+# Scrive negli stessi percorsi che usava certbot, così nginx e RabbitMQ
+# non vanno riconfigurati:
+#   /etc/ssl/certs/cert.pem             certificato del server
+#   /etc/ssl/certs/fullchain.pem        certificato + CA
+#   /etc/ssl/certs/internal-ca.pem      solo la CA
+#   /etc/ssl/user/privkey-<utente>.pem  chiave, una copia per utente
+#
+# Variabili richieste:
+#   internal_ca_dir        cartella della CA sulla macchina di controllo
+#   internal_ca_cn         nome della CA
+#   internal_tls_sans      SAN del certificato (es. ["DNS:nome", "IP:1.2.3.4"])
+#   internal_tls_key_users utenti che devono leggere la chiave
+#                          (es. [nginx, {name: rabbitmq, owner: "999"}])
+
+# ---------- CA (una volta sola, sulla macchina di controllo) ----------
+- name: Internal CA | directory
+  ansible.builtin.file:
+    path: "{{ internal_ca_dir }}"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+- name: Internal CA | private key
+  community.crypto.openssl_privatekey:
+    path: "{{ internal_ca_dir }}/ca.key"
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+- name: Internal CA | CSR
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ internal_ca_dir }}/ca.key"
+    common_name: "{{ internal_ca_cn }}"
+    use_common_name_for_san: false
+    basic_constraints: ["CA:TRUE"]
+    basic_constraints_critical: true
+    key_usage: [keyCertSign, cRLSign]
+    key_usage_critical: true
+  register: internal_ca_csr
+  delegate_to: localhost
+  become: false
+  run_once: true
+  changed_when: false
+
+- name: Internal CA | self-signed certificate (10 anni)
+  community.crypto.x509_certificate:
+    path: "{{ internal_ca_dir }}/ca.crt"
+    csr_content: "{{ internal_ca_csr.csr }}"
+    privatekey_path: "{{ internal_ca_dir }}/ca.key"
+    provider: selfsigned
+    selfsigned_not_after: "+3650d"
+    mode: "0644"
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+# ---------- certificato del server ----------
+- name: Internal TLS | directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: /etc/ssl/certs, mode: "0755" }
+    - { path: /etc/ssl/private, mode: "0700" }
+    - { path: /etc/ssl/user, mode: "0755" }
+
+- name: Internal TLS | server private key
+  community.crypto.openssl_privatekey:
+    path: /etc/ssl/private/internal-tls.key
+    mode: "0600"
+
+- name: Internal TLS | server CSR
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: /etc/ssl/private/internal-tls.key
+    common_name: "{{ inventory_hostname }}"
+    subject_alt_name: "{{ internal_tls_sans }}"
+    extended_key_usage: [serverAuth]
+  register: internal_tls_csr
+  changed_when: false
+
+- name: Internal TLS | sign with internal CA (2 anni)
+  community.crypto.x509_certificate:
+    path: "{{ internal_ca_dir }}/{{ inventory_hostname }}.crt"
+    csr_content: "{{ internal_tls_csr.csr }}"
+    provider: ownca
+    ownca_path: "{{ internal_ca_dir }}/ca.crt"
+    ownca_privatekey_path: "{{ internal_ca_dir }}/ca.key"
+    ownca_not_after: "+730d"
+    mode: "0644"
+  delegate_to: localhost
+  become: false
+
+- name: Internal TLS | install certificate, fullchain and CA
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    content: "{{ item.content }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - dest: /etc/ssl/certs/cert.pem
+      content: "{{ lookup('file', internal_ca_dir ~ '/' ~ inventory_hostname ~ '.crt') }}\n"
+    - dest: /etc/ssl/certs/fullchain.pem
+      content: "{{ lookup('file', internal_ca_dir ~ '/' ~ inventory_hostname ~ '.crt') }}\n{{ lookup('file', internal_ca_dir ~ '/ca.crt') }}\n"
+    - dest: /etc/ssl/certs/internal-ca.pem
+      content: "{{ lookup('file', internal_ca_dir ~ '/ca.crt') }}\n"
+  loop_control:
+    label: "{{ item.dest }}"
+
+# Ogni elemento è un nome utente (es. nginx) oppure un dizionario
+# {name: rabbitmq, owner: "999"} quando il file deve appartenere a un UID
+# diverso, ad esempio l'utente dentro un container.
+- name: Internal TLS | private key copy for each user
+  ansible.builtin.copy:
+    src: /etc/ssl/private/internal-tls.key
+    dest: "/etc/ssl/user/privkey-{{ item.name | default(item) }}.pem"
+    remote_src: true
+    owner: "{{ item.owner | default(item.name) | default(item) }}"
+    mode: "0600"
+  loop: "{{ internal_tls_key_users }}"
+  loop_control:
+    label: "{{ item.name | default(item) }}"
