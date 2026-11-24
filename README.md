@@ -69,3 +69,16 @@ Make sure, there are FQDNs for Galaxy and RabbitMQ VMs.
    - `secret_group_vars/rabbitmq.yml`
 
 Executors for HTCondor are managed by Terrform+Jenkins (https://github.com/usegalaxy-it/vgcn-infrastructure)
+
+### Jenkins (`build.yml`)
+
+`build.yml` configures the Jenkins controller. Variables:
+   - `group_vars/build.yml`
+   - `secret_group_vars/jenkins.yml` (sensitive data)
+
+The `geerlingguy.java` and `geerlingguy.jenkins` roles use conditionals that evaluate to strings, which
+ansible-core 2.19+ rejects. Run the playbook with broken conditionals allowed:
+
+```
+ANSIBLE_ALLOW_BROKEN_CONDITIONALS=True ansible-playbook -i inventory build.yml
+```
