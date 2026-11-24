@@ -107,10 +107,13 @@ jenkins_plugins_absent:
   - jobConfigHistory
 
 # Certbot
+# group_vars/all.yml uses the short hostname, which Let's Encrypt rejects; use the FQDN served by the vhost,
+# which also matches the existing /etc/letsencrypt/renewal/<fqdn>.conf
+certbot_domains: "{{ server_names }}"
 certbot_auth_method: --webroot
 certbot_well_known_root: /srv/nginx/_well-known_root
-certbot_share_key_users:
-  - nginx
+# No per-user key copy: there is no "nginx" user on Ubuntu, and the nginx master (root) reads the key directly
+certbot_share_key_users: []
 
 certbot_post_renewal: |
     systemctl restart nginx || true
@@ -126,4 +129,4 @@ nginx_remove_default_vhost: true
 # Nginx Letsencrypt bindings
 nginx_ssl_role: usegalaxy-eu.certbot
 nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
-nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-nginx.pem
+nginx_conf_ssl_certificate_key: /etc/ssl/private/privkey.pem
