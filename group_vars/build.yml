@@ -15,8 +15,11 @@ jenkins_admin_token: "{{ jenkins_admin_token_secret }}"
 # -XX:-UseBASE64Intrinsics: Java4Shell (CVE-2026-114938) mitigation, independent of the JDK build and the host CPU.
 jenkins_java_options: "-XX:-UseBASE64Intrinsics -Dhudson.model.ParametersAction.keepUndefinedParameters=true -Djenkins.install.runSetupWizard=false"
 
-# Plugins installed on the controller (as found on the VM), kept at the latest release
-jenkins_plugins_state: latest
+# Plugins installed on the controller (as found on the VM).
+# Only ensure they are present: jenkins_plugin with state "latest" downloads the newest release regardless of
+# the core version and without new dependencies. build.yml then runs files/jenkins/align_plugins.py, which
+# moves plugins to the newest release compatible with the installed core and adds missing dependencies.
+jenkins_plugins_state: present
 jenkins_plugins:
   - ansicolor
   - apache-httpcomponents-client-4-api
