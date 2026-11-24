@@ -120,6 +120,10 @@ certbot_post_renewal: |
 
 # NGINX
 nginx_enable_default_server: false
+nginx_ssl_port: 443
+# Port 80: ACME webroot for certbot and redirect to HTTPS
+nginx_servers:
+  - redirect-ssl
 nginx_ssl_servers:
   - build
 nginx_conf_http:
