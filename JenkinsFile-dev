@@ -1,6 +1,9 @@
 pipeline {
         agent { label "usegalaxyit_dev" }
-        options { disableConcurrentBuilds() }
+        options {
+                disableConcurrentBuilds()
+                ansiColor('xterm')
+        }
         environment {
                 VAULT_PASS = credentials('SN06_VAULT_PASS')
                 ANSIBLE_FORCE_COLOR = '1'
