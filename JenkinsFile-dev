@@ -23,7 +23,8 @@ pipeline {
                         emailext (
                         subject: '$DEFAULT_SUBJECT',
                         body: '$DEFAULT_CONTENT',
-                        to: '$DEFAULT_RECIPIENTS',
+			to: "andrea.falconetti@unimi.it",
+                        // to: '$DEFAULT_RECIPIENTS',
                         attachLog: true
                         )
                 }
