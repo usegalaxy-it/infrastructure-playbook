@@ -32,6 +32,8 @@ collections:
     version: 2.26.5
   - name: community.postgresql
     version: ">=2.0.0"
+  - name: ansible.windows
+    version: 3.9.2
 
 roles:
   - name: dev-sec.os-hardening
@@ -43,7 +45,7 @@ roles:
   - name: dj-wasabi.telegraf
     # retrieve from GitHub, version 0.14.2 is not available on Ansible Galaxy
     src: https://github.com/dj-wasabi/ansible-telegraf
-    version: 0.14.2
+    version: 0.15.0
   - name: galaxyproject.galaxy
     src: https://github.com/galaxyproject/ansible-galaxy
     version: 0.12.13

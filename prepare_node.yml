@@ -13,7 +13,7 @@
 # back to the regular service account for all following playbooks/tasks.
 
 - name: Remap user playbook
-  hosts: celerycluster
+  hosts: database:htcondor_exec:htcondor_cm
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"
@@ -69,6 +69,10 @@
           - xz-devel
           - sqlite-devel
           - wget
+          - initscripts-service
+    - name: Trust internal CA
+      ansible.builtin.include_tasks: trust_internal_ca.yml
+      when: env == 'dev'
 
   roles:
     - geerlingguy.repo-epel
@@ -86,6 +90,7 @@
         - "'database' not in group_names"
         - "'replica' not in group_names"
         - "'backup' not in group_names"
+        - "'influxdb' not in group_names"
 
   post_tasks:
     - name: Create galaxy group.

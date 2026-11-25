@@ -1,0 +1,21 @@
+---
+- name: Telegraf agent
+  hosts: usegalaxy_it:database:htcondor_exec:htcondor_cm
+  become: true
+  vars_files:
+    - "secret_group_vars/all.yml"
+    - "{{ monitoring_secrets_file }}"
+  pre_tasks:
+    - name: Trust internal CA
+      ansible.builtin.include_tasks: trust_internal_ca.yml
+      when: internal_ca_dir is defined
+  roles:
+    - dj-wasabi.telegraf
+  post_tasks:
+    - name: Restart telegraf if the trusted CAs changed
+      ansible.builtin.systemd:
+        name: telegraf
+        state: restarted
+      when:
+        - internal_ca_trust is defined
+        - internal_ca_trust is changed

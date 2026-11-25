@@ -1,0 +1,57 @@
+---
+# CA interna: creata una volta sola, sulla macchina di controllo.
+# Idempotente: se ca.key e ca.crt esistono già non vengono toccati.
+#
+# Usata da:
+#   - tasks/main.yml di questo ruolo (prima di firmare un certificato)
+#   - trust_internal_ca.yml (prima di distribuire ca.crt), quindi anche
+#     prepare_node.yml: la CA esiste prima di qualsiasi altro playbook.
+#
+# Variabili richieste:
+#   internal_ca_dir   cartella della CA sulla macchina di controllo
+#   internal_ca_cn    nome della CA
+
+- name: Internal CA | directory
+  ansible.builtin.file:
+    path: "{{ internal_ca_dir }}"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+- name: Internal CA | private key
+  community.crypto.openssl_privatekey:
+    path: "{{ internal_ca_dir }}/ca.key"
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+  run_once: true
+
+- name: Internal CA | CSR
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ internal_ca_dir }}/ca.key"
+    common_name: "{{ internal_ca_cn }}"
+    use_common_name_for_san: false
+    basic_constraints: ["CA:TRUE"]
+    basic_constraints_critical: true
+    key_usage: [keyCertSign, cRLSign]
+    key_usage_critical: true
+  register: internal_ca_csr
+  delegate_to: localhost
+  become: false
+  run_once: true
+  changed_when: false
+  check_mode: false
+
+- name: Internal CA | self-signed certificate (10 anni)
+  community.crypto.x509_certificate:
+    path: "{{ internal_ca_dir }}/ca.crt"
+    csr_content: "{{ internal_ca_csr.csr }}"
+    privatekey_path: "{{ internal_ca_dir }}/ca.key"
+    provider: selfsigned
+    selfsigned_not_after: "+3650d"
+    mode: "0644"
+  delegate_to: localhost
+  become: false
+  run_once: true

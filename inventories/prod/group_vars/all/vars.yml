@@ -5,3 +5,5 @@ rabbit_secrets_file: secret_group_vars/rabbitmq.yml
 
 htcondor_ip_range: '10.10.10.0/24'
 htcondor_network_interface: "enp6s18"
+
+monitoring_secrets_file: secret_group_vars/monitoring-main.yml

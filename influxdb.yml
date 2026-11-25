@@ -5,6 +5,7 @@
     hostname: "{{ groups['influxdb'][0] }}"
   vars_files:
     - "secret_group_vars/all.yml"
+    - "{{ monitoring_secrets_file }}"
   pre_tasks:
     - name: Enable EPEL
       ansible.builtin.dnf:
@@ -15,13 +16,14 @@
         name: dnf-plugins-core
         state: present
 
-    - name: Enable CRB (CodeReady Builder) on Rocky
+    - name: Enable CRB (CodeReady Builder)
       ansible.builtin.command: dnf config-manager --set-enabled crb
-      when: ansible_distribution == "Rocky"
+      changed_when: false
+      when: ansible_facts["distribution"] in ["Rocky", "AlmaLinux"]
     - name: Install Dependencies
       become: true
       ansible.builtin.package:
-        name: ['python3-virtualenv', 'python3-docker', 'perl', 'firewalld']
+        name: ['python3-virtualenv', 'python3-docker', 'perl', 'firewalld', 'initscripts-service']
     - name: Create data dir
       ansible.builtin.file:
         state: directory
@@ -92,7 +94,7 @@
     - geerlingguy.repo-epel     # Install EPEL repository
     - usegalaxy-eu.autoupdates  # keep all of our packages up to date
     - influxdata.chrony         # Keep our time in sync.
-    - usegalaxy-eu.dynmotd
+    # - usegalaxy-eu.dynmotd
     # - hxr.monitor-email
 #    # Applications
     - geerlingguy.docker

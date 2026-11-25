@@ -138,10 +138,10 @@ telegraf_agent_package_state: latest
 telegraf_agent_output:
   - type: influxdb
     config:
-      - urls = ["https://{{ influxdb.url }}"]
+      - urls = ["https://{{ influxdb.url }}:8086"]
       - database = "galaxy"
-      - username = "{{ influxdb.grafana.username }}"
-      - password = "{{ influxdb.grafana.password }}"
+      - username = "{{ influxdb.node.username }}"
+      - password = "{{ influxdb.node.password }}"
       - timeout = "10s"
 telegraf_plugins_default:
   - plugin: cpu

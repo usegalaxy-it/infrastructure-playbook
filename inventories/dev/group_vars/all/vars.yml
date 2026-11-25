@@ -10,3 +10,7 @@ htcondor_network_interface: "eth0"
 
 internal_ca_dir: /home/ubuntu/usegalaxy-internal-ca/dev
 internal_ca_cn: "usegalaxy-it dev internal CA"
+
+
+
+monitoring_secrets_file: secret_group_vars/monitoring-dev.yml

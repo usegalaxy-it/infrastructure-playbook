@@ -1,6 +1,14 @@
 ---
 # Installa la CA interna tra le CA di sistema, così i client
-# (Galaxy, Celery, Pulsar...) si fidano dei certificati che firma.
+# (Galaxy, Celery, Telegraf, Pulsar...) si fidano dei certificati che firma.
+#
+# Prima si assicura che la CA esista (la crea sulla control se manca),
+# così può essere la primissima operazione su un ambiente nuovo.
+- name: Internal CA | ensure it exists
+  ansible.builtin.include_role:
+    name: internal_tls
+    tasks_from: ca.yml
+
 - name: Internal CA | install in system trust store
   ansible.builtin.copy:
     src: "{{ internal_ca_dir }}/ca.crt"
