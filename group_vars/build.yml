@@ -1,25 +1,134 @@
 # Jenkins
-jenkins_home: /opt/jenkins/jenkins
+jenkins_home: /var/lib/jenkins
+jenkins_http_port: 4000
+jenkins_url_prefix: /jenkins
 jenkins_prefer_lts: true
+# geerlingguy.jenkins 5.3.0 installs the 2023 key, which no longer verifies the repository (rotated with 2.541.1)
+jenkins_repo_key_url: https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+# Upgrade Jenkins to the latest LTS on every run
+jenkins_package_state: latest
 java_packages:
-  - java-1.8.0-openjdk
+  - openjdk-21-jdk
 jenkins_admin_token: "{{ jenkins_admin_token_secret }}"
 
-# runSetupWizard=false is default
-# Add the CSP so we can embed galaxy on WF testing pages / display HTML
-jenkins_java_options: "-Dhudson.model.ParametersAction.keepUndefinedParameters=true -Djenkins.install.runSetupWizard=false -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'unsafe-inline'; frame-src *;\\\""
+# runSetupWizard=false is default.
+# The DirectoryBrowserSupport.CSP override (embedding Galaxy in workflow test pages) was dropped:
+# Jenkins now serves user content with its default Content-Security-Policy.
+# -XX:-UseBASE64Intrinsics: Java4Shell (CVE-2026-114938) mitigation, independent of the JDK build and the host CPU.
+jenkins_java_options: "-XX:-UseBASE64Intrinsics -Dhudson.model.ParametersAction.keepUndefinedParameters=true -Djenkins.install.runSetupWizard=false"
+
+# Plugins installed on the controller (as found on the VM).
+# Only ensure they are present: jenkins_plugin with state "latest" downloads the newest release regardless of
+# the core version and without new dependencies. build.yml then runs files/jenkins/align_plugins.py, which
+# moves plugins to the newest release compatible with the installed core and adds missing dependencies.
+jenkins_plugins_state: present
+jenkins_plugins:
+  - ansicolor
+  - apache-httpcomponents-client-4-api
+  - asm-api
+  - bootstrap5-api
+  - bouncycastle-api
+  - branch-api
+  - build-timeout
+  - caffeine-api
+  - checks-api
+  - cloudbees-folder
+  - command-launcher
+  - commons-lang3-api
+  - commons-text-api
+  - credentials
+  - credentials-binding
+  - display-url-api
+  - durable-task
+  - echarts-api
+  - eddsa-api
+  - email-ext
+  - embeddable-build-status
+  - font-awesome-api
+  - git
+  - git-client
+  - github
+  - github-api
+  - github-branch-source
+  - github-oauth
+  - gson-api
+  - htmlpublisher
+  - instance-identity
+  - ionicons-api
+  - jackson2-api
+  - jakarta-activation-api
+  - jakarta-mail-api
+  - javax-activation-api
+  - javax-mail-api
+  - jaxb
+  - jdk-tool
+  - jjwt-api
+  - joda-time-api
+  - jquery3-api
+  - json-api
+  - json-path-api
+  - jsoup
+  - junit
+  - mailer
+  - matrix-auth
+  - matrix-project
+  - mina-sshd-api-common
+  - mina-sshd-api-core
+  - okhttp-api
+  - pipeline-groovy-lib
+  - pipeline-input-step
+  - pipeline-model-api
+  - pipeline-model-definition
+  - pipeline-model-extensions
+  - pipeline-stage-step
+  - pipeline-stage-tags-metadata
+  - plain-credentials
+  - plugin-util-api
+  - resource-disposer
+  - scm-api
+  - script-security
+  - snakeyaml-api
+  - ssh-agent
+  - ssh-credentials
+  - ssh-slaves
+  - sshd
+  - structs
+  - token-macro
+  - trilead-api
+  - variant
+  - workflow-api
+  - workflow-basic-steps
+  - workflow-cps
+  - workflow-durable-task-step
+  - workflow-job
+  - workflow-multibranch
+  - workflow-scm-step
+  - workflow-step-api
+  - workflow-support
+  - ws-cleanup
+
+# Plugins removed from the controller (advisories without a fix)
+jenkins_plugins_absent:
+  - jobConfigHistory
 
 # Certbot
+# group_vars/all.yml uses the short hostname, which Let's Encrypt rejects; use the FQDN served by the vhost,
+# which also matches the existing /etc/letsencrypt/renewal/<fqdn>.conf
+certbot_domains: "{{ server_names }}"
 certbot_auth_method: --webroot
 certbot_well_known_root: /srv/nginx/_well-known_root
-certbot_share_key_users:
-  - nginx
+# No per-user key copy: there is no "nginx" user on Ubuntu, and the nginx master (root) reads the key directly
+certbot_share_key_users: []
 
 certbot_post_renewal: |
     systemctl restart nginx || true
 
 # NGINX
 nginx_enable_default_server: false
+nginx_ssl_port: 443
+# Port 80: ACME webroot for certbot and redirect to HTTPS
+nginx_servers:
+  - redirect-ssl
 nginx_ssl_servers:
   - build
 nginx_conf_http:
@@ -29,4 +138,4 @@ nginx_remove_default_vhost: true
 # Nginx Letsencrypt bindings
 nginx_ssl_role: usegalaxy-eu.certbot
 nginx_conf_ssl_certificate: /etc/ssl/certs/fullchain.pem
-nginx_conf_ssl_certificate_key: /etc/ssl/user/privkey-nginx.pem
+nginx_conf_ssl_certificate_key: /etc/ssl/private/privkey.pem

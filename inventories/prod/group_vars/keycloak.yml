@@ -1,9 +1,16 @@
 data_dir: /data
 
 _kc_postgresql_image: postgres
-_kc_postgresql_version: 18
+# Pinned minor release (running on the VM); bump explicitly to upgrade
+_kc_postgresql_version: "18.6"
 _keycloak_image: quay.io/keycloak/keycloak
-_keycloack_version: 26.6.2
+# 26.8.2-3 bundles OpenJDK 21.0.13.1 (Java4Shell, CVE-2026-114938 fixed); the 26.6 branch was not rebuilt
+_keycloack_version: 26.8.2-3
+
+# Pinned nginx image of the reverse proxy (1.30.7: NGINX2Root CVEs fixed, see #36)
+keycloak_nginx_image: nginx:1.30.7-alpine
+# Temporary Java4Shell mitigation (CVE-2026-114938, see #37): remove once the fixed runtime is verified
+keycloak_java_opts_append: "-XX:-UseBASE64Intrinsics"
 
 # Custom themes from files/keycloak/themes/ (e.g. "usegalaxy-it": ToU + AUP page)
 keycloak_custom_themes_enabled: true

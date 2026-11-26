@@ -69,3 +69,49 @@ Make sure, there are FQDNs for Galaxy and RabbitMQ VMs.
    - `secret_group_vars/rabbitmq.yml`
 
 Executors for HTCondor are managed by Terrform+Jenkins (https://github.com/usegalaxy-it/vgcn-infrastructure)
+
+### Jenkins (`build.yml`)
+
+`build.yml` configures the Jenkins controller. Variables:
+   - `group_vars/build.yml`
+   - `secret_group_vars/jenkins.yml` (sensitive data)
+
+The `geerlingguy.java` and `geerlingguy.jenkins` roles use conditionals that evaluate to strings, which
+ansible-core 2.19+ rejects. Run the playbook with broken conditionals allowed:
+
+```
+ANSIBLE_ALLOW_BROKEN_CONDITIONALS=True ansible-playbook -i inventory build.yml
+```
+
+### Keycloak (`keycloak_prod.yml`)
+
+`keycloak_prod.yml` deploys Keycloak on `auth.elixirservices.it` (inventory group `keycloak_prod`) as a docker compose
+stack in `/data/keycloak`: `postgres_db`, `keycloak_app` and the `nginx_proxy` reverse proxy. Variables:
+   - `group_vars/keycloak_prod.yml` (image versions, JVM options, custom theme switch)
+   - `secret_group_vars/all.yml` (database and admin credentials, rendered into `/data/keycloak/.env`)
+   - `secret_group_vars/os.yml` (service user password): **not tracked in this repository**, it exists only on the
+     control VM and must be recreated there when the control VM is rebuilt
+
+Templates: `templates/keycloak/compose.yml.j2`, `templates/keycloak/keycloak_prod.conf.j2`, `templates/keycloak/env.j2`
+and `templates/nginx/keycloak-ssl.j2`. The login theme lives in `files/keycloak/themes/usegalaxy-it/` and is copied to
+`/data/keycloak/themes/` (enabled by `keycloak_custom_themes_enabled`). A theme change restarts `keycloak_app` and clears
+its theme cache. The certificate is managed by `usegalaxy-eu.certbot` and is only requested if it does not exist yet.
+
+All images are pinned in `group_vars/keycloak_prod.yml` (`_keycloack_version`, `_kc_postgresql_version`,
+`keycloak_nginx_image`). To upgrade a component, bump its version there. Changing an image recreates its container:
+a PostgreSQL change restarts the database, so run it when a short login outage is acceptable.
+
+Run a dry-run first, check the diff, then apply (the certbot role has string conditionals, see the Jenkins note above):
+
+```
+ANSIBLE_ALLOW_BROKEN_CONDITIONALS=True ansible-playbook -i inventory keycloak_prod.yml --check --diff
+ANSIBLE_ALLOW_BROKEN_CONDITIONALS=True ansible-playbook -i inventory keycloak_prod.yml
+```
+
+The `--diff` output includes `/data/keycloak/.env` when it changes, i.e. the database and admin passwords: do not share
+it unredacted. After the run, check the stack on the Keycloak VM:
+
+```
+docker ps --format '{{.Names}}\t{{.Image}}\t{{.Status}}'
+curl -sI https://auth.elixirservices.it/ | head -1
+```

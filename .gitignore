@@ -5,3 +5,5 @@
 collections/
 roles/
 nohup.out
+# Service user password, kept only on the control VM
+secret_group_vars/os.yml

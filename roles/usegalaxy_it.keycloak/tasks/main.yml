@@ -5,5 +5,9 @@
 #- name: Configure PostgreSQL
 #  include_tasks: db.yml
 
+- name: Deploy custom themes
+  include_tasks: theme.yml
+  when: keycloak_custom_themes_enabled | bool
+
 - name: Start KeyCloak
   include_tasks: install.yml
