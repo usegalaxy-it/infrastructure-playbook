@@ -1,0 +1,33 @@
+---
+# Distribuisce la CA interna a tutti gli host dell'inventory
+# (la crea sulla control se non esiste ancora).
+#
+#   ansible-playbook trust_ca.yml                 # tutti
+#   ansible-playbook trust_ca.yml --limit grafana # uno solo
+#
+# Non fa nulla dove internal_ca_dir non è definita (es. un ambiente senza CA interna).
+# Se la CA viene installata ora su un host dove Telegraf gira già,
+# lo riavvia: Telegraf legge le CA fidate solo all'avvio.
+
+- name: Trust internal CA everywhere
+  hosts: all
+  become: true
+  tasks:
+    - name: Trust internal CA
+      ansible.builtin.include_tasks: trust_internal_ca.yml
+      when: internal_ca_dir is defined
+
+    - name: Check whether telegraf is installed
+      ansible.builtin.service_facts:
+      when:
+        - internal_ca_trust is defined
+        - internal_ca_trust is changed
+
+    - name: Restart telegraf to reload the trusted CAs
+      ansible.builtin.systemd:
+        name: telegraf
+        state: restarted
+      when:
+        - internal_ca_trust is defined
+        - internal_ca_trust is changed
+        - "'telegraf.service' in ansible_facts.services | default({})"

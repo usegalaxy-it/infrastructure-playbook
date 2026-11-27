@@ -1,22 +1,26 @@
 ---
-- hosts: grafana
+# Grafana su VM dedicata (AlmaLinux/Rocky 9), con PostgreSQL locale
+# e nginx davanti. Uguale per dev e prod: cambia solo l'inventory.
+#
+#   dev:  nginx_ssl_role: internal_tls        (raggiunto dal proxy della control)
+#   prod: nginx_ssl_role: usegalaxy-eu.certbot (nome pubblico)
+#
+# Segreti in {{ monitoring_secrets_file }}:
+#   influxdb.{url,grafana.username,grafana.password}
+#   grafana_secrets.{admin_user,admin_password,secret_key,db_password}
+#
+# Telegraf su questa VM si installa con telegraf.yml.
+
+- name: Grafana
+  hosts: grafana
   become: true
+  vars:
+    hostname: "{{ inventory_hostname }}"
   vars_files:
-    - secret_group_vars/all.yml
+    - "secret_group_vars/all.yml"
+    - "{{ monitoring_secrets_file }}"
 
   pre_tasks:
-    # - name: Put SELinux in permissive mode, logging actions that would be blocked.
-    #   # Putting SELinux in permissive mode should not be necessary. But if
-    #   # certs fail, then do it. It is supposed to be properly handled by
-    #   # the `galaxyproject.nginx` role, but the permission change is likely
-    #   # only applied if a change is detected since it can't figure out if
-    #   # the rule is there or not.
-    #   # TODO: make the nginx task check if the rule is in place, rather than a change in path.
-    #   become: true
-    #   ansible.posix.selinux:
-    #     policy: targeted
-    #     state: permissive
-
     - name: Enable EPEL
       ansible.builtin.dnf:
         name: epel-release
@@ -27,178 +31,48 @@
         name: dnf-plugins-core
         state: present
 
-    - name: Enable CRB (CodeReady Builder) on Rocky
-      ansible.builtin.command:
-        cmd: dnf config-manager --set-enabled crb
-      when: ansible_distribution == "Rocky"
+    - name: Enable CRB (CodeReady Builder)
+      ansible.builtin.command: dnf config-manager --set-enabled crb
+      changed_when: false
+      when: ansible_facts["distribution"] in ["Rocky", "AlmaLinux"]
 
-    - name: Install Dependencies
-      become: true
+    - name: Install dependencies
       ansible.builtin.package:
         name:
-          - acl
-          - python3-virtualenv
-          - python3-docker
-          - python3-pip
-          - perl
-          - firewalld
+          - acl                  # become_user postgres
+          - python3-psycopg2     # moduli community.postgresql
+          - initscripts-service  # comando 'service' (handler auditd)
         state: present
 
-    - name: Install docker compose python (no rpm available)
-      become: true
-      ansible.builtin.pip:
-        name: docker-compose
-        version: 1.29.2
-
-    - name: Ensure git is installed. (hxr.monitor-ssl)
-      become: true
-      ansible.builtin.package:
-        name: git
-        state: present
-
-    - name: Create data dir
-      ansible.builtin.file:
-        state: directory
-        path: /data
-      become: true
-
-    - name: Create FS
-      community.general.filesystem:
-        fstype: ext4
-        dev: /dev/vdb
-      become: true
-
-    - name: Mount data volume
-      ansible.posix.mount:
-        path: /data
-        src: /dev/vdb
-        fstype: ext4
-        state: mounted
-      become: true
-
-  collections:
-    - devsec.hardening
-    - grafana.grafana
+    - name: SELinux | let nginx proxy to Grafana on 127.0.0.1:3000
+      ansible.posix.seboolean:
+        name: httpd_can_network_connect
+        state: true
+        persistent: true
+      when: ansible_facts.selinux.status | default('disabled') == 'enabled'
 
   roles:
-    ## Starting configuration of the operating system
-    # - role: usegalaxy_eu.firewall
-    #   become: true
-
-    - role: geerlingguy.repo-epel
-      become: true
+    - geerlingguy.repo-epel
 
     - role: usegalaxy_eu.handy.os_setup
-      become: true
       vars:
-        hostname: "usegalaxy-it-grafana"
         enable_hostname: true
-        enable_powertools: true  # geerlingguy.repo-epel role doesn't enable PowerTools repository
 
-    - role: usegalaxy-eu.autoupdates
-      become: true
-      vars:
-        hostname: "usegalaxy-it-grafana"
+    - usegalaxy-eu.autoupdates
+    - influxdata.chrony
 
-    - influxdata.chrony  # Keep our time in sync.
-
-    ## Monitoring
-    - dj-wasabi.telegraf
-    # - role: hxr.monitor-ssl
-    #   become: true
-    # - role: hxr.monitor-email
-    #   become: true
-
-    ## Grafana
+    ## Database di Grafana (solo locale)
     - galaxyproject.postgresql
 
     - role: galaxyproject.postgresql_objects
-      become: true
       become_user: postgres
 
-    - role: galaxyproject.nginx
-      become: true
-      vars:
-        hostname: "{{ grafana_domain }}"
+    ## Reverse proxy + certificato (internal_tls in dev, certbot in prod)
+    - galaxyproject.nginx
 
-    - grafana
+    ## Grafana
+    - grafana.grafana.grafana
 
-    # Disabling public galaxy server for the time being
-    # more info: https://github.com/martenson/public-galaxy-servers/
-    # - role: pgs
-    #   become: true
-
-    - role: geerlingguy.docker
-      become: true
-      vars:
-        docker_install_compose: true
-        docker_users:
-          - "{{ ansible_ssh_user }}"
-
-  post_tasks:
-    - name: Open nginx ports
-      become: true
-      ansible.posix.firewalld:
-        port: "{{ item }}"
-        permanent: true
-        state: enabled
-      loop:
-        - 80/tcp
-        - 443/tcp
-
-    - name: Create datasources
-      community.grafana.grafana_datasource:
-        enforce_secure_data: true
-        validate_certs: false 
-        url: "{{ grafana_url }}"
-        url_username: "{{ grafana_security.admin_user }}"
-        url_password: "{{ grafana_security.admin_password }}"
-        name: "{{ item.name }}"
-        ds_url: "{{ item.url }}"
-        ds_type: "{{ item.type }}"
-        access: "{{ item.access | default(omit) }}"
-        is_default: "{{ item.isDefault | default(omit) }}"
-        basic_auth_user: "{{ item.basicAuthUser | default(omit) }}"
-        basic_auth_password: "{{ item.basicAuthPassword | default(omit) }}"
-        database: "{{ item.database | default(omit) }}"
-        user: "{{ item.user | default(omit) }}"
-        additional_secure_json_data:
-          password: "{{ item.password | default(omit) }}"
-      loop: "{{ ext_grafana_datasources }}"
-
-    - name: Add on-call backend
-      when: grafana_on_call | bool
-      block:
-        - name: Create dir
-          become: true
-          ansible.builtin.file:
-            path: "{{ grafana_on_call_path }}"
-            state: directory
-            owner: "{{ ansible_ssh_user }}"
-            group: "{{ ansible_ssh_user }}"
-            mode: "0755"
-
-        - name: Get docker compose
-          ansible.builtin.get_url:
-            url: https://raw.githubusercontent.com/grafana/oncall/49d20f1a7e40669e901db95443603138e1a1cde4/docker-compose.yml
-            dest: "{{ grafana_on_call_path }}/docker-compose.yml"
-            owner: "{{ ansible_ssh_user }}"
-            group: "{{ ansible_ssh_user }}"
-            mode: "0600"
-
-        - name: Create env
-          ansible.builtin.copy:
-            content: |
-              DOMAIN=https://{{ grafana_on_call_domain }}
-              SECRET_KEY={{ grafana_on_call_secret }}
-              COMPOSE_PROFILES=''
-            dest: "{{ grafana_on_call_path }}/.env"
-            owner: "{{ ansible_ssh_user }}"
-            group: "{{ ansible_ssh_user }}"
-            mode: "0600"
-          no_log: true
-
-        - name: Start OnCall
-          community.docker.docker_compose:
-            project_src: "{{ grafana_on_call_path }}"
-            project_name: oncall
+    ## Hardening (come influxdb.yml): ultimo, dopo che tutto è installato
+    - devsec.hardening.os_hardening
+    - devsec.hardening.ssh_hardening

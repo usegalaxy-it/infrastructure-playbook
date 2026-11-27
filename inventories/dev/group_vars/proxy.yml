@@ -10,6 +10,10 @@ proxy_streams:
     listen: 443
     backend_group: usegalaxy_it
     backend_port: 443
+  - name: grafana              # Grafana (solo dev; in prod ha IP e nome suoi)
+    listen: 3443
+    backend_group: grafana
+    backend_port: 443
   # Da scommentare quando si apre RabbitMQ all'esterno:
   # - name: rabbitmq
   #   listen: 5671

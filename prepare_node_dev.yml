@@ -13,7 +13,7 @@
 # back to the regular service account for all following playbooks/tasks.
 
 - name: Remap user playbook
-  hosts: database:htcondor_exec:htcondor_cm
+  hosts: grafana
   become: true
   vars:
     hostname: "{{ inventory_hostname }}"
@@ -91,6 +91,7 @@
         - "'replica' not in group_names"
         - "'backup' not in group_names"
         - "'influxdb' not in group_names"
+        - "'grafana' not in group_names"
 
   post_tasks:
     - name: Create galaxy group.

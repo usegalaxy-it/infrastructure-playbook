@@ -1,9 +1,14 @@
 ---
 # Installa la CA interna tra le CA di sistema, così i client
-# (Galaxy, Celery, Telegraf, Pulsar...) si fidano dei certificati che firma.
+# (Galaxy, Celery, Telegraf, Grafana, Pulsar...) si fidano dei certificati che firma.
 #
 # Prima si assicura che la CA esista (la crea sulla control se manca),
 # così può essere la primissima operazione su un ambiente nuovo.
+#
+# Funziona su RHEL (Alma/Rocky) e su Debian/Ubuntu.
+# Registra internal_ca_trust: chi include questo file può reagire
+# se la CA è stata appena installata (es. riavviare Telegraf).
+
 - name: Internal CA | ensure it exists
   ansible.builtin.include_role:
     name: internal_tls
@@ -12,12 +17,18 @@
 - name: Internal CA | install in system trust store
   ansible.builtin.copy:
     src: "{{ internal_ca_dir }}/ca.crt"
-    dest: /etc/pki/ca-trust/source/anchors/usegalaxy-internal-ca.crt
+    dest: "{{ _ca_trust[ansible_facts.os_family].dest }}"
     owner: root
     group: root
     mode: "0644"
+  vars:
+    _ca_trust: &ca_trust
+      RedHat: {dest: /etc/pki/ca-trust/source/anchors/usegalaxy-internal-ca.crt, cmd: update-ca-trust}
+      Debian: {dest: /usr/local/share/ca-certificates/usegalaxy-internal-ca.crt, cmd: update-ca-certificates}
   register: internal_ca_trust
 
 - name: Internal CA | update system trust store
-  ansible.builtin.command: update-ca-trust
+  ansible.builtin.command: "{{ _ca_trust[ansible_facts.os_family].cmd }}"
+  vars:
+    _ca_trust: *ca_trust
   when: internal_ca_trust is changed

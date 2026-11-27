@@ -1,7 +1,7 @@
 env: dev
 db_secrets_file: secret_group_vars/db-dev.yml
 rabbit_secrets_file: secret_group_vars/rabbitmq_dev.yml
-galaxy_public_hostname: 131-175-80-230.sslip.io   	#nome temporaneo aspettando  CINECA
+galaxy_public_hostname: usegalaxy-it.ext.cineca.it 
 
 
 htcondor_ip_range: '192.168.0.0/24'

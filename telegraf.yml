@@ -1,6 +1,6 @@
 ---
 - name: Telegraf agent
-  hosts: usegalaxy_it:database:htcondor_exec:htcondor_cm
+  hosts: usegalaxy_it:database:htcondor_exec:htcondor_cm:grafana
   become: true
   vars_files:
     - "secret_group_vars/all.yml"

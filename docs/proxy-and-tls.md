@@ -109,7 +109,7 @@ certificato. Per il traffico interno si usa una piccola CA gestita con Ansible.
 
 #### Ruolo `internal_tls`
 
-`roles/internal_tls/` genera la chiave **sulla VM** (non lascia mai la macchina),
+`roles-local/internal_tls/` genera la chiave **sulla VM** (non lascia mai la macchina),
 la fa firmare dalla CA sulla macchina di controllo e installa i file **negli stessi
 percorsi che usava certbot**:
 
@@ -204,3 +204,7 @@ del certificato (nome dell'inventory o IP).
   Galaxy (che ha il certificato pubblico) e inoltrata a rabbit.
 - Flower sotto `https://<nome>/flower` tramite l'nginx di Galaxy.
 - Keycloak sotto `https://<nome>/auth`.
+- **RabbitMQ in prod**: oggi Galaxy e RabbitMQ si parlano in chiaro (AMQP senza
+  TLS) sulla rete privata di CNR. Da portare a TLS con la CA interna di prod, come
+  è già in dev (`nginx_ssl_role: internal_tls` sul gruppo `rabbitmq`, CA nel trust
+  store dei client con `trust_ca.yml`).
